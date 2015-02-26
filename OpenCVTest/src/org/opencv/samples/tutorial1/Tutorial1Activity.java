@@ -42,6 +42,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     };
     
     //kommentar av mickemojtheboy
+    // kommentar av Gabbi 
     
     public Tutorial1Activity() {
         Log.i(TAG, "Instantiated new " + this.getClass());
