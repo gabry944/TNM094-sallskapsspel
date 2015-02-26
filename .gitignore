@@ -27,3 +27,4 @@ proguard/
 
 #Mapp organization file on Mac
 .DS_Store
+*.DS_Store
