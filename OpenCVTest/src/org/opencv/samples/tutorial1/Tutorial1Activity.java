@@ -3,7 +3,7 @@ package org.opencv.samples.tutorial1;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.LoaderCallbackInterface;
-import org.opencv.android.OpenCVLoader;
+import org.opencv.android.OpenCVLoader; // helper function for binding the OpenCV service to our activity
 import org.opencv.core.Mat;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
@@ -20,13 +20,14 @@ import android.widget.Toast;
 public class Tutorial1Activity extends Activity implements CvCameraViewListener2 {
     private static final String TAG = "OCVSample::Activity";
 
-    private CameraBridgeViewBase mOpenCvCameraView;
+    private CameraBridgeViewBase mOpenCvCameraView; // the OpenCV handler object to interface the camera peripherals of your phone
     private boolean              mIsJavaCamera = true;
     private MenuItem             mItemSwitchCamera = null;
 
+    // Listener to keep track of the OpenCV service binding process to our activity, make appropriate callbacks when certain stages have been reached callbacks when certain stages have been reached callbacks when certain stages have been reached
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
-        public void onManagerConnected(int status) {
+        public void onManagerConnected(int status) {// is called when the OpenCV service has successfully binded to the activity
             switch (status) {
                 case LoaderCallbackInterface.SUCCESS:
                 {
@@ -40,10 +41,6 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
             }
         }
     };
-    
-    //kommentar av mickemojtheboy
-    // kommentar av Gabbi 
-    ///heeej
     
     public Tutorial1Activity() {
         Log.i(TAG, "Instantiated new " + this.getClass());
@@ -80,10 +77,12 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     public void onResume()
     {
         super.onResume();
+        //calls the helper function to bind your activity with the openCV service ( 1:version of OpenCV your using, 2:context of the app, 3:Listener Object that we want to keep track of this binding process with )
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this, mLoaderCallback);
     }
 
-    public void onDestroy() {
+    // so that we can disable the camera view widget once the activity is finished, only fore safety
+	public void onDestroy() {
         super.onDestroy();
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
@@ -122,13 +121,15 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
         return true;
     }
-
+    
+    // when the camera becomes active 
     public void onCameraViewStarted(int width, int height) {
     }
 
     public void onCameraViewStopped() {
     }
-
+    
+    // when the camera delivers a frame 
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         return inputFrame.rgba();
     }
