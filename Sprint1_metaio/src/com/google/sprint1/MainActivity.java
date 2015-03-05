@@ -13,7 +13,7 @@ import com.google.sprint1.R;
 
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
-
+//hejpådig
 public class MainActivity extends Activity {
 	// test 
 	@Override
