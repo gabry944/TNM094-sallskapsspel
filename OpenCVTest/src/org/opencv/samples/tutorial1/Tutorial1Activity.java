@@ -45,7 +45,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     public Tutorial1Activity() {
         Log.i(TAG, "Instantiated new " + this.getClass());
     }
-
+	// test
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
