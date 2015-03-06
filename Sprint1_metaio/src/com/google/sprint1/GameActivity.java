@@ -66,17 +66,18 @@ public class GameActivity extends ARViewActivity
 	@Override
 	protected void loadContents() 
 	{
-		/*try
+		try
 		{
+			MetaioDebug.log("In the Try! ");  
 			// Getting a file path for tracking configuration XML file
-			File trackingConfigFile = AssetsManager.getAssetPathAsFile(getApplicationContext(), "TutorialHelloWorld/Assets/TrackingData_MarkerlessFast.xml");
+			//File trackingConfigFile = AssetsManager.getAssetPathAsFile(getApplicationContext(), "TrackingData_MarkerlessFast.xml");
 			
 			// Assigning tracking configuration
-			boolean result = metaioSDK.setTrackingConfiguration(trackingConfigFile); 
+			boolean result = metaioSDK.setTrackingConfiguration("assets/TrackingData_MarkerlessFast.xml"); // man kan zippa filerna om man vill att apen sk ta mindre plats! :)
 			MetaioDebug.log("Tracking data loaded: " + result); 
 	        
 			// Getting a file path for a 3D geometry
-			File metaioManModel = AssetsManager.getAssetPathAsFile(getApplicationContext(), "TutorialHelloWorld/Assets/metaioman.md2");			
+			File metaioManModel = AssetsManager.getAssetPathAsFile(getApplicationContext(), "metaioman.md2");			
 			if (metaioManModel != null) 
 			{
 				// Loading 3D geometry
@@ -93,7 +94,7 @@ public class GameActivity extends ARViewActivity
 		catch (Exception e)
 		{
 			MetaioDebug.printStackTrace(Log.ERROR, e);
-		}*/
+		}
 	}
 
 
