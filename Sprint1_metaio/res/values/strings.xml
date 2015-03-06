@@ -3,10 +3,11 @@
 
     <string name="app_name">Sprint1_metaio</string>
     <string name="hello_world">Virtuellt sällskapsspel</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Spelinställningar</string>
 
     <!-- Behöver bytas varje gång vi byter app namn (app ID) -->
     <string name="metaioSDKSignature">SFfoqzgN+TONhKGN0eq9O0W2yX67KmbRKfXutYN+Yf8=</string>
     <string name="title_activity_game">GameActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
 
 </resources>

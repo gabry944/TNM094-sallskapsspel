@@ -7,25 +7,41 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#E1FFF1"
     tools:context="com.google.sprint1.MainActivity" >
+    
     
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="@string/hello_world"
         android:textColor="#19D119"
+        android:padding="10sp"
         android:layout_marginTop="-100dp"
-    	android:textSize="40pt" />
+    	android:textSize="100sp" />
     
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:textColor="#000000"
+        android:background="#B2FFB2"
         android:onClick="startGame"
-        android:text="Start Game"
-        android:textSize="30pt" />
- />
+        android:layout_centerHorizontal="true"
+        android:text="Starta spel"
+        android:textSize="60sp" />
+    
+     <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="230dp"
+        android:textColor="#000000"
+        android:background="#B2FFB2"
+        android:onClick="startSettings"
+        android:layout_centerHorizontal="true"
+        android:text="Spelinställningar"
+        android:textSize="60sp" />
 
 </RelativeLayout>

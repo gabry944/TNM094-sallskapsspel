@@ -2,8 +2,6 @@ package com.google.sprint1;
 
 import java.io.IOException;
 
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.app.Activity;
 import android.content.Intent;
@@ -27,11 +25,15 @@ public class MainActivity extends Activity {
 	/** Called when the user clicks the start Game button */
 	public void startGame(View view)
 	{
-		Intent intent = new Intent(this, GameActivity.class);
-		startActivity(intent);
+		Intent intentGame = new Intent(this, GameActivity.class);
+		startActivity(intentGame);
 	}
 
-
+	public void startSettings(View view)
+	{
+		Intent intentSettings = new Intent(this, SettingsActivity.class);
+		startActivity(intentSettings);
+	}
 	
 	
 	
