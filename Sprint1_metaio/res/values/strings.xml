@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Sprint1_metaio</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">Virtuellt sällskapsspel</string>
     <string name="action_settings">Settings</string>
 
     <!-- Behöver bytas varje gång vi byter app namn (app ID) -->
