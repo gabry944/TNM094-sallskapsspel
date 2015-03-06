@@ -22,20 +22,19 @@ public class MainActivity extends Activity {
 		//setContentView(R.layout.game_activity);
 	}
 
-	/** Called when the user clicks the start Game button */
+	/** Called when the user clicks the start Game button (starta spel) */
 	public void startGame(View view)
 	{
 		Intent intentGame = new Intent(this, GameActivity.class);
 		startActivity(intentGame);
 	}
 
+	/** Called when the user clicks the settings button (spelinställningar) */
 	public void startSettings(View view)
 	{
 		Intent intentSettings = new Intent(this, SettingsActivity.class);
 		startActivity(intentSettings);
 	}
-	
-	
 	
 	
 	
