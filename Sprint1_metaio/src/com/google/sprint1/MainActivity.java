@@ -13,7 +13,7 @@ import com.google.sprint1.R;
 
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
-//hejpådig
+
 public class MainActivity extends Activity {
 	// test 
 	@Override
@@ -41,6 +41,8 @@ public class MainActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	
 	
 	/**
 	 * This task extracts all the assets to an external or internal location
