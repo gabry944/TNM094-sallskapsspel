@@ -26,7 +26,7 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="Spelmusik"
-        android:textColor="#B2FFB2"
+        android:textColor="#8ECC8E"
         android:textSize="30sp" />
         
     <SeekBar
