@@ -4,13 +4,14 @@ import java.io.IOException;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.google.sprint1.R;
-
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
 
@@ -23,24 +24,16 @@ public class MainActivity extends Activity {
 		//setContentView(R.layout.game_activity);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+	/** Called when the user clicks the start Game button */
+	public void startGame(View view)
+	{
+		Intent intent = new Intent(this, GameActivity.class);
+		startActivity(intent);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+
+	
+	
 	
 	/**
 	 * This task extracts all the assets to an external or internal location

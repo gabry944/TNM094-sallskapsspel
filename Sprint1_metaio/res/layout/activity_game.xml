@@ -6,20 +6,11 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.google.sprint1.MainActivity" >
+    tools:context="com.google.sprint1.GameActivity" >
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world"
-    	android:textSize="40pt" />
-    
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:onClick="startGame"
-        android:text="Start Game"
-        android:textSize="30pt" />
- />
+        android:text="@string/hello_world" />
 
 </RelativeLayout>
