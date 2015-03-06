@@ -9,26 +9,25 @@
     tools:context="com.google.sprint1.SettingsActivity" >
 
     <TextView
-        android:id="@+id/textView1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:gravity="center"
-        android:padding="10sp"
-        android:text="@string/action_settings"
         android:textColor="#19D119"
-        android:textSize="100sp" />
+        android:padding="10dp"
+        android:layout_marginTop="-10dp"
+    	android:textSize="40dp" 
+        android:text="@string/action_settings" />
 
         <TextView
         android:id="@+id/textView2"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="100dp"
         android:gravity="center"
-        android:padding="200sp"
+        android:padding="10dp"
         android:text="Spelmusik"
         android:textColor="#B2FFB2"
-        android:textSize="50sp" />
+        android:textSize="30sp" />
         
     <SeekBar
         android:id="@+id/seekBar1"
