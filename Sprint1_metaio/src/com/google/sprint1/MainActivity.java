@@ -16,12 +16,11 @@ import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
 
 public class MainActivity extends Activity {
-	// test 
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		//setContentView(R.layout.game_activity);
 	}
 
 	/** Called when the user clicks the start Game button */
@@ -30,11 +29,6 @@ public class MainActivity extends Activity {
 		Intent intent = new Intent(this, GameActivity.class);
 		startActivity(intent);
 	}
-
-
-	
-	
-	
 	
 	
 	/**
