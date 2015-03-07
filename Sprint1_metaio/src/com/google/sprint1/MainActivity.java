@@ -17,17 +17,21 @@ import com.metaio.tools.io.AssetsManager;
 
 public class MainActivity extends Activity {
 
+	AssetsExtracter mTask; 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		mTask = new AssetsExtracter();
+		
 	}
 
 	/** Called when the user clicks the start Game button */
 	public void startGame(View view)
 	{
-		Intent intent = new Intent(this, GameActivity.class);
-		startActivity(intent);
+		mTask.execute(0); // Startar den assynkrona tasken assetsExtracter
+		
 	}
 	
 	
@@ -43,8 +47,9 @@ public class MainActivity extends Activity {
 			try 
 			{
 				// Extract all assets except Menu. Overwrite existing files for debug build only.
-				final String[] ignoreList = {"Menu", "webkit", "sounds", "images", "webkitsec"};
-				AssetsManager.extractAllAssets(getApplicationContext(), "", ignoreList, BuildConfig.DEBUG);
+				//final String[] ignoreList = {"Menu", "webkit", "sounds", "images", "webkitsec"};
+				//AssetsManager.extractAllAssets(getApplicationContext(), "", ignoreList, BuildConfig.DEBUG);
+				AssetsManager.extractAllAssets(getApplicationContext(), BuildConfig.DEBUG);
 			} 
 			catch (IOException e) 
 			{
@@ -54,5 +59,17 @@ public class MainActivity extends Activity {
 
 			return true;
 		}
+		
+		@Override
+		protected void onPostExecute(Boolean result)
+		{
+			if (result)
+			{
+				Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+				startActivity(intent);
+			}
+			finish();
+		}
+		
 	}
 }

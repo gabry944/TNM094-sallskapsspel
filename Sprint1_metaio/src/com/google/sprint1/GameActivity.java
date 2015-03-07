@@ -72,7 +72,7 @@ public class GameActivity extends ARViewActivity
 			File trackingConfigFile = AssetsManager.getAssetPathAsFile(getApplicationContext(), "TrackingData_MarkerlessFast.xml");
 			
 			// Assigning tracking configuration
-			boolean result = metaioSDK.setTrackingConfiguration("TrackingData_MarkerlessFast.xml"); // man kan zippa filerna om man vill att apen sk ta mindre plats! :)
+			boolean result = metaioSDK.setTrackingConfiguration(trackingConfigFile); // man kan zippa filerna om man vill att apen sk ta mindre plats! :)
 			MetaioDebug.log("Tracking data loaded: " + result); 
 	        
 			// Getting a file path for a 3D geometry
