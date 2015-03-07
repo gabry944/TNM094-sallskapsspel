@@ -39,7 +39,6 @@ import java.io.File;
 import android.util.Log;
 import android.view.View;
 
-import com.google.sprint1.R;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.sdk.jni.IGeometry;
