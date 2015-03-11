@@ -2,6 +2,7 @@ package com.google.sprint1;
 
 import java.io.IOException;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import android.app.Activity;
@@ -15,16 +16,17 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.os.AsyncTask;
+
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.sprint1.R;
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
 
+
 public class MainActivity extends Activity implements PeerListListener {
 	// test
-	AssetsExtracter mTask;
+
 	private WifiP2pManager mManager;
 	private Channel mChannel;
 	private BroadcastReceiver mReceiver;
@@ -34,7 +36,7 @@ public class MainActivity extends Activity implements PeerListListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		mTask = new AssetsExtracter();
+		
 
 		/* Wifi P2P Initialization */
 		mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
@@ -51,9 +53,11 @@ public class MainActivity extends Activity implements PeerListListener {
 
 	}
 
-	/** Called when the user clicks the start Game button (starta spel) */
-	public void startGame(View view) {
-		mTask.execute(0); // Startar den assynkrona tasken assetsExtracter
+	public void startNetwork(View view)
+	{
+		Intent intentNetwork = new Intent(this, NetworkActivity.class);
+		startActivity(intentNetwork);
+
 	}
 
 	/** Called when the user clicks the settings button (spelinställningar) */
@@ -61,6 +65,7 @@ public class MainActivity extends Activity implements PeerListListener {
 		Intent intentSettings = new Intent(this, SettingsActivity.class);
 		startActivity(intentSettings);
 	}
+
 
 	@Override
 	public void onPause() {
@@ -74,31 +79,7 @@ public class MainActivity extends Activity implements PeerListListener {
 		registerReceiver(mReceiver, mIntentFilter);
 	}
 
-	/**
-	 * This task extracts all the assets to an external or internal location to
-	 * make them accessible to Metaio SDK
-	 */
-	private class AssetsExtracter extends AsyncTask<Integer, Integer, Boolean> {
-		@Override
-		protected Boolean doInBackground(Integer... params) {
-			try {
-				// Extract all assets except Menu. Overwrite existing files for
-				// debug build only.
-				// final String[] ignoreList = {"Menu", "webkit", "sounds",
-				// "images", "webkitsec"};
-				// AssetsManager.extractAllAssets(getApplicationContext(), "",
-				// ignoreList, BuildConfig.DEBUG);
-				AssetsManager.extractAllAssets(getApplicationContext(),
-						BuildConfig.DEBUG);
-			} catch (IOException e) {
-				MetaioDebug.printStackTrace(Log.ERROR, e);
-				return false;
-			}
-
-			return true;
-		}
-
-		@Override
+		
 		protected void onPostExecute(Boolean result) {
 			if (result) {
 				Intent intent = new Intent(getApplicationContext(),
@@ -108,7 +89,7 @@ public class MainActivity extends Activity implements PeerListListener {
 			finish();
 		}
 
-	}
+	
 
 	/* onPeersAvailble is called when the BroadcastReciever finds peers */
 	public void onPeersAvailable(WifiP2pDeviceList peers) {
@@ -137,7 +118,10 @@ public class MainActivity extends Activity implements PeerListListener {
 				toast.show();
 				Log.i("WIFI", "discoverPeers failed");
 			}
+			});
 
-		});
+		}
+		
 	}
-}
+	
+
