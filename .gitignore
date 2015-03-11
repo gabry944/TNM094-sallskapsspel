@@ -16,6 +16,7 @@ gen/
 .gradle/
 build/
 OpenCV-2.4.10-android-sdk/
+Metaio SDK 6.0.2/
 .metadata/
 
 # Local configuration file (sdk path, etc)
