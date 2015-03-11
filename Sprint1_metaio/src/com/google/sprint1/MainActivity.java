@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
 		{
 			try 
 			{
-				// Extract all assets except Menu. Overwrite existing files for debug build only.
+				//Extract all assets except Menu. Overwrite existing files for debug build only.
 				//final String[] ignoreList = {"Menu", "webkit", "sounds", "images", "webkitsec"};
 				//AssetsManager.extractAllAssets(getApplicationContext(), "", ignoreList, BuildConfig.DEBUG);
 				AssetsManager.extractAllAssets(getApplicationContext(), BuildConfig.DEBUG);

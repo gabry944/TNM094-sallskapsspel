@@ -75,7 +75,9 @@ public class GameActivity extends ARViewActivity
 			MetaioDebug.log("Tracking data loaded: " + result); 
 	        
 			// Getting a file path for a 3D geometry
-			File metaioManModel = AssetsManager.getAssetPathAsFile(getApplicationContext(), "metaioman.md2");			
+			//File metaioManModel = AssetsManager.getAssetPathAsFile(getApplicationContext(), "metaioman.md2");	
+			//File metaioManModel = AssetsManager.getAssetPathAsFile(getApplicationContext(), "SH20_1.obj");
+			File metaioManModel = AssetsManager.getAssetPathAsFile(getApplicationContext(), "myra/formicaRufa.mfbx");
 			if (metaioManModel != null) 
 			{
 				// Loading 3D geometry
