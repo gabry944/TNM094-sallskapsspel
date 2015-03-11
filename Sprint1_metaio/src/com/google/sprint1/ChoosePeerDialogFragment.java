@@ -19,37 +19,37 @@ public class ChoosePeerDialogFragment extends DialogFragment {
 
 	WifiP2pDeviceList mDeviceList;
 	private List<WifiP2pDevice> peerList = new ArrayList<WifiP2pDevice>();
-	
-	static ChoosePeerDialogFragment newInstance(WifiP2pDeviceList devices) {
-	    
-		ChoosePeerDialogFragment f = new ChoosePeerDialogFragment();
-	    //Log.i("WIFI", "I newInstance");
-	    Bundle args = new Bundle();
-	    args.putParcelable("devices", devices);
-	    f.setArguments(args);
 
-	    return f;
+	static ChoosePeerDialogFragment newInstance(WifiP2pDeviceList devices) {
+
+		ChoosePeerDialogFragment f = new ChoosePeerDialogFragment();
+		// Log.i("WIFI", "I newInstance");
+		Bundle args = new Bundle();
+		args.putParcelable("devices", devices);
+		f.setArguments(args);
+
+		return f;
 	}
-	
 
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		
+
 		mDeviceList = getArguments().getParcelable("devices");
-		
+
 		peerList = new ArrayList(mDeviceList.getDeviceList());
-		ArrayAdapter<WifiP2pDevice> adapter = new ArrayAdapter<WifiP2pDevice>(getActivity(), android.R.layout.select_dialog_multichoice);
+		ArrayAdapter<WifiP2pDevice> adapter = new ArrayAdapter<WifiP2pDevice>(
+				getActivity(), android.R.layout.select_dialog_multichoice);
 		adapter.addAll(peerList);
 		Log.i("WIFI", "booom!");
-		
-        // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Found following peers:");
-        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
 
-            }
-        });
-        // Create the AlertDialog object and return it
-        return builder.create();
-    }
+		// Use the Builder class for convenient dialog construction
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle("Found following peers:");
+		builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int item) {
+
+			}
+		});
+		// Create the AlertDialog object and return it
+		return builder.create();
+	}
 }

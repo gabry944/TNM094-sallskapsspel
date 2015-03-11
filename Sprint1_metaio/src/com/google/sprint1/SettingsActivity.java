@@ -11,7 +11,4 @@ public class SettingsActivity extends Activity {
 		setContentView(R.layout.activity_settings);
 	}
 
-
-
-
 }
