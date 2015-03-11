@@ -23,10 +23,7 @@ import com.google.sprint1.R;
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
 
-
 public class MainActivity extends Activity implements PeerListListener {
-	// test
-	//test2
 
 	private WifiP2pManager mManager;
 	private Channel mChannel;
@@ -37,7 +34,6 @@ public class MainActivity extends Activity implements PeerListListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
 
 		/* Wifi P2P Initialization */
 		mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
@@ -54,8 +50,7 @@ public class MainActivity extends Activity implements PeerListListener {
 
 	}
 
-	public void startNetwork(View view)
-	{
+	public void startNetwork(View view) {
 		Intent intentNetwork = new Intent(this, NetworkActivity.class);
 		startActivity(intentNetwork);
 
@@ -66,7 +61,6 @@ public class MainActivity extends Activity implements PeerListListener {
 		Intent intentSettings = new Intent(this, SettingsActivity.class);
 		startActivity(intentSettings);
 	}
-
 
 	@Override
 	public void onPause() {
@@ -80,22 +74,17 @@ public class MainActivity extends Activity implements PeerListListener {
 		registerReceiver(mReceiver, mIntentFilter);
 	}
 
-		
-		protected void onPostExecute(Boolean result) {
-			if (result) {
-				Intent intent = new Intent(getApplicationContext(),
-						GameActivity.class);
-				startActivity(intent);
-			}
-			finish();
+	protected void onPostExecute(Boolean result) {
+		if (result) {
+			Intent intent = new Intent(getApplicationContext(),
+					GameActivity.class);
+			startActivity(intent);
 		}
-
-	
+		finish();
+	}
 
 	/* onPeersAvailble is called when the BroadcastReciever finds peers */
 	public void onPeersAvailable(WifiP2pDeviceList peers) {
-
-		// Log.i("WIFI", peers.toString());
 
 		DialogFragment alert = ChoosePeerDialogFragment.newInstance(peers);
 		alert.show(getFragmentManager(), "Peers");
@@ -119,10 +108,8 @@ public class MainActivity extends Activity implements PeerListListener {
 				toast.show();
 				Log.i("WIFI", "discoverPeers failed");
 			}
-			});
+		});
 
-		}
-		
 	}
-	
 
+}
