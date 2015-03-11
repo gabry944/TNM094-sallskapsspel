@@ -2,10 +2,12 @@ package com.google.sprint1;
 
 import java.io.IOException;
 
+import android.util.Log;
 import android.view.View;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
 import com.google.sprint1.R;
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
@@ -31,5 +33,4 @@ public class MainActivity extends Activity {
 		Intent intentSettings = new Intent(this, SettingsActivity.class);
 		startActivity(intentSettings);
 	}
-	
 }

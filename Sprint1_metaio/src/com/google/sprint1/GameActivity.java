@@ -1,37 +1,3 @@
-/*package com.google.sprint1;
-
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-
-public class GameActivity extends Activity {
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_game);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.game, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-}*/
 package com.google.sprint1;
 
 import java.io.File;
@@ -75,7 +41,9 @@ public class GameActivity extends ARViewActivity
 			MetaioDebug.log("Tracking data loaded: " + result); 
 	        
 			// Getting a file path for a 3D geometry
-			File metaioManModel = AssetsManager.getAssetPathAsFile(getApplicationContext(), "metaioman.md2");			
+			//File metaioManModel = AssetsManager.getAssetPathAsFile(getApplicationContext(), "metaioman.md2");	
+			//File metaioManModel = AssetsManager.getAssetPathAsFile(getApplicationContext(), "SH20_1.obj");
+			File metaioManModel = AssetsManager.getAssetPathAsFile(getApplicationContext(), "myra/formicaRufa.mfbx");
 			if (metaioManModel != null) 
 			{
 				// Loading 3D geometry
