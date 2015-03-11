@@ -26,6 +26,7 @@ import com.metaio.tools.io.AssetsManager;
 
 public class MainActivity extends Activity implements PeerListListener {
 	// test
+	//test2
 
 	private WifiP2pManager mManager;
 	private Channel mChannel;
