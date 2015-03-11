@@ -30,7 +30,7 @@
         android:background="#B2FFB2"
         android:onClick="startNetwork"
         android:layout_centerHorizontal="true"
-        android:text="Starta spel"
+        android:text="@string/startaSpel"
         android:textSize="30dp" />
     
      <Button
@@ -41,7 +41,7 @@
         android:background="#B2FFB2"
         android:onClick="startSettings"
         android:layout_centerHorizontal="true"
-        android:text="Spelinställningar"
+        android:text="@string/action_settings"
         android:textSize="30dp" />
 
 </RelativeLayout>

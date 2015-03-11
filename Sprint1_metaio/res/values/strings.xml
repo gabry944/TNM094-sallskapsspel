@@ -11,5 +11,7 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="title_activity_network">NetworkActivity</string>
     <string name="network">Hitta andra spelare</string>
+    <string name="startaSpel">Starta spel</string>
+    <string name="Huvudmeny">Huvudmeny</string>
 
 </resources>

@@ -14,11 +14,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+// Activity to handle the screen between mainmenu and the gamescreen, 
+// where players should connect to each other before entering gamemode. 
 public class NetworkActivity extends Activity {
 
 	AssetsExtracter mTask; 
 	
-	@Override
+	//function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_network);
@@ -28,8 +30,16 @@ public class NetworkActivity extends Activity {
 	/** Called when the user clicks the start Game button (starta spel) */
 	public void startGame(View view)
 	{
-		mTask.execute(0); // Startar den assynkrona tasken assetsExtracter		
+		mTask.execute(0); // Starts the assetsExtracter function
 	}
+	
+	/** Called when the user clicks the mainMenu button (huvudmeny) */
+	public void mainMenu(View view)
+	{
+		Intent intentmenu = new Intent(this, MainActivity.class);
+		startActivity(intentmenu);
+	}
+
 
 	 // This task extracts all the assets to an external or internal location
 	 // to make them accessible to Metaio SDK
