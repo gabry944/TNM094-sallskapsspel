@@ -14,21 +14,18 @@ import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
 
 public class MainActivity extends Activity {
-
-	AssetsExtracter mTask; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		mTask = new AssetsExtracter();
-		
+		setContentView(R.layout.activity_main);	
 	}
-
+	
 	/** Called when the user clicks the start Game button (starta spel) */
-	public void startGame(View view)
+	public void startNetwork(View view)
 	{
-		mTask.execute(0); // Startar den assynkrona tasken assetsExtracter		
+		Intent intentNetwork = new Intent(this, NetworkActivity.class);
+		startActivity(intentNetwork);
 	}
 
 	/** Called when the user clicks the settings button (spelinställningar) */
@@ -38,43 +35,4 @@ public class MainActivity extends Activity {
 		startActivity(intentSettings);
 	}
 	
-	
-	
-	/**
-	 * This task extracts all the assets to an external or internal location
-	 * to make them accessible to Metaio SDK
-	 */
-	private class AssetsExtracter extends AsyncTask<Integer, Integer, Boolean>
-	{		
-		@Override
-		protected Boolean doInBackground(Integer... params) 
-		{
-			try 
-			{
-				// Extract all assets except Menu. Overwrite existing files for debug build only.
-				//final String[] ignoreList = {"Menu", "webkit", "sounds", "images", "webkitsec"};
-				//AssetsManager.extractAllAssets(getApplicationContext(), "", ignoreList, BuildConfig.DEBUG);
-				AssetsManager.extractAllAssets(getApplicationContext(), BuildConfig.DEBUG);
-			} 
-			catch (IOException e) 
-			{
-				MetaioDebug.printStackTrace(Log.ERROR, e);
-				return false;
-			}
-
-			return true;
-		}
-		
-		@Override
-		protected void onPostExecute(Boolean result)
-		{
-			if (result)
-			{
-				Intent intent = new Intent(getApplicationContext(), GameActivity.class);
-				startActivity(intent);
-			}
-			finish();
-		}
-		
-	}
 }
