@@ -82,7 +82,7 @@ public class GameActivity extends ARViewActivity {
 					// Set geometry properties
 
 					antGeometry.setScale(20f);
-					antGeometry.setTranslation(new Vector3d(0.0f, 100.0f, 0.0f), true);
+					//antGeometry.setTranslation(new Vector3d(-200.0f, 100.0f, 0.0f), true);
 					antGeometry.setRotation(new Rotation((float) (3*Math.PI/2), 0f, 0f), true);
 				} else{
 
@@ -109,15 +109,17 @@ public class GameActivity extends ARViewActivity {
 		if (antGeometry == null)
 			return;
 		
-		final double time = System.currentTimeMillis() / 1000.0;
+		final double time = System.nanoTime();
 		//final Vector3d lightPos = new Vector3d(
 		//		200.0f * (float)Math.cos(time),
 		//		120.0f * (float)Math.sin(0.25f*time),
 		//		200.0f * (float)Math.sin(time));
 		
-		//sphereGeometry.setTranslation(new Vector3d(10.0f * (float)time, 0.0f, 0.0f), true);
-		
+		sphereGeometry.setTranslation(new Vector3d(0.0001f * (float)time, 0.0f, 0.0f), true);
+		sphereGeometry.setRotation(new Rotation(10.0f * (float)time, 0.0f, 0.0f), true);
 		//.setTranslation(new Vector3d(-200.0f * dir.getX() / norm, -200.0f * dir.getY() / norm, -200.0f * dir.getZ() / norm));
+		
+		antGeometry.setRotation(new Rotation(0.0f, 0.0f ,0.1f),true);
 		
 		return;
 	}
