@@ -3,6 +3,7 @@ package com.google.sprint1;
 import java.io.File;
 
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.metaio.sdk.ARViewActivity;
@@ -114,18 +115,43 @@ public class GameActivity extends ARViewActivity {
 		//		200.0f * (float)Math.cos(time),
 		//		120.0f * (float)Math.sin(0.25f*time),
 		//		200.0f * (float)Math.sin(time));
+
 		
-		sphereGeometry.setTranslation(new Vector3d(0.0001f * (float)time, 0.0f, 0.0f), true);
 		sphereGeometry.setRotation(new Rotation(10.0f * (float)time, 0.0f, 0.0f), true);
 		//.setTranslation(new Vector3d(-200.0f * dir.getX() / norm, -200.0f * dir.getY() / norm, -200.0f * dir.getZ() / norm));
 		
 		antGeometry.setRotation(new Rotation(0.0f, 0.0f ,0.1f),true);
 		
+		onTouchEvent(null);
+		
+		
 		return;
 	}
 	/** Not used at the moment*/
 	@Override
-	protected void onGeometryTouched(IGeometry geometry) {
+	protected void onGeometryTouched(IGeometry geometry) 
+	{
+		
+	}
+	
+	public boolean onTouchEvent(MotionEvent event) 
+	{
+		int eventaction = event.getAction();
+		
+		switch(eventaction)
+		{
+		case MotionEvent.ACTION_DOWN:
+			antGeometry.setTranslation(new Vector3d(10.0f, 0.0f, 0.0f), true);
+			break;
+			
+		case MotionEvent.ACTION_MOVE:
+			antGeometry.setTranslation(new Vector3d(10.0f, 0.0f, 0.0f), true);
+			
+		case MotionEvent.ACTION_UP:
+			antGeometry.setTranslation(new Vector3d(0f,0f,0f), true);
+		}
+		
+		return true;
 	}
 
 	/** Not used at the moment*/
