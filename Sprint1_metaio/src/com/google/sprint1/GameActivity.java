@@ -9,10 +9,34 @@ import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
+import com.metaio.sdk.jni.Vector3d;
 import com.metaio.tools.io.AssetsManager;
 
 public class GameActivity extends ARViewActivity {
 
+	/*Variabler för objekten i spelet*/
+	private IGeometry antGeometry;
+	private IGeometry sphereGeometry;
+	
+	/** create a sphere */
+	private IGeometry createSphereGeometry()
+	{
+		final File modelPath = AssetsManager.getAssetPathAsFile(getApplicationContext(), "sphere/sphere_10mm.obj");
+		if (modelPath != null)
+		{
+			IGeometry model = metaioSDK.createGeometry(modelPath);
+			if (model != null)
+				return model;
+			else
+				MetaioDebug.log(Log.ERROR, "Error loading geometry: " + modelPath);
+		}
+		else
+			MetaioDebug.log(Log.ERROR, "Could not find 3D model to use as light indicator");
+
+		return null;
+	}
+	
+	
 	/** Attaching layout to the activity */
 	@Override
 	protected int getGUILayout() {
@@ -41,26 +65,53 @@ public class GameActivity extends ARViewActivity {
 			MetaioDebug.log("Tracking data loaded: " + result);
 			
 			
-			/** Load Objects */
+			/** Load Object */
 			// Getting a file path for a 3D geometry
-			File antModel = AssetsManager.getAssetPathAsFile(
-					getApplicationContext(), "myra/formicaRufa.mfbx");
-			if (antModel != null) {
+			File antModelFile = AssetsManager.getAssetPathAsFile(
+					getApplicationContext(), "ant/formicaRufa.mfbx");
+			if (antModelFile != null) {
 				// Loading 3D geometry
-				IGeometry geometry = metaioSDK.createGeometry(antModel);
-				if (geometry != null) {
+				antGeometry = metaioSDK.createGeometry(antModelFile);
+				if (antGeometry != null) {
 					// Set geometry properties
-					geometry.setScale(10f);
-				} else
+					antGeometry.setScale(20f);
+					antGeometry.setTranslation(new Vector3d(0.0f, 100.0f, 0.0f), true);
+				} else{
 					MetaioDebug.log(Log.ERROR, "Error loading geometry: "
-							+ antModel);
+							+ antModelFile);
+				}
 			}
+			sphereGeometry = createSphereGeometry();
+			sphereGeometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
+			//sphereGeometry.setCoordinateSystemID(sphereGeometry.getCoordinateSystemID());			
 			
 		} catch (Exception e) {
 			MetaioDebug.printStackTrace(Log.ERROR, e);
 		}
 	}
+	
+	/** Render Loop */
+	@Override
+	public void onDrawFrame()
+	{
+		super.onDrawFrame();
 
+		// If content not loaded yet, do nothing
+		if (antGeometry == null)
+			return;
+		
+		final double time = System.currentTimeMillis() / 1000.0;
+		//final Vector3d lightPos = new Vector3d(
+		//		200.0f * (float)Math.cos(time),
+		//		120.0f * (float)Math.sin(0.25f*time),
+		//		200.0f * (float)Math.sin(time));
+		
+		//sphereGeometry.setTranslation(new Vector3d(10.0f * (float)time, 0.0f, 0.0f), true);
+		
+		//.setTranslation(new Vector3d(-200.0f * dir.getX() / norm, -200.0f * dir.getY() / norm, -200.0f * dir.getZ() / norm));
+		
+		return;
+	}
 	/** Not used at the moment*/
 	@Override
 	protected void onGeometryTouched(IGeometry geometry) {
