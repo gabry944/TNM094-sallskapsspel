@@ -13,54 +13,49 @@ import com.metaio.tools.io.AssetsManager;
 
 public class GameActivity extends ARViewActivity {
 
+	/** Attaching layout to the activity */
 	@Override
 	protected int getGUILayout() {
-		// Attaching layout to the activity
 		return R.layout.activity_game;
 	}
 
-	public void onButtonClick(View v) {
+	/** Called when the user clicks the Exist button (krysset) */
+	public void onExitButtonClick(View v) {
 		finish();
 	}
 
+	/** Loads the marker and the 3D-models to the game */
 	@Override
 	protected void loadContents() {
 		try {
+			/** Load Marker */
 			// Getting a file path for tracking configuration XML file
 			File trackingConfigFile = AssetsManager.getAssetPathAsFile(
 					getApplicationContext(), "TrackingData_MarkerlessFast.xml");
-
+			// man kan zippa filerna om man vill att appen ska ta mindre plats! :) 
+			
 			// Assigning tracking configuration
 			boolean result = metaioSDK
-					.setTrackingConfiguration(trackingConfigFile); // man kan
-																	// zippa
-																	// filerna
-																	// om man
-																	// vill att
-																	// apen sk
-																	// ta mindre
-																	// plats! :)
+					.setTrackingConfiguration(trackingConfigFile); 
+			
 			MetaioDebug.log("Tracking data loaded: " + result);
-
+			
+			
+			/** Load Objects */
 			// Getting a file path for a 3D geometry
-			// File metaioManModel =
-			// AssetsManager.getAssetPathAsFile(getApplicationContext(),
-			// "metaioman.md2");
-			// File metaioManModel =
-			// AssetsManager.getAssetPathAsFile(getApplicationContext(),
-			// "SH20_1.obj");
-			File metaioManModel = AssetsManager.getAssetPathAsFile(
+			File antModel = AssetsManager.getAssetPathAsFile(
 					getApplicationContext(), "myra/formicaRufa.mfbx");
-			if (metaioManModel != null) {
+			if (antModel != null) {
 				// Loading 3D geometry
-				IGeometry geometry = metaioSDK.createGeometry(metaioManModel);
+				IGeometry geometry = metaioSDK.createGeometry(antModel);
 				if (geometry != null) {
 					// Set geometry properties
-					geometry.setScale(4f);
+					geometry.setScale(10f);
 				} else
 					MetaioDebug.log(Log.ERROR, "Error loading geometry: "
-							+ metaioManModel);
+							+ antModel);
 			}
+			
 		} catch (Exception e) {
 			MetaioDebug.printStackTrace(Log.ERROR, e);
 		}
@@ -68,12 +63,12 @@ public class GameActivity extends ARViewActivity {
 
 	@Override
 	protected void onGeometryTouched(IGeometry geometry) {
-		// Not used in this tutorial
+		// Not used 
 	}
 
 	@Override
 	protected IMetaioSDKCallback getMetaioSDKCallbackHandler() {
-		// No callbacks needed in this tutorial
+		// No callbacks needed 
 		return null;
 	}
 }
