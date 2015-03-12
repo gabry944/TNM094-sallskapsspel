@@ -9,13 +9,24 @@ import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
+import com.metaio.sdk.jni.Rotation;
+import com.metaio.sdk.jni.Vector3d;
 import com.metaio.tools.io.AssetsManager;
 /**
  * GameActivity to handle the game
  *
  */
 public class GameActivity extends ARViewActivity {
-
+	
+	//Vector3d vec = new Vector3d(0f, 90f, 0f);
+//	Rotation geometryRot = new Rotation(vec);
+	
+	float[] rotMat = {1.0f, 0.0f, 0.0f,
+			  0.0f, 1.0f, 1.0f,
+			  0.0f, 0.0f, 1.0f};
+	
+//	geometryRot.setFromRotationMatrix(rotMat);
+	
 	/** Attaching layout to the activity */
 	@Override
 	protected int getGUILayout() {
@@ -54,6 +65,9 @@ public class GameActivity extends ARViewActivity {
 				if (geometry != null) {
 					// Set geometry properties
 					geometry.setScale(10f);
+					geometry.setRotation(new Rotation((float) (3*Math.PI/2), 0f, 0f), true);
+					//geometry.setTranslation(new Vector3d(100f, 23f, 0f), true);
+					
 				} else
 					MetaioDebug.log(Log.ERROR, "Error loading geometry: "
 							+ antModel);
