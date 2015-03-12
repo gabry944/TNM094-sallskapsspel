@@ -10,7 +10,10 @@ import com.metaio.sdk.MetaioDebug;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
 import com.metaio.tools.io.AssetsManager;
-
+/**
+ * GameActivity to handle the game
+ *
+ */
 public class GameActivity extends ARViewActivity {
 
 	@Override
@@ -68,7 +71,7 @@ public class GameActivity extends ARViewActivity {
 
 	@Override
 	protected void onGeometryTouched(IGeometry geometry) {
-		// Not used in this tutorial
+		
 	}
 
 	@Override

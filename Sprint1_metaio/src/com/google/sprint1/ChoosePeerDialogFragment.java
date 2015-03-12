@@ -9,11 +9,9 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
+import android.os.Bundle;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 public class ChoosePeerDialogFragment extends DialogFragment {
 
