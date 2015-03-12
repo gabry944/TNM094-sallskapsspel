@@ -18,13 +18,16 @@ import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-// Activity to handle the screen between mainmenu and the gamescreen, 
-// where players should connect to each other before entering gamemode. 
+/** Activity to handle the screen between mainmenu and the gamescreen
+ *  
+* where players should connect to each other before entering gamemode.
+* 
+*  
+ */
+
 public class NetworkActivity extends Activity implements PeerListListener {
 
 	private AssetsExtracter startGame;		// a variable used to start the AssetExtraxter class 
@@ -68,9 +71,11 @@ public class NetworkActivity extends Activity implements PeerListListener {
 		startActivity(intentmenu);
 	}
 
-	
+
 	/** This task extracts all the assets to an external or internal location
-	 to make them accessible to Metaio SDK */
+	* to make them accessible to Metaio SDK. */
+
+
 	private class AssetsExtracter extends AsyncTask<Integer, Integer, Boolean> {
 		/** Extract all assets to make them accessible to Metaio SDK */
 		@Override

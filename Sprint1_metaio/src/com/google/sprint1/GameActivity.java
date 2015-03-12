@@ -11,7 +11,10 @@ import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
 import com.metaio.sdk.jni.Vector3d;
 import com.metaio.tools.io.AssetsManager;
-
+/**
+ * GameActivity to handle the game
+ *
+ */
 public class GameActivity extends ARViewActivity {
 
 	/*Variabler för objekten i spelet*/
@@ -115,7 +118,6 @@ public class GameActivity extends ARViewActivity {
 	/** Not used at the moment*/
 	@Override
 	protected void onGeometryTouched(IGeometry geometry) {
-		// Not used 
 	}
 
 	/** Not used at the moment*/
