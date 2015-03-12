@@ -61,11 +61,13 @@ public class GameActivity extends ARViewActivity {
 		}
 	}
 
+	/** Not used at the moment*/
 	@Override
 	protected void onGeometryTouched(IGeometry geometry) {
 		// Not used 
 	}
 
+	/** Not used at the moment*/
 	@Override
 	protected IMetaioSDKCallback getMetaioSDKCallbackHandler() {
 		// No callbacks needed 

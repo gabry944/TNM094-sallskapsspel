@@ -33,6 +33,7 @@ public class MainActivity extends Activity {
 
 	}
 
+	/** Called when the user clicks the start game button (starta spel) */
 	public void startNetwork(View view) {
 		Intent intentNetwork = new Intent(this, NetworkActivity.class);
 		startActivity(intentNetwork);
@@ -44,16 +45,4 @@ public class MainActivity extends Activity {
 		Intent intentSettings = new Intent(this, SettingsActivity.class);
 		startActivity(intentSettings);
 	}
-
-	protected void onPostExecute(Boolean result) {
-		if (result) {
-			Intent intent = new Intent(getApplicationContext(),
-					GameActivity.class);
-			startActivity(intent);
-		}
-		finish();
-	}
-
-	
-
 }
