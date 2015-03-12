@@ -3,6 +3,7 @@ package com.google.sprint1;
 import java.io.File;
 
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.metaio.sdk.ARViewActivity;
@@ -111,8 +112,7 @@ public class GameActivity extends ARViewActivity {
 		// If content not loaded yet, do nothing
 		if (antGeometry == null)
 			return;
-		
-		
+				
 		Vector3d SpherePossition = sphereGeometry.getTranslation();
 		if (SpherePossition.getX() >= 300)
 		{
@@ -128,12 +128,36 @@ public class GameActivity extends ARViewActivity {
 		// add rotation relative current angel 
 		antGeometry.setRotation(new Rotation(0.0f, 0.0f ,0.1f),true);
 		
+		onTouchEvent(null);
+
 		
 		return;
 	}
 	/** Not used at the moment*/
 	@Override
-	protected void onGeometryTouched(IGeometry geometry) {
+	protected void onGeometryTouched(IGeometry geometry) 
+	{
+		
+	}
+	
+	public boolean onTouchEvent(MotionEvent event) 
+	{
+		int eventaction = event.getAction();
+		
+		switch(eventaction)
+		{
+		case MotionEvent.ACTION_DOWN:
+			antGeometry.setTranslation(new Vector3d(10.0f, 0.0f, 0.0f), true);
+			break;
+			
+		case MotionEvent.ACTION_MOVE:
+			antGeometry.setTranslation(new Vector3d(10.0f, 0.0f, 0.0f), true);
+			
+		case MotionEvent.ACTION_UP:
+			antGeometry.setTranslation(new Vector3d(0f,0f,0f), true);
+		}
+		
+		return true;
 	}
 
 	/** Not used at the moment*/
