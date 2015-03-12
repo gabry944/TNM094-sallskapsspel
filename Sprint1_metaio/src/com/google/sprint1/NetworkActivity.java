@@ -26,28 +26,31 @@ import android.widget.Toast;
 * where players should connect to each other before entering gamemode.
 * 
 *  
-*  */
+ */
 
 public class NetworkActivity extends Activity implements PeerListListener {
 
-	AssetsExtracter mTask;
-	private WifiP2pManager mManager;
-	private Channel mChannel;
-	private BroadcastReceiver mReceiver;
-	private IntentFilter mIntentFilter;
+	private AssetsExtracter startGame;		// a variable used to start the AssetExtraxter class 
+	private WifiP2pManager mManager;		//! vad gör denna?
+	private Channel mChannel;				//! vad gör denna?
+	private BroadcastReceiver mReceiver;	//! vad gör denna?
+	private IntentFilter mIntentFilter;		//! vad gör denna?
 
 	// function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_network);
-		mTask = new AssetsExtracter();
+		
+		/*Start game*/
+		startGame = new AssetsExtracter();  
 		
 		/* Wifi P2P Initialization */
-		mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-		mChannel = mManager.initialize(this, getMainLooper(), null);
+		mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE); 
+		mChannel = mManager.initialize(this, getMainLooper(), null);			
 		mReceiver = new WifiDirectBroadcastReceiver(mManager, mChannel, this);
 
-		mIntentFilter = new IntentFilter();
+		//! vad händer här?
+		mIntentFilter = new IntentFilter();//! vad är intentFilter?
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
 		mIntentFilter
@@ -58,7 +61,8 @@ public class NetworkActivity extends Activity implements PeerListListener {
 
 	/** Called when the user clicks the start Game button (starta spel) */
 	public void startGame(View view) {
-		mTask.execute(0); // Starts the assetsExtracter function
+		// in order to start the game we need to extract our assets to the metaio SDK
+		startGame.execute(0); // Starts the assetsExtracter class
 	}
 
 	/** Called when the user clicks the mainMenu button (huvudmeny) */
@@ -67,21 +71,24 @@ public class NetworkActivity extends Activity implements PeerListListener {
 		startActivity(intentmenu);
 	}
 
+
 	/** This task extracts all the assets to an external or internal location
 	* to make them accessible to Metaio SDK. */
 
+
 	private class AssetsExtracter extends AsyncTask<Integer, Integer, Boolean> {
+		/** Extract all assets to make them accessible to Metaio SDK */
 		@Override
 		protected Boolean doInBackground(Integer... params) {
 			try {
 				// Extract all assets except Menu. Overwrite existing files for
 				// debug build only.
-				// final String[] ignoreList = {"Menu", "webkit", "sounds",
-				// "images", "webkitsec"};
-				// AssetsManager.extractAllAssets(getApplicationContext(), "",
-				// ignoreList, BuildConfig.DEBUG);
-				AssetsManager.extractAllAssets(getApplicationContext(),
-						BuildConfig.DEBUG);
+				 final String[] ignoreList = {"Menu", "webkit", "sounds",
+				 "images", "webkitsec"};
+				 AssetsManager.extractAllAssets(getApplicationContext(), "",
+				 ignoreList, BuildConfig.DEBUG);
+				//AssetsManager.extractAllAssets(getApplicationContext(),
+				//		BuildConfig.DEBUG);
 			} catch (IOException e) {
 				MetaioDebug.printStackTrace(Log.ERROR, e);
 				return false;
@@ -89,7 +96,7 @@ public class NetworkActivity extends Activity implements PeerListListener {
 
 			return true;
 		}
-
+		/** when extraction is done, we load the game activity*/
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if (result) {
@@ -122,6 +129,7 @@ public class NetworkActivity extends Activity implements PeerListListener {
 
 	}
 
+	/** Called when the user clicks the check for peer button */
 	public void checkForPeers(View view) {
 		mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
 			@Override

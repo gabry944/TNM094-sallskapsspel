@@ -17,8 +17,11 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 	}
+
 	
 	/**Called when the user clicks the settings button ( Starta spel ) */
+
+
 	public void startNetwork(View view) {
 		Intent intentNetwork = new Intent(this, NetworkActivity.class);
 		startActivity(intentNetwork);
@@ -28,6 +31,7 @@ public class MainActivity extends Activity {
 	public void startSettings(View view) {
 		Intent intentSettings = new Intent(this, SettingsActivity.class);
 		startActivity(intentSettings);
-	}	
+
+	}
 
 }
