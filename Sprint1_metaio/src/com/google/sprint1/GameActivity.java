@@ -9,6 +9,7 @@ import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
+import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
 import com.metaio.tools.io.AssetsManager;
 /**
@@ -16,6 +17,7 @@ import com.metaio.tools.io.AssetsManager;
  *
  */
 public class GameActivity extends ARViewActivity {
+
 
 	/*Variabler för objekten i spelet*/
 	private IGeometry antGeometry;
@@ -39,6 +41,7 @@ public class GameActivity extends ARViewActivity {
 		return null;
 	}
 	
+
 	
 	/** Attaching layout to the activity */
 	@Override
@@ -77,9 +80,12 @@ public class GameActivity extends ARViewActivity {
 				antGeometry = metaioSDK.createGeometry(antModelFile);
 				if (antGeometry != null) {
 					// Set geometry properties
+
 					antGeometry.setScale(20f);
 					antGeometry.setTranslation(new Vector3d(0.0f, 100.0f, 0.0f), true);
+					antGeometry.setRotation(new Rotation((float) (3*Math.PI/2), 0f, 0f), true);
 				} else{
+
 					MetaioDebug.log(Log.ERROR, "Error loading geometry: "
 							+ antModelFile);
 				}
