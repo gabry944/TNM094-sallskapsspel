@@ -24,6 +24,9 @@ public class GameActivity extends ARViewActivity {
 	private IGeometry antGeometry;
 	private IGeometry sphereGeometry;
 	
+	/*delkaration av variabler som används i renderingsloopen*/
+	float SphereMoveX = 2f;
+	
 	/** create a sphere */
 	private IGeometry createSphereGeometry()
 	{
@@ -109,21 +112,24 @@ public class GameActivity extends ARViewActivity {
 		// If content not loaded yet, do nothing
 		if (antGeometry == null)
 			return;
+				
+		Vector3d SpherePossition = sphereGeometry.getTranslation();
+		if (SpherePossition.getX() >= 300)
+		{
+			SphereMoveX = -2f;
+		}
+		else if  (SpherePossition.getX() <= -300)
+		{
+			SphereMoveX = 2f;
+		}
+		// add translation relative current possition 
+		sphereGeometry.setTranslation(new Vector3d(SphereMoveX , 0.0f, 0.0f), true);
 		
-		final double time = System.nanoTime();
-		//final Vector3d lightPos = new Vector3d(
-		//		200.0f * (float)Math.cos(time),
-		//		120.0f * (float)Math.sin(0.25f*time),
-		//		200.0f * (float)Math.sin(time));
-
-		
-		sphereGeometry.setRotation(new Rotation(10.0f * (float)time, 0.0f, 0.0f), true);
-		//.setTranslation(new Vector3d(-200.0f * dir.getX() / norm, -200.0f * dir.getY() / norm, -200.0f * dir.getZ() / norm));
-		
+		// add rotation relative current angel 
 		antGeometry.setRotation(new Rotation(0.0f, 0.0f ,0.1f),true);
 		
 		onTouchEvent(null);
-		
+
 		
 		return;
 	}
