@@ -5,6 +5,8 @@ import java.io.File;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.MetaioDebug;
@@ -50,10 +52,12 @@ public class GameActivity extends ARViewActivity {
 	/** Attaching layout to the activity */
 	@Override
 	protected int getGUILayout() {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		return R.layout.activity_game;
 	}
 
-	/** Called when the user clicks the Exist button (krysset) */
+	/** Called when the user clicks the Exit button (krysset) */
 	public void onExitButtonClick(View v) {
 		finish();
 	}
@@ -113,16 +117,16 @@ public class GameActivity extends ARViewActivity {
 		if (antGeometry == null)
 			return;
 				
-		Vector3d SpherePossition = sphereGeometry.getTranslation();
-		if (SpherePossition.getX() >= 300)
+		Vector3d SpherePosition = sphereGeometry.getTranslation();
+		if (SpherePosition.getX() >= 300)
 		{
 			SphereMoveX = -2f;
 		}
-		else if  (SpherePossition.getX() <= -300)
+		else if  (SpherePosition.getX() <= -300)
 		{
 			SphereMoveX = 2f;
 		}
-		// add translation relative current possition 
+		// add translation relative current position 
 		sphereGeometry.setTranslation(new Vector3d(SphereMoveX , 0.0f, 0.0f), true);
 		
 		// add rotation relative current angel 
@@ -133,6 +137,7 @@ public class GameActivity extends ARViewActivity {
 		
 		return;
 	}
+	
 	/** Not used at the moment*/
 	@Override
 	protected void onGeometryTouched(IGeometry geometry) 
@@ -148,11 +153,11 @@ public class GameActivity extends ARViewActivity {
 		switch(eventaction)
 		{
 		case MotionEvent.ACTION_DOWN:
-			antGeometry.setTranslation(new Vector3d(10.0f, 0.0f, 0.0f), true);
+			antGeometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
 			break;
 			
 		case MotionEvent.ACTION_MOVE:
-			antGeometry.setTranslation(new Vector3d(10.0f, 0.0f, 0.0f), true);
+			antGeometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
 			
 		case MotionEvent.ACTION_UP:
 			antGeometry.setTranslation(new Vector3d(0f,0f,0f), true);
