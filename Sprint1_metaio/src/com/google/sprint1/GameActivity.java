@@ -19,8 +19,8 @@ import com.metaio.tools.io.AssetsManager;
  * GameActivity to handle the game
  *
  */
-public class GameActivity extends ARViewActivity {
-
+public class GameActivity extends ARViewActivity
+{
 
 	/*Variabler för objekten i spelet*/
 	private IGeometry antGeometry;
@@ -64,8 +64,10 @@ public class GameActivity extends ARViewActivity {
 
 	/** Loads the marker and the 3D-models to the game */
 	@Override
-	protected void loadContents() {
-		try {
+	protected void loadContents()
+	{
+		try 
+		{
 			/** Load Marker */
 			// Getting a file path for tracking configuration XML file
 			File trackingConfigFile = AssetsManager.getAssetPathAsFile(
@@ -83,28 +85,42 @@ public class GameActivity extends ARViewActivity {
 			// Getting a file path for a 3D geometry
 			File antModelFile = AssetsManager.getAssetPathAsFile(
 					getApplicationContext(), "ant/formicaRufa.mfbx");
+			
+			// First check if model is found ->Load and create 3D geometry ->check if model was loaded successfully
 			if (antModelFile != null) {
-				// Loading 3D geometry
 				antGeometry = metaioSDK.createGeometry(antModelFile);
-				if (antGeometry != null) {
+				if (antGeometry != null)
+				{	
 					// Set geometry properties
-
-					antGeometry.setScale(20f);
-					//antGeometry.setTranslation(new Vector3d(-200.0f, 100.0f, 0.0f), true);
-					antGeometry.setRotation(new Rotation((float) (3*Math.PI/2), 0f, 0f), true);
-				} else{
-
-					MetaioDebug.log(Log.ERROR, "Error loading geometry: "
-							+ antModelFile);
+					geometryProperties(antGeometry, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation((float) (3*Math.PI/2), 0f, 0f) );
+				}
+				else
+				{
+					MetaioDebug.log(Log.ERROR, "Error loading geometry: " + antModelFile);
 				}
 			}
+			
+			//create a sphere Geometry
 			sphereGeometry = createSphereGeometry();
-			sphereGeometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
+			geometryProperties(sphereGeometry, 2f, new Vector3d(100.0f, 0.0f, 0.0f), null);
+			
 			//sphereGeometry.setCoordinateSystemID(sphereGeometry.getCoordinateSystemID());			
 			
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			MetaioDebug.printStackTrace(Log.ERROR, e);
 		}
+	}
+	
+	//function to set the properties for the geometry
+	public IGeometry geometryProperties(IGeometry geometry, float scale, Vector3d translationVec, Rotation rotation)
+	{
+		geometry.setScale(scale);
+		geometry.setTranslation(translationVec, true);
+		geometry.setRotation(rotation, true);
+		
+		return geometry;	
 	}
 	
 	/** Render Loop */
@@ -132,8 +148,7 @@ public class GameActivity extends ARViewActivity {
 		// add rotation relative current angel 
 		antGeometry.setRotation(new Rotation(0.0f, 0.0f ,0.1f),true);
 		
-		onTouchEvent(null);
-
+		//onTouchEvent(null);
 		
 		return;
 	}
@@ -145,7 +160,10 @@ public class GameActivity extends ARViewActivity {
 		
 	}
 	
+	
+	
 	/** function to handle actions when touching the screen */
+	@Override
 	public boolean onTouchEvent(MotionEvent event) 
 	{
 		int eventaction = event.getAction();
@@ -168,7 +186,8 @@ public class GameActivity extends ARViewActivity {
 
 	/** Not used at the moment*/
 	@Override
-	protected IMetaioSDKCallback getMetaioSDKCallbackHandler() {
+	protected IMetaioSDKCallback getMetaioSDKCallbackHandler()
+	{
 		// No callbacks needed 
 		return null;
 	}
