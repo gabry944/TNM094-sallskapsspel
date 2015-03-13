@@ -134,6 +134,7 @@ public class GameActivity extends ARViewActivity {
 		
 	}
 	
+	/** function to handle actions when touching the screen */
 	public boolean onTouchEvent(MotionEvent event) 
 	{
 		int eventaction = event.getAction();
