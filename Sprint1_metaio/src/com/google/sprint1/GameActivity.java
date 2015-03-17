@@ -55,7 +55,6 @@ public class GameActivity extends ARViewActivity
 		return null;
 	}
 	
-	
 	/** Attaching layout to the activity */
 	@Override
 	protected int getGUILayout() {
@@ -149,13 +148,12 @@ public class GameActivity extends ARViewActivity
 		return;
 	}
 	
-	/** Not used at the moment*/
+	/** function that activates when an object is being touched*/
 	@Override
 	protected void onGeometryTouched(IGeometry geometry) 
 	{
-		
+		geometry.setTranslation(new Vector3d(0.0f, 100.0f, 0.0f), true);
 	}
-	
 	
 	
 	/** function to handle actions when touching the screen */
