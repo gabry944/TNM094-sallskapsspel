@@ -2,6 +2,7 @@ package com.google.sprint1;
 
 import java.io.File;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,7 +10,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.metaio.sdk.ARViewActivity;
+import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
+import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
 import com.metaio.sdk.jni.Rotation;
@@ -25,9 +28,35 @@ public class GameActivity extends ARViewActivity
 	/*Variabler för objekten i spelet*/
 	private IGeometry antGeometry;
 	private IGeometry sphereGeometry;
+	private GestureHandlerAndroid mGestureHandler;
+	private int mGestureMask;
 	
 	/*delkaration av variabler som används i renderingsloopen*/
 	float SphereMoveX = 2f;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		mGestureMask  = GestureHandler.GESTURE_ALL;
+		mGestureHandler = new GestureHandlerAndroid(metaioSDK,mGestureMask);
+		
+	}
+	
+	
+	/** Attaching layout to the activity */
+	@Override
+	public int getGUILayout()
+	{
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		return R.layout.activity_game;
+	}
+
+	/** Called when the user clicks the Exit button (krysset) */
+	public void onExitButtonClick(View v) {
+		finish();
+	}
 	
 	/** create a sphere */
 	private IGeometry createSphereGeometry()
@@ -47,20 +76,6 @@ public class GameActivity extends ARViewActivity
 		return null;
 	}
 	
-
-	
-	/** Attaching layout to the activity */
-	@Override
-	protected int getGUILayout() {
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		return R.layout.activity_game;
-	}
-
-	/** Called when the user clicks the Exit button (krysset) */
-	public void onExitButtonClick(View v) {
-		finish();
-	}
 
 	/** Loads the marker and the 3D-models to the game */
 	@Override
@@ -157,7 +172,7 @@ public class GameActivity extends ARViewActivity
 	@Override
 	protected void onGeometryTouched(IGeometry geometry) 
 	{
-		
+		geometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
 	}
 	
 	
@@ -176,13 +191,27 @@ public class GameActivity extends ARViewActivity
 			
 		case MotionEvent.ACTION_MOVE:
 			antGeometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
+			break;
 			
 		case MotionEvent.ACTION_UP:
 			antGeometry.setTranslation(new Vector3d(0f,0f,0f), true);
+			break;
 		}
 		
 		return true;
 	}
+	
+	
+	@Override
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		super.onTouch(v, event);
+
+		mGestureHandler.onTouch(v, event);
+
+		return true;
+	}
+	
 
 	/** Not used at the moment*/
 	@Override
