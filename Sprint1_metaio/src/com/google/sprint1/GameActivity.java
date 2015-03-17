@@ -2,6 +2,7 @@ package com.google.sprint1;
 
 import java.io.File;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,7 +10,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.metaio.sdk.ARViewActivity;
+import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
+import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
 import com.metaio.sdk.jni.Rotation;
@@ -25,15 +28,43 @@ public class GameActivity extends ARViewActivity
 	/*Variabler för objekten i spelet*/
 	private IGeometry antGeometry;
 	private IGeometry sphereGeometry;
+	private GestureHandlerAndroid mGestureHandler;
+	private int mGestureMask;
 	private IGeometry flowerGeometry;
+
 	
 	/*delkaration av variabler som används i renderingsloopen*/
 	float SphereMoveX = 2f;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		mGestureMask  = GestureHandler.GESTURE_ALL;
+		mGestureHandler = new GestureHandlerAndroid(metaioSDK,mGestureMask);
+		
+	}
+	
+	
+	/** Attaching layout to the activity */
+	@Override
+	public int getGUILayout()
+	{
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		return R.layout.activity_game;
+	}
+
+	/** Called when the user clicks the Exit button (krysset) */
+	public void onExitButtonClick(View v) {
+		finish();
+	}
 	
 	/** Create a geometry, the string input gives the filepach (relative from the asset folder) to the geometry 
 	 * First check if model is found ->Load and create 3D geometry ->check if model was loaded successfully
 	 * Returns the loaded model if success, otherwise null*/
 	private IGeometry Load3Dmodel(String filePath)
+
 	{
 		//Getting the full file path for a 3D geometry
 		final File modelPath = AssetsManager.getAssetPathAsFile(getApplicationContext(), filePath);
@@ -53,19 +84,6 @@ public class GameActivity extends ARViewActivity
 			MetaioDebug.log(Log.ERROR, "Could not find 3D model");
 
 		return null;
-	}
-	
-	/** Attaching layout to the activity */
-	@Override
-	protected int getGUILayout() {
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		return R.layout.activity_game;
-	}
-
-	/** Called when the user clicks the Exit button (krysset) */
-	public void onExitButtonClick(View v) {
-		finish();
 	}
 
 	/** Loads the marker and the 3D-models to the game */
@@ -152,7 +170,7 @@ public class GameActivity extends ARViewActivity
 	@Override
 	protected void onGeometryTouched(IGeometry geometry) 
 	{
-		geometry.setTranslation(new Vector3d(0.0f, 100.0f, 0.0f), true);
+		geometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
 	}
 	
 	
@@ -164,19 +182,33 @@ public class GameActivity extends ARViewActivity
 		
 		switch(eventaction)
 		{
-			case MotionEvent.ACTION_DOWN:
-				antGeometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
-				break;
-				
-			case MotionEvent.ACTION_MOVE:
-				antGeometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
-				
-			case MotionEvent.ACTION_UP:
-				antGeometry.setTranslation(new Vector3d(0f,0f,0f), true);
+		case MotionEvent.ACTION_DOWN:
+			antGeometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
+			break;
+			
+		case MotionEvent.ACTION_MOVE:
+			antGeometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
+			break;
+			
+		case MotionEvent.ACTION_UP:
+			antGeometry.setTranslation(new Vector3d(0f,0f,0f), true);
+			break;
 		}
 		
 		return true;
 	}
+	
+	
+	@Override
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		super.onTouch(v, event);
+
+		mGestureHandler.onTouch(v, event);
+
+		return true;
+	}
+	
 
 	/** Not used at the moment*/
 	@Override
