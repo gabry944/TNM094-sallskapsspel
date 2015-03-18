@@ -6,15 +6,7 @@ import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
 
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.wifi.p2p.WifiP2pDeviceList;
-import android.net.wifi.p2p.WifiP2pManager;
-import android.net.wifi.p2p.WifiP2pManager.Channel;
-import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
