@@ -179,26 +179,15 @@ public class GameActivity extends ARViewActivity
 		{
 			direction = new Vector3d(30f, 30f, -20f);
 		}
-		//add movement to paintball until it reaches groundlevel.
+		//add movement to paintball until it reaches groundlevel. When the ball reaches groundlevel
+		//it becomes invisible and returns to start position and can be triggered again.
 		paintballGeometry.setTranslation(paintballGeometry.getTranslation().add(direction));
 		if(paintballGeometry.getTranslation().getZ() <= 0f)
 		{
 			paintballGeometry.setVisible(false);
 			paintballGeometry.setTranslation(new Vector3d(-600f, -450f, 370f));
 		}
-				
-//		Vector3d SpherePosition = sphereGeometry.getTranslation();
-//		if (SpherePosition.getX() >= 300)
-//		{
-//			SphereMoveX = -2f;
-//		}
-//		else if  (SpherePosition.getX() <= -300)
-//		{
-//			SphereMoveX = 2f;
-//		}
-		// add translation relative current position 
-		//sphereGeometry.setTranslation(new Vector3d(SphereMoveX , 0.0f, 0.0f), true);
-		
+
 		// add rotation relative current angel 
 		//flowerGeometry.setRotation(new Rotation(0.0f, 0.0f ,0.01f),true);
 		
@@ -216,9 +205,8 @@ public class GameActivity extends ARViewActivity
 		{	
 			paintballGeometry.setVisible(true);
 			
-			//setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
 		}
-		//geometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
+
 	}
 	
 	
