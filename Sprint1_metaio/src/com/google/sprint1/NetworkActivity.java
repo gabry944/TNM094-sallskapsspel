@@ -36,7 +36,7 @@ public class NetworkActivity extends Activity implements PeerListListener {
 	private WifiP2pManager mManager;		//! vad gör denna?
 	private Channel mChannel;				//! vad gör denna?
 	private BroadcastReceiver mReceiver;	//! vad gör denna?
-	private IntentFilter mIntentFilter;		//! vad gör denna?
+	private IntentFilter mIntentFilter;		
 
 	// function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
