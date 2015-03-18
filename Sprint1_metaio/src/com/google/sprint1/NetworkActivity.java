@@ -109,10 +109,18 @@ public class NetworkActivity extends Activity {
 	        if (mNsdHelper != null) {
 	            mNsdHelper.discoverServices();
 	        }
+	    
+	    }
+	    @Override
+	    protected void onStop()
+	    {
+	    	super.onStop();
 	    }
 	    
 	    @Override
 	    protected void onDestroy() {
+
+	    	Log.d(TAG, "tearing down");
 	        mNsdHelper.tearDown();
 	        mConnection.tearDown();
 	        super.onDestroy();

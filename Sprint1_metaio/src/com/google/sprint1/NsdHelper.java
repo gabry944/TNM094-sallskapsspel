@@ -33,7 +33,7 @@ public class NsdHelper {
     public static final String SERVICE_TYPE = "_http._tcp.";
 
     public static final String TAG = "NsdHelper";
-    public String mServiceName = "NsdChat";
+    public String mServiceName = "ARGame";
 
     NsdServiceInfo mService;
 
@@ -124,6 +124,7 @@ public class NsdHelper {
 
             @Override
             public void onServiceRegistered(NsdServiceInfo NsdServiceInfo) {
+            	Log.d(TAG, "Service registred: " + NsdServiceInfo);
                 mServiceName = NsdServiceInfo.getServiceName();
             }
             
@@ -132,11 +133,14 @@ public class NsdHelper {
             }
 
             @Override
-            public void onServiceUnregistered(NsdServiceInfo arg0) {
+            public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
+
+            	Log.d(TAG, "Service unregistered: " + serviceInfo);
             }
             
             @Override
             public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
+            	Log.d(TAG, "Unregistration failed: " + errorCode);
             }
             
         };
@@ -167,6 +171,8 @@ public class NsdHelper {
     }
     
     public void tearDown() {
+    	Log.d(TAG, "tearing down");
         mNsdManager.unregisterService(mRegistrationListener);
+    	mNsdManager.stopServiceDiscovery(mDiscoveryListener);
     }
 }

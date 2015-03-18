@@ -28,12 +28,12 @@ public class MobileConnection {
     }
 	
 	public void tearDown() {
-        mMobileServer.tearDown();
-        try {
+        //mMobileServer.tearDown();
+        /*try {
             getSocket().close();
         } catch (IOException ioe) {
             Log.e("TAG", "Error when closing server socket.");
-        }
+        }*/
     }
 	
 	public int getLocalPort() {
