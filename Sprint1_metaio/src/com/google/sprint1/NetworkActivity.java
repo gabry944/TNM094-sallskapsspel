@@ -82,6 +82,28 @@ public class NetworkActivity extends Activity {
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}
+	
+	 @Override
+	    protected void onPause() {
+	        if (mNsdHelper != null) {
+	            mNsdHelper.stopDiscovery();
+	        }
+	        super.onPause();
+	    }
+	    
+	    @Override
+	    protected void onResume() {
+	        super.onResume();
+	        if (mNsdHelper != null) {
+	            mNsdHelper.discoverServices();
+	        }
+	    }
+	    
+	    @Override
+	    protected void onDestroy() {
+	        mNsdHelper.tearDown();
+	        super.onDestroy();
+	    }
 
 	/**
 	 * This task extracts all the assets to an external or internal location to
