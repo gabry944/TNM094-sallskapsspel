@@ -23,49 +23,36 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-/** Activity to handle the screen between mainmenu and the gamescreen
- *  
-* where players should connect to each other before entering gamemode.
-* 
-*  
+/**
+ * Activity to handle the screen between mainmenu and the gamescreen
+ * 
+ * where players should connect to each other before entering gamemode.
+ * 
+ * 
  */
 
-public class NetworkActivity extends Activity implements PeerListListener {
+public class NetworkActivity extends Activity {
 
-	private AssetsExtracter startGame;		// a variable used to start the AssetExtraxter class 
-	private WifiP2pManager mManager;		//! vad gör denna?
-	private Channel mChannel;				//! vad gör denna?
-	private BroadcastReceiver mReceiver;	//! vad gör denna?
-	private IntentFilter mIntentFilter;		//! vad gör denna?
+	private AssetsExtracter startGame; // a variable used to start the
+										// AssetExtraxter class
 
 	// function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_network);
-		
-		/*Start game*/
-		startGame = new AssetsExtracter();  
-		
-		/* Wifi P2P Initialization */
-		mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE); 
-		mChannel = mManager.initialize(this, getMainLooper(), null);			
-		mReceiver = new WifiDirectBroadcastReceiver(mManager, mChannel, this);
 
-		//! vad händer här?
-		mIntentFilter = new IntentFilter();//! vad är intentFilter?
-		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-		mIntentFilter
-				.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-		mIntentFilter
-				.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+		/* Start game */
+		startGame = new AssetsExtracter();
+
 	}
 
 	/** Called when the user clicks the start Game button (starta spel) */
 	public void startGame(View view) {
-		// in order to start the game we need to extract our assets to the metaio SDK
+		// in order to start the game we need to extract our assets to the
+		// metaio SDK
 		startGame.execute(0); // Starts the assetsExtracter class
 	}
 
@@ -75,10 +62,10 @@ public class NetworkActivity extends Activity implements PeerListListener {
 		startActivity(intentmenu);
 	}
 
-
-	/** This task extracts all the assets to an external or internal location
-	* to make them accessible to Metaio SDK. */
-
+	/**
+	 * This task extracts all the assets to an external or internal location to
+	 * make them accessible to Metaio SDK.
+	 */
 
 	private class AssetsExtracter extends AsyncTask<Integer, Integer, Boolean> {
 		/** Extract all assets to make them accessible to Metaio SDK */
@@ -87,12 +74,12 @@ public class NetworkActivity extends Activity implements PeerListListener {
 			try {
 				// Extract all assets except Menu. Overwrite existing files for
 				// debug build only.
-				 final String[] ignoreList = {"Menu", "webkit", "sounds",
-				 "images", "webkitsec"};
-				 AssetsManager.extractAllAssets(getApplicationContext(), "",
-				 ignoreList, BuildConfig.DEBUG);
-				//AssetsManager.extractAllAssets(getApplicationContext(),
-				//		BuildConfig.DEBUG);
+				final String[] ignoreList = { "Menu", "webkit", "sounds",
+						"images", "webkitsec" };
+				AssetsManager.extractAllAssets(getApplicationContext(), "",
+						ignoreList, BuildConfig.DEBUG);
+				// AssetsManager.extractAllAssets(getApplicationContext(),
+				// BuildConfig.DEBUG);
 			} catch (IOException e) {
 				MetaioDebug.printStackTrace(Log.ERROR, e);
 				return false;
@@ -100,7 +87,8 @@ public class NetworkActivity extends Activity implements PeerListListener {
 
 			return true;
 		}
-		/** when extraction is done, we load the game activity*/
+
+		/** when extraction is done, we load the game activity */
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if (result) {
@@ -110,48 +98,6 @@ public class NetworkActivity extends Activity implements PeerListListener {
 			}
 			finish();
 		}
-
-	}
-	
-	@Override
-	public void onPause() {
-		super.onPause();
-		unregisterReceiver(mReceiver);
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		registerReceiver(mReceiver, mIntentFilter);
-	}
-
-	/* onPeersAvailble is called when the BroadcastReciever finds peers */
-	public void onPeersAvailable(WifiP2pDeviceList peers) {
-
-		DialogFragment alert = ChoosePeerDialogFragment.newInstance(peers);
-		alert.show(getFragmentManager(), "Peers");
-
-	}
-
-	/** Called when the user clicks the check for peer button */
-	public void checkForPeers(View view) {
-		mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
-			@Override
-			public void onSuccess() {
-				Toast toast = Toast.makeText(NetworkActivity.this,
-						"discoverPeers Success", Toast.LENGTH_LONG);
-				toast.show();
-				Log.i("WIFI", "discoverPeers success");
-			}
-
-			@Override
-			public void onFailure(int reasonCode) {
-				Toast toast = Toast.makeText(NetworkActivity.this,
-						"discoverPeers Failed", Toast.LENGTH_LONG);
-				toast.show();
-				Log.i("WIFI", "discoverPeers failed");
-			}
-		});
 
 	}
 
