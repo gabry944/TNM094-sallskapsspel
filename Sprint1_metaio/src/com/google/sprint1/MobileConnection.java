@@ -23,15 +23,19 @@ public class MobileConnection {
 		mMobileServer = new MobileServer(handler);
 	}
 	
-	public void tearDown() {
-        mMobileServer.tearDown();
-        //mChatClient.tearDown();
-    }
-	
 	public void connectToServer(InetAddress address, int port) {
         //mChatClient = new ChatClient(address, port);
     }
-
+	
+	public void tearDown() {
+        mMobileServer.tearDown();
+        try {
+            getSocket().close();
+        } catch (IOException ioe) {
+            Log.e("TAG", "Error when closing server socket.");
+        }
+    }
+	
 	public int getLocalPort() {
 		return mPort;
 	}
@@ -40,6 +44,29 @@ public class MobileConnection {
 		mPort = port;
 	}
 
+	private synchronized void setSocket(Socket socket) {
+		Log.d(TAG, "setSocket being called.");
+		if (socket == null) {
+			Log.d(TAG, "Setting a null socket.");
+		}
+		if (mSocket != null) {
+			if (mSocket.isConnected()) {
+				try {
+					mSocket.close();
+				} catch (IOException e) {
+					// TODO(alexlucas): Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		mSocket = socket;
+	}
+
+	private Socket getSocket() {
+		return mSocket;
+	}
+
+	
 	private class MobileServer {
 		ServerSocket mServerSocket = null;
 		Thread mThread = null;
@@ -53,33 +80,13 @@ public class MobileConnection {
 			mThread.interrupt();
 			try {
 				mServerSocket.close();
+				
 			} catch (IOException ioe) {
 				Log.e(TAG, "Error when closing server socket.");
 			}
 		}
 
-		private synchronized void setSocket(Socket socket) {
-			Log.d(TAG, "setSocket being called.");
-			if (socket == null) {
-				Log.d(TAG, "Setting a null socket.");
-			}
-			if (mSocket != null) {
-				if (mSocket.isConnected()) {
-					try {
-						mSocket.close();
-					} catch (IOException e) {
-						// TODO(alexlucas): Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			mSocket = socket;
-		}
-
-		private Socket getSocket() {
-			return mSocket;
-		}
-
+		
 		class ServerThread implements Runnable {
 
 			@Override
