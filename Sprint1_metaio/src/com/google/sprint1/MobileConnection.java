@@ -8,7 +8,7 @@ public class MobileConnection {
 	
 	private Handler mUpdateHandler;
 
-    private static final String TAG = "ChatConnection";
+    private static final String TAG = "MobileConnection";
 
     private Socket mSocket;
     private int mPort = -1;

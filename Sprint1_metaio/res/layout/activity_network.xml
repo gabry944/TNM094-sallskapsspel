@@ -48,10 +48,17 @@
         android:id="@+id/registerButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView1"
         android:layout_marginTop="75dp"
         android:onClick="clickAdvertise"
         android:text="Register" />  
+        
+     <Button
+        android:id="@+id/discoverButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/registerButton"
+        android:layout_marginTop="75dp"
+        android:onClick="clickDiscover"
+        android:text="Discover" />
 
 </RelativeLayout>
