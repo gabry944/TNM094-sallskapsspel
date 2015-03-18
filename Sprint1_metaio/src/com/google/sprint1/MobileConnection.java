@@ -1,6 +1,7 @@
 package com.google.sprint1;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -21,6 +22,15 @@ public class MobileConnection {
 		mUpdateHandler = handler;
 		mMobileServer = new MobileServer(handler);
 	}
+	
+	public void tearDown() {
+        mMobileServer.tearDown();
+        //mChatClient.tearDown();
+    }
+	
+	public void connectToServer(InetAddress address, int port) {
+        //mChatClient = new ChatClient(address, port);
+    }
 
 	public int getLocalPort() {
 		return mPort;

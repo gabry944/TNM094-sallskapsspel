@@ -7,6 +7,7 @@ import com.metaio.tools.io.AssetsManager;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.nsd.NsdServiceInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -69,6 +70,17 @@ public class NetworkActivity extends Activity {
 	public void clickDiscover(View v){
 		mNsdHelper.discoverServices();
 	}
+	
+	public void clickConnect(View v) {
+        NsdServiceInfo service = mNsdHelper.getChosenServiceInfo();
+        if (service != null) {
+            Log.d(TAG, "Connecting.");
+            mConnection.connectToServer(service.getHost(),
+                    service.getPort());
+        } else {
+            Log.d(TAG, "No service to connect to!");
+        }
+    }
 
 	/** Called when the user clicks the start Game button (starta spel) */
 	public void startGame(View view) {
