@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -27,6 +28,10 @@ public class NetworkActivity extends Activity {
 
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
+	private Handler mUpdateHandler;
+	NsdHelper mNsdHelper;
+	MobileConnection mConnection;
+	
 
 	// function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +43,13 @@ public class NetworkActivity extends Activity {
 
 		/* Start game */
 		startGame = new AssetsExtracter();
+		
+		mUpdateHandler = new Handler();
+		mConnection = new MobileConnection(mUpdateHandler);
+		mNsdHelper = new NsdHelper(this);
+		
+		mNsdHelper.initializeNsd();
+		
 
 	}
 
