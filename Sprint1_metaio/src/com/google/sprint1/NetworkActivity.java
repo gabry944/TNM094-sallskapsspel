@@ -65,6 +65,10 @@ public class NetworkActivity extends Activity {
             Log.d(TAG, "ServerSocket isn't bound.");
         }
 	}
+	
+	public void clickDiscover(View v){
+		mNsdHelper.discoverServices();
+	}
 
 	/** Called when the user clicks the start Game button (starta spel) */
 	public void startGame(View view) {
