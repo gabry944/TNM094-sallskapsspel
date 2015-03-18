@@ -114,6 +114,7 @@ public class NetworkActivity extends Activity {
 	    @Override
 	    protected void onDestroy() {
 	        mNsdHelper.tearDown();
+	        mConnection.tearDown();
 	        super.onDestroy();
 	    }
 
