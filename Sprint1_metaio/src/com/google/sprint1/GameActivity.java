@@ -28,9 +28,16 @@ public class GameActivity extends ARViewActivity
 	/*Variabler för objekten i spelet*/
 	private IGeometry antGeometry;
 	private IGeometry sphereGeometry;
+	private IGeometry flowerGeometry;
+	private IGeometry wallGeometry1;
+	private IGeometry wallGeometry2;
+	private IGeometry wallGeometry3;
+	private IGeometry wallGeometry4;
+	private IGeometry towerGeometry;
+	private IGeometry canonGeometry;
+	private IGeometry paintballGeometry;
 	private GestureHandlerAndroid mGestureHandler;
 	private int mGestureMask;
-	private IGeometry flowerGeometry;
 
 	
 	/*delkaration av variabler som används i renderingsloopen*/
@@ -111,13 +118,33 @@ public class GameActivity extends ARViewActivity
 			geometryProperties(antGeometry, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation((float) (3*Math.PI/2), 0f, 0f) );
 			
 			//create a sphere Geometry
-			sphereGeometry = Load3Dmodel("sphere/sphere_10mm.obj");
-			geometryProperties(sphereGeometry, 2f, new Vector3d(100.0f, 0.0f, 0.0f), new Rotation(0.0f, 0.0f ,0.1f));
+			//sphereGeometry = Load3Dmodel("sphere/sphere_10mm.obj");
+			//geometryProperties(sphereGeometry, 2f, new Vector3d(100.0f, 0.0f, 0.0f), new Rotation(0.0f, 0.0f ,0.1f));
+			//sphereGeometry.setCoordinateSystemID(sphereGeometry.getCoordinateSystemID());
 			
-			flowerGeometry = Load3Dmodel("plumBlossom/plum blossom in glass cup_fbx.mfbx");
-			geometryProperties(flowerGeometry, 0.08f, new Vector3d(0.0f, 0.0f, 200.0f), new Rotation(0.0f, 0.0f ,0.1f));
+			//flowerGeometry = Load3Dmodel("plumBlossom/plum blossom in glass cup_fbx.mfbx");
+			//geometryProperties(flowerGeometry, 0.08f, new Vector3d(0.0f, 0.0f, 200.0f), new Rotation(0.0f, 0.0f ,0.1f));
 			
-			//sphereGeometry.setCoordinateSystemID(sphereGeometry.getCoordinateSystemID());			
+			
+			//creates the walls around the game area
+			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
+			geometryProperties(wallGeometry1, 20f, new Vector3d(850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
+			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
+			geometryProperties(wallGeometry1, 20f, new Vector3d(-850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
+			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
+			geometryProperties(wallGeometry1, 20f, new Vector3d(0f, 720f, 0f), new Rotation(0f, 0f, 0f));
+			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
+			geometryProperties(wallGeometry1, 20f, new Vector3d(0f, -720f, 0f), new Rotation(0f, 0f, 0f));
+			
+			//creates the tower
+			towerGeometry = Load3Dmodel("tower/tower.mfbx");
+			geometryProperties(towerGeometry, 4f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
+			canonGeometry = Load3Dmodel("tower/canon.mfbx");
+			geometryProperties(canonGeometry, 4f, new Vector3d(-650f, -520f, 330f), new Rotation(0f, 0f, 0f));
+			
+			paintballGeometry = Load3Dmodel("tower/paintball.obj");
+			geometryProperties(paintballGeometry, 2f, new Vector3d(-600f, -450f, 370f), new Rotation(0f, 0f, 0f));
+			paintballGeometry.setVisible(false);			
 			
 		}
 		catch (Exception e)
@@ -143,23 +170,37 @@ public class GameActivity extends ARViewActivity
 		super.onDrawFrame();
 
 		// If content not loaded yet, do nothing
-		if (sphereGeometry == null || flowerGeometry == null || flowerGeometry == null)
+		if ( wallGeometry1 == null || towerGeometry == null)
 			return;
+		
+		//direction of outgoing paintball, will later be based on how you interact with the screen (TODO).
+		Vector3d direction =  new Vector3d(0f, 0f, 0f);
+		if(paintballGeometry.getIsRendered() == true)
+		{
+			direction = new Vector3d(30f, 30f, -20f);
+		}
+		//add movement to paintball until it reaches groundlevel.
+		paintballGeometry.setTranslation(paintballGeometry.getTranslation().add(direction));
+		if(paintballGeometry.getTranslation().getZ() <= 0f)
+		{
+			paintballGeometry.setVisible(false);
+			paintballGeometry.setTranslation(new Vector3d(-600f, -450f, 370f));
+		}
 				
-		Vector3d SpherePosition = sphereGeometry.getTranslation();
-		if (SpherePosition.getX() >= 300)
-		{
-			SphereMoveX = -2f;
-		}
-		else if  (SpherePosition.getX() <= -300)
-		{
-			SphereMoveX = 2f;
-		}
+//		Vector3d SpherePosition = sphereGeometry.getTranslation();
+//		if (SpherePosition.getX() >= 300)
+//		{
+//			SphereMoveX = -2f;
+//		}
+//		else if  (SpherePosition.getX() <= -300)
+//		{
+//			SphereMoveX = 2f;
+//		}
 		// add translation relative current position 
-		sphereGeometry.setTranslation(new Vector3d(SphereMoveX , 0.0f, 0.0f), true);
+		//sphereGeometry.setTranslation(new Vector3d(SphereMoveX , 0.0f, 0.0f), true);
 		
 		// add rotation relative current angel 
-		flowerGeometry.setRotation(new Rotation(0.0f, 0.0f ,0.01f),true);
+		//flowerGeometry.setRotation(new Rotation(0.0f, 0.0f ,0.01f),true);
 		
 		//onTouchEvent(null);
 		
@@ -169,8 +210,15 @@ public class GameActivity extends ARViewActivity
 	/** function that activates when an object is being touched*/
 	@Override
 	protected void onGeometryTouched(IGeometry geometry) 
-	{
-		geometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
+	{	
+		//check if the touched geometry is the canon geometry, if true shot a paintball else do nothing
+		if(geometry.equals(canonGeometry))
+		{	
+			paintballGeometry.setVisible(true);
+			
+			//setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
+		}
+		//geometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
 	}
 	
 	
