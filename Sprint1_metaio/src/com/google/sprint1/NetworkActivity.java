@@ -32,6 +32,8 @@ public class NetworkActivity extends Activity {
 	NsdHelper mNsdHelper;
 	MobileConnection mConnection;
 	
+	public static final String TAG = "NetworkActivity";
+	
 
 	// function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,17 @@ public class NetworkActivity extends Activity {
 		mNsdHelper.initializeNsd();
 		
 
+	}
+	
+	/** Called when the user clicks the start Game button (starta spel) */
+	public void clickAdvertise(View view) {
+		// in order to start the game we need to extract our assets to the
+		// metaio SDK
+		if(mConnection.getLocalPort() > -1) {
+            mNsdHelper.registerService(mConnection.getLocalPort());
+        } else {
+            Log.d(TAG, "ServerSocket isn't bound.");
+        }
 	}
 
 	/** Called when the user clicks the start Game button (starta spel) */
