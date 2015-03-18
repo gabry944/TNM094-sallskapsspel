@@ -55,7 +55,7 @@ public class NetworkActivity extends Activity {
 
 	}
 	
-	/** Called when the user clicks the start Game button (starta spel) */
+	/** Called when the user clicks the Register button */
 	public void clickAdvertise(View view) {
 		// in order to start the game we need to extract our assets to the
 		// metaio SDK
