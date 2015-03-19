@@ -20,7 +20,8 @@ import android.widget.Toast;
 /**
  * Activity to handle the screen between mainmenu and the gamescreen
  * 
- * where players should connect to each other before entering gamemode.
+ * Where players register, discover and connect to each other 
+ * before starting the game session.
  * 
  * 
  */
@@ -36,7 +37,7 @@ public class NetworkActivity extends Activity {
 	public static final String TAG = "NetworkActivity";
 	
 
-	// function to set up layout of activity
+	/** Function to set up layout of activity */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -72,6 +73,8 @@ public class NetworkActivity extends Activity {
 		mNsdHelper.discoverServices();
 	}
 	
+	/** Called then the user clicks the Connect button*/
+	
 	public void clickConnect(View v) {
         NsdServiceInfo service = mNsdHelper.getChosenServiceInfo();
         if (service != null) {
@@ -95,6 +98,8 @@ public class NetworkActivity extends Activity {
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}
+	
+	/** Unregister application when it closes down */
 	
 	 @Override
 	    protected void onPause() {
