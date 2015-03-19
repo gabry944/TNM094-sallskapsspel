@@ -78,9 +78,10 @@ public class NetworkActivity extends Activity {
 	public void clickConnect(View v) {
         NsdServiceInfo service = mNsdHelper.getChosenServiceInfo();
         if (service != null) {
-            Log.d(TAG, "Connecting.");
+            Log.d(TAG, "Connecting before.");
             mConnection.connectToServer(service.getHost(),
                     service.getPort());
+            Log.d(TAG, "Connecting after.");
         } else {
             Log.d(TAG, "No service to connect to!");
         }

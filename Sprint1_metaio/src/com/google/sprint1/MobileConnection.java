@@ -25,6 +25,7 @@ public class MobileConnection {
 	
 	public void connectToServer(InetAddress address, int port) {
         //mChatClient = new ChatClient(address, port);
+		Log.e("TAG", "Connect to server");
     }
 	
 	public void tearDown() {
