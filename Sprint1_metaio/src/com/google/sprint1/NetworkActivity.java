@@ -133,7 +133,7 @@ public class NetworkActivity extends Activity {
 	public void clickDiscover(View v) {
 
 		mNsdHelper.discoverServices();
-		listAdapter.notifyDataSetChanged();
+		updateAdapter(v);
 	}
 
 	/** Called when the user clicks the start Game button (starta spel) */
@@ -145,7 +145,10 @@ public class NetworkActivity extends Activity {
 
 	public void updateAdapter(View view) {
 		listAdapter.clear();
-		listAdapter.addAll(mNsdHelper.getChosenServiceInfoList());
+		for (int i = 0; i < mNsdHelper.getChosenServiceInfoList().size(); i ++)
+		{
+			listAdapter.add(mNsdHelper.getChosenServiceInfoList().get(i));
+		}
 		listAdapter.notifyDataSetChanged();
 
 	}
