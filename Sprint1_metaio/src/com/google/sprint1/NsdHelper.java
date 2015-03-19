@@ -96,6 +96,8 @@ public class NsdHelper {
                 mNsdManager.stopServiceDiscovery(this);
             }
         };
+        
+        //Log.d(TAG, "DISCOVERYLISTENER");
     }
 
     public void initializeResolveListener() {
@@ -117,6 +119,8 @@ public class NsdHelper {
                 mService = serviceInfo;
             }
         };
+        
+        //Log.d(TAG, "RESOLVELISTENER");
     }
 
     public void initializeRegistrationListener() {
@@ -144,6 +148,8 @@ public class NsdHelper {
             }
             
         };
+        
+        //Log.d(TAG, "REGISTERLISTENER");
     }
 
     public void registerService(int port) {
@@ -155,15 +161,21 @@ public class NsdHelper {
         mNsdManager.registerService(
                 serviceInfo, NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
         
+        //Log.d(TAG, "REGISTERSERVICE");
+        
     }
 
     public void discoverServices() {
         mNsdManager.discoverServices(
                 SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+        
+        //Log.d(TAG, "DISCOVERSERVICE");
     }
     
     public void stopDiscovery() {
         mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+        
+        //Log.d(TAG, "STOPDISCOVERY");
     }
 
     public NsdServiceInfo getChosenServiceInfo() {
