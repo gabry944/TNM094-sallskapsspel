@@ -68,7 +68,7 @@ public class NetworkActivity extends Activity {
 	
 	/** Called when the user clicks the Discover button */
 	
-	public void clickDiscoveryy(View v){
+	public void clickDiscover(View v){
 		mNsdHelper.discoverServices();
 	}
 	
