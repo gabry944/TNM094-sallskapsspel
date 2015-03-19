@@ -32,9 +32,8 @@ public class NetworkActivity extends Activity {
 	private Handler mUpdateHandler;
 	NsdHelper mNsdHelper;
 	MobileConnection mConnection;
-	
+
 	public static final String TAG = "NetworkActivity";
-	
 
 	// function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,41 +45,42 @@ public class NetworkActivity extends Activity {
 
 		/* Start game */
 		startGame = new AssetsExtracter();
-		
+
 		mUpdateHandler = new Handler();
 		mConnection = new MobileConnection(mUpdateHandler);
 		mNsdHelper = new NsdHelper(this);
-		
+
 		mNsdHelper.initializeNsd();
-		
+
+		// mNsdHelper.registerService(mConnection.getLocalPort());
+		// mNsdHelper.discoverServices();
 
 	}
-	
+
 	/** Called when the user clicks the Register button */
 	public void clickAdvertise(View view) {
 		// in order to start the game we need to extract our assets to the
 		// metaio SDK
-		if(mConnection.getLocalPort() > -1) {
-            mNsdHelper.registerService(mConnection.getLocalPort());
-        } else {
-            Log.d(TAG, "ServerSocket isn't bound.");
-        }
+		if (mConnection.getLocalPort() > -1) {
+			mNsdHelper.registerService(mConnection.getLocalPort());
+		} else {
+			Log.d(TAG, "ServerSocket isn't bound.");
+		}
 	}
-	
-	public void clickDiscover(View v){
+
+	public void clickDiscover(View v) {
 		mNsdHelper.discoverServices();
 	}
-	
+
 	public void clickConnect(View v) {
-        NsdServiceInfo service = mNsdHelper.getChosenServiceInfo();
-        if (service != null) {
-            Log.d(TAG, "Connecting to: " + service.getServiceName());
-            mConnection.connectToServer(service.getHost(),
-                    service.getPort());
-        } else {
-            Log.d(TAG, "No service to connect to!");
-        }
-    }
+		NsdServiceInfo service = mNsdHelper.getChosenServiceInfo();
+		if (service != null) {
+			Log.d(TAG, "Connecting to: " + service.getServiceName());
+			mConnection.connectToServer(service.getHost(), service.getPort());
+		} else {
+			Log.d(TAG, "No service to connect to!");
+		}
+	}
 
 	/** Called when the user clicks the start Game button (starta spel) */
 	public void startGame(View view) {
@@ -94,37 +94,43 @@ public class NetworkActivity extends Activity {
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}
-	
-	 @Override
-	    protected void onPause() {
-	        if (mNsdHelper != null) {
-	            mNsdHelper.stopDiscovery();
-	        }
-	        super.onPause();
-	    }
-	    
-	    @Override
-	    protected void onResume() {
-	        super.onResume();
-	        if (mNsdHelper != null) {
-	            mNsdHelper.discoverServices();
-	        }
-	    
-	    }
-	    @Override
-	    protected void onStop()
-	    {
-	    	super.onStop();
-	    }
-	    
-	    @Override
-	    protected void onDestroy() {
 
-	    	Log.d(TAG, "tearing down");
-	        mNsdHelper.tearDown();
-	        mConnection.tearDown();
-	        super.onDestroy();
-	    }
+	@Override
+	protected void onPause() {
+		if (mNsdHelper != null) {
+			Log.d(TAG, "Pausad");
+			// mNsdHelper.stopDiscovery();
+			mNsdHelper.tearDown();
+			mNsdHelper = null;
+		}
+
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		if (mNsdHelper != null) {
+			Log.d(TAG, "Resumed");
+
+			mNsdHelper.registerService(mConnection.getLocalPort());
+			mNsdHelper.discoverServices();
+		}
+
+	}
+
+	@Override
+	protected void onDestroy() {
+
+		Log.d(TAG, "Destroyed");
+		if (mNsdHelper != null) {
+			mNsdHelper.tearDown();
+			mNsdHelper = null;
+		}
+		mConnection.tearDown();
+		super.onDestroy();
+	}
 
 	/**
 	 * This task extracts all the assets to an external or internal location to
