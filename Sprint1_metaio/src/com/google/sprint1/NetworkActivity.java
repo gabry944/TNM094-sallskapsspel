@@ -65,7 +65,7 @@ public class NetworkActivity extends Activity {
 
 		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
 				android.R.layout.simple_list_item_1,
-				mNsdHelper.getChosenServiceInfoList());
+				new ArrayList<NsdServiceInfo>());
 		listView.setAdapter(listAdapter);
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -143,6 +143,12 @@ public class NetworkActivity extends Activity {
 		startGame.execute(0); // Starts the assetsExtracter class
 	}
 
+	public void updateAdapter(View view) {
+		listAdapter.clear();
+		listAdapter.addAll(mNsdHelper.getChosenServiceInfoList());
+		listAdapter.notifyDataSetChanged();
+		
+	}
 	/** Called when the user clicks the mainMenu button (huvudmeny) */
 	public void mainMenu(View view) {
 		Intent intentmenu = new Intent(this, MainActivity.class);
