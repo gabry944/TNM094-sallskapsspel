@@ -38,6 +38,8 @@ public class GameActivity extends ARViewActivity
 	private IGeometry paintballGeometry;
 	private GestureHandlerAndroid mGestureHandler;
 	private int mGestureMask;
+	
+	Vector3d direction;
 
 	
 	/*delkaration av variabler som används i renderingsloopen*/
@@ -49,6 +51,9 @@ public class GameActivity extends ARViewActivity
 		super.onCreate(savedInstanceState);
 		mGestureMask  = GestureHandler.GESTURE_ALL;
 		mGestureHandler = new GestureHandlerAndroid(metaioSDK,mGestureMask);
+		
+		//direction of outgoing paintball, will later be based on how you interact with the screen (TODO).
+		Vector3d direction =  new Vector3d(0f, 0f, 0f);
 		
 	}
 	
@@ -173,12 +178,6 @@ public class GameActivity extends ARViewActivity
 		if ( wallGeometry1 == null || towerGeometry == null)
 			return;
 		
-		//direction of outgoing paintball, will later be based on how you interact with the screen (TODO).
-		Vector3d direction =  new Vector3d(0f, 0f, 0f);
-		if(paintballGeometry.getIsRendered() == true)
-		{
-			direction = new Vector3d(30f, 30f, -20f);
-		}
 		//add movement to paintball until it reaches groundlevel. When the ball reaches groundlevel
 		//it becomes invisible and returns to start position and can be triggered again.
 		paintballGeometry.setTranslation(paintballGeometry.getTranslation().add(direction));
@@ -204,6 +203,7 @@ public class GameActivity extends ARViewActivity
 		if(geometry.equals(canonGeometry))
 		{	
 			paintballGeometry.setVisible(true);
+			direction = new Vector3d(30f, 30f, -20f);
 			
 		}
 
