@@ -119,13 +119,15 @@ public class NsdHelper {
 			@Override
 			public void onResolveFailed(NsdServiceInfo serviceInfo,
 					int errorCode) {
-				Log.e(TAG, "Resolve failed" + errorCode);
+				Log.e(TAG, "Resolve failed. Error code: " + errorCode);
 				mServices.remove(serviceInfo);
 			}
 
 			@Override
 			public void onServiceResolved(NsdServiceInfo serviceInfo) {
-				Log.e(TAG, "Resolve Succeeded. " + serviceInfo);
+				Log.e(TAG, "Resolve Succeeded. ");
+				Log.e(TAG, "Added service: " + serviceInfo.getServiceName());
+				Log.e(TAG, "IP: " + serviceInfo.getHost());
 
 				if (serviceInfo.getServiceName().equals(mServiceName)) {
 					Log.d(TAG, "Same IP.");
@@ -143,18 +145,19 @@ public class NsdHelper {
 
 			@Override
 			public void onServiceRegistered(NsdServiceInfo NsdServiceInfo) {
-				Log.d(TAG, "Service registred: " + NsdServiceInfo);
+				Log.d(TAG, "Service registered: " + NsdServiceInfo);
 				mServiceName = NsdServiceInfo.getServiceName();
 			}
 
 			@Override
 			public void onRegistrationFailed(NsdServiceInfo arg0, int arg1) {
+				Log.d(TAG, "Service registration failed. Error: " + arg1);
 			}
 
 			@Override
 			public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
 
-				Log.d(TAG, "Service unregistered: " + serviceInfo);
+				Log.d(TAG, "Service unregistered: " + serviceInfo.getServiceName());
 			}
 
 			@Override

@@ -39,12 +39,10 @@ public class NetworkActivity extends Activity {
 	private Handler mUpdateHandler;
 	NsdHelper mNsdHelper;
 	MobileConnection mConnection;
-	
-	
+
 	ArrayAdapter<NsdServiceInfo> listAdapter;
-	
+
 	public static final String TAG = "NetworkActivity";
-	
 
 	// function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,79 +52,89 @@ public class NetworkActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_network);
 
-		
-		
-		
-		
 		/* Start game */
 		startGame = new AssetsExtracter();
-		
+
 		mUpdateHandler = new Handler();
 		mConnection = new MobileConnection(mUpdateHandler);
 		mNsdHelper = new NsdHelper(this);
-		
+
 		mNsdHelper.initializeNsd();
-		
-		
+
 		ListView listView = (ListView) findViewById(R.id.serviceView);
-		
-		listAdapter = new ArrayAdapter<NsdServiceInfo>(this, android.R.layout.simple_list_item_1, mNsdHelper.getChosenServiceInfoList());
+
+		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
+				android.R.layout.simple_list_item_1,
+				mNsdHelper.getChosenServiceInfoList());
 		listView.setAdapter(listAdapter);
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView parent, View view, final int pos, long id) {
-				
-				// 1. Instantiate an AlertDialog.Builder with its constructor
-				AlertDialog.Builder builder = new AlertDialog.Builder(NetworkActivity.this);
+			public void onItemClick(AdapterView parent, View view,
+					final int pos, long id) {
 
-				// 2. Chain together various setter methods to set the dialog characteristics
-				builder.setMessage("Connect to " + listAdapter.getItem(pos).getServiceName() + "?")
-				       .setTitle("Connect")
-					   .setPositiveButton(R.string.BTN_OK, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							NsdServiceInfo service = listAdapter.getItem(pos);
-					        if (service != null) {
-					            Log.d(TAG, "Connecting to: " + service.getServiceName());
-					            mConnection.connectToServer(service.getHost(),
-					                    service.getPort());
-					        } else {
-					            Log.d(TAG, "No service to connect to!");
-					        }
-							
-						}
-					})
-					  .setNegativeButton(R.string.BTN_CANCEL, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-						}
-					});
+				// 1. Instantiate an AlertDialog.Builder with its constructor
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						NetworkActivity.this);
+
+				// 2. Chain together various setter methods to set the dialog
+				// characteristics
+				builder.setMessage(
+						"Connect to "
+								+ listAdapter.getItem(pos).getServiceName()
+								+ "?")
+						.setTitle("Connect")
+						.setPositiveButton(R.string.BTN_OK,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int which) {
+										NsdServiceInfo service = listAdapter
+												.getItem(pos);
+										if (service != null) {
+											Log.d(TAG, "Connecting to: "
+													+ service.getServiceName());
+											mConnection.connectToServer(
+													service.getHost(),
+													service.getPort());
+										} else {
+											Log.d(TAG,
+													"No service to connect to!");
+										}
+
+									}
+								})
+						.setNegativeButton(R.string.BTN_CANCEL,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int which) {
+										// TODO Auto-generated method stub
+									}
+								});
 				// 3. Get the AlertDialog from create()
 				AlertDialog dialog = builder.create();
 				dialog.show();
 			}
-			
+
 		});
 
 	}
-	
+
 	/** Called when the user clicks the Register button */
 	public void clickAdvertise(View view) {
 		// in order to start the game we need to extract our assets to the
 		// metaio SDK
-		if(mConnection.getLocalPort() > -1) {
-            mNsdHelper.registerService(mConnection.getLocalPort());
-        } else {
-            Log.d(TAG, "ServerSocket isn't bound.");
-        }
+		if (mConnection.getLocalPort() > -1) {
+			mNsdHelper.registerService(mConnection.getLocalPort());
+		} else {
+			Log.d(TAG, "ServerSocket isn't bound.");
+		}
 	}
-	
-	public void clickDiscover(View v){
-		
+
+	public void clickDiscover(View v) {
+
 		mNsdHelper.discoverServices();
 		listAdapter.notifyDataSetChanged();
 	}
-	
 
 	/** Called when the user clicks the start Game button (starta spel) */
 	public void startGame(View view) {
@@ -140,38 +148,38 @@ public class NetworkActivity extends Activity {
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}
-	
-	 @Override
-	    protected void onPause() {
-	        if (mNsdHelper != null) {
-	            mNsdHelper.stopDiscovery();
-	        }
-	        super.onPause();
-	    }
-	    
-	    @Override
-	    protected void onResume() {
-	        super.onResume();
-	        if (mNsdHelper != null) {
-	            mNsdHelper.discoverServices();
-	        }
-	    
-	    }
-	    @Override
-	    protected void onStop()
-	    {
-	    	super.onStop();
-	    }
-	    
-	    @Override
-	    protected void onDestroy() {
 
-	    	Log.d(TAG, "tearing down");
-	        mNsdHelper.tearDown();
-	        mConnection.tearDown();
-	        super.onDestroy();
-	    }
-	    
+	@Override
+	protected void onPause() {
+		if (mNsdHelper != null) {
+			mNsdHelper.stopDiscovery();
+		}
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (mNsdHelper != null) {
+			mNsdHelper.discoverServices();
+		}
+
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+
+		Log.d(TAG, "tearing down");
+		mNsdHelper.tearDown();
+		mConnection.tearDown();
+		super.onDestroy();
+	}
+
 	/**
 	 * This task extracts all the assets to an external or internal location to
 	 * make them accessible to Metaio SDK.
