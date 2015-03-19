@@ -42,7 +42,7 @@ public class GameActivity extends ARViewActivity
 	Vector3d velocity;
 	Vector3d totalForce;
 	Vector3d gravity;
-	float timestep;
+	float timeStep;
 	float mass;
 	
 	/*delkaration av variabler som används i renderingsloopen*/
@@ -60,11 +60,10 @@ public class GameActivity extends ARViewActivity
 		velocity =  new Vector3d(0f, 0f, 0f);
 		totalForce =  new Vector3d(0f, 0f, 0f);
 		gravity = new Vector3d(0f, 0f, -9.82f);
-		timestep = 0.1f;								//0.1s
+		timeStep = 0.2f;								//0.1s
 		mass = 0.1f;		   							//0.1kg
 	}
-	
-	
+		
 	/** Attaching layout to the activity */
 	@Override
 	public int getGUILayout()
@@ -105,6 +104,36 @@ public class GameActivity extends ARViewActivity
 		return null;
 	}
 
+	/** move an object depending on physics calculated with Euler model*/
+	private IGeometry physicPositionCalibration(IGeometry object)
+	{
+		// right now we only have gravity as force
+		totalForce.setX(gravity.getX() * mass);
+		totalForce.setY(gravity.getY() * mass);
+		totalForce.setZ(gravity.getZ() * mass);
+		
+		// Newtons second law says that: F=ma => a= F/m
+		acceleration.setX(totalForce.getX() / mass);
+		acceleration.setY(totalForce.getY() / mass);
+		acceleration.setZ(totalForce.getZ() / mass);
+		
+		// Euler method gives that Vnew=V+A*dt;
+		velocity.setX(velocity.getX()+timeStep*acceleration.getX());
+		velocity.setY(velocity.getY()+timeStep*acceleration.getY());
+		velocity.setZ(velocity.getZ()+timeStep*acceleration.getZ());
+		
+		// Euler method gives that PositionNew=Position+V*dt;
+		Vector3d possition = object.getTranslation();
+		possition.setX(possition.getX()+timeStep*velocity.getX());
+		possition.setY(possition.getY()+timeStep*velocity.getY());
+		possition.setZ(possition.getZ()+timeStep*velocity.getZ());
+		
+		// move object to the new position
+		object.setTranslation(possition);
+		//object.setTranslation(object.getTranslation().add(velocity*timeStep));
+		return object;
+	}
+	
 	/** Loads the marker and the 3D-models to the game */
 	@Override
 	protected void loadContents()
@@ -180,29 +209,9 @@ public class GameActivity extends ARViewActivity
 		//it becomes invisible and returns to start position and can be triggered again.
 		if(paintballGeometry.isVisible())
 		{
-			// physics calculated with Euler model
-			totalForce.setX(gravity.getX());
-			totalForce.setY(gravity.getY());
-			totalForce.setZ(gravity.getZ());
-			
-			acceleration.setX(totalForce.getX() / mass);
-			acceleration.setY(totalForce.getY() / mass);
-			acceleration.setZ(totalForce.getZ() / mass);
-			
-			velocity.setX(velocity.getX()+timestep*acceleration.getX());
-			velocity.setY(velocity.getY()+timestep*acceleration.getY());
-			velocity.setZ(velocity.getZ()+timestep*acceleration.getZ());
-			
-			Vector3d possition = paintballGeometry.getTranslation();
-			possition.setX(possition.getX()+timestep*velocity.getX());
-			possition.setY(possition.getY()+timestep*velocity.getY());
-			possition.setZ(possition.getZ()+timestep*velocity.getZ());
-			
-			/*possition.setX(velocity.getX());
-			possition.setY(velocity.getY());
-			possition.setZ(velocity.getZ());*/
-			paintballGeometry.setTranslation(possition);
-			//paintballGeometry.setTranslation(paintballGeometry.getTranslation().add(velocity));
+			// move object one frame
+			paintballGeometry = physicPositionCalibration(paintballGeometry);
+			// checks for collision with ground 
 			if(paintballGeometry.getTranslation().getZ() <= 0f)
 			{
 				paintballGeometry.setVisible(false);
@@ -227,7 +236,7 @@ public class GameActivity extends ARViewActivity
 			if(!paintballGeometry.isVisible())
 			{
 				paintballGeometry.setTranslation(new Vector3d(-600f, -450f, 370f));
-				velocity = new Vector3d(200f, 200f, 0f);
+				velocity = new Vector3d(100f, 100f, 0f);
 				paintballGeometry.setVisible(true);
 			}
 		}
