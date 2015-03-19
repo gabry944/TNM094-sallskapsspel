@@ -57,18 +57,31 @@ public class NsdHelper {
 
 	}
 
+	public void initDiscoveryListener() {
+		initializeDiscoveryListener();
+		initializeRegistrationListener();
+		discoverServices();
+
+
+	}
+
 	public void initializeDiscoveryListener() {
 		mDiscoveryListener = new NsdManager.DiscoveryListener() {
 
 			@Override
 			public void onDiscoveryStarted(String regType) {
 				Log.d(TAG, "Service discovery started");
+
 				mServices.clear();
+
 			}
 
 			@Override
 			public void onServiceFound(NsdServiceInfo service) {
+
 				Log.d(TAG, "Service discovery success. Found: " + service.getServiceName());
+
+
 				if (!service.getServiceType().equals(SERVICE_TYPE)) {
 					Log.d(TAG,
 							"Unknown Service Type: " + service.getServiceType());
@@ -79,7 +92,7 @@ public class NsdHelper {
 					// mServices.add(service);
 					mNsdManager.resolveService(service, mResolveListener);
 
-				}
+				} 
 			}
 
 			@Override
@@ -121,6 +134,7 @@ public class NsdHelper {
 					int errorCode) {
 				Log.e(TAG, "Resolve failed. Error code: " + errorCode);
 				mServices.remove(serviceInfo);
+
 			}
 
 			@Override
@@ -151,13 +165,16 @@ public class NsdHelper {
 
 			@Override
 			public void onRegistrationFailed(NsdServiceInfo arg0, int arg1) {
+
 				Log.d(TAG, "Service registration failed. Error: " + arg1);
+
 			}
 
 			@Override
 			public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
 
 				Log.d(TAG, "Service unregistered: " + serviceInfo.getServiceName());
+
 			}
 
 			@Override
@@ -170,6 +187,7 @@ public class NsdHelper {
 	}
 
 	public void registerService(int port) {
+
 		if (!haveActiveService) {
 			NsdServiceInfo serviceInfo = new NsdServiceInfo();
 			serviceInfo.setPort(port);
@@ -184,7 +202,7 @@ public class NsdHelper {
 	}
 
 	public void discoverServices() {
-		// mServices.clear();
+
 		mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD,
 				mDiscoveryListener);
 	}
@@ -197,12 +215,16 @@ public class NsdHelper {
 		return mService;
 	}
 
+
 	public List<NsdServiceInfo> getChosenServiceInfoList() {
 		return mServices;
 	}
 
+
 	public void tearDown() {
-		// mNsdManager.unregisterService(mRegistrationListener);
+		Log.d(TAG, "tearing down");
+		mNsdManager.unregisterService(mRegistrationListener);
 		mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+
 	}
 }
