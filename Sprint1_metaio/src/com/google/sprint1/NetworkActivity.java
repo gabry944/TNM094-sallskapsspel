@@ -171,7 +171,9 @@ public class NetworkActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-
+		
+		mNsdHelper = new NsdHelper(this);
+		mNsdHelper.initializeNsd();
 		if (mNsdHelper != null) {
 			Log.d(TAG, "Resumed");
 
