@@ -14,7 +14,6 @@ import android.view.WindowManager;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
-import com.metaio.sdk.jni.ArelCall;
 import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
@@ -28,10 +27,8 @@ import com.metaio.tools.io.AssetsManager;
 public class GameActivity extends ARViewActivity 
 {
 
-	/*Variabler för objekten i spelet*/
+	/*Variables for objects in the game*/
 	private IGeometry antGeometry;
-	private IGeometry sphereGeometry;
-	private IGeometry flowerGeometry;
 	private IGeometry wallGeometry1;
 	private IGeometry wallGeometry2;
 	private IGeometry wallGeometry3;
@@ -47,9 +44,14 @@ public class GameActivity extends ARViewActivity
 	private IGeometry paintballGeometry;
 	private GestureHandlerAndroid mGestureHandler;
 	private int mGestureMask;
-	private Vector3d direction;
 
-
+	//Variables for physics calibration
+	Vector3d acceleration;
+	Vector3d velocity;
+	Vector3d totalForce;
+	Vector3d gravity;
+	float timestep;
+	float mass;
 	
 	/*delkaration av variabler som används i renderingsloopen*/
 	float SphereMoveX = 2f;
@@ -61,9 +63,13 @@ public class GameActivity extends ARViewActivity
 		mGestureMask  = GestureHandler.GESTURE_ALL;
 		mGestureHandler = new GestureHandlerAndroid(metaioSDK,mGestureMask);
 		
-		//direction of outgoing paintball, will later be based on how you interact with the screen (TODO).
-		Vector3d direction =  new Vector3d(0f, 0f, 0f);
-		
+		//velocity and direction of outgoing paintball, will later be based on how you interact with the screen (TODO).
+		acceleration =  new Vector3d(0f, 0f, 0f);
+		velocity =  new Vector3d(0f, 0f, 0f);
+		totalForce =  new Vector3d(0f, 0f, 0f);
+		gravity = new Vector3d(0f, 0f, -9.82f);
+		timestep = 0.1f;								//0.1s
+		mass = 0.1f;		   							//0.1kg
 	}
 	
 	
@@ -131,24 +137,15 @@ public class GameActivity extends ARViewActivity
 			antGeometry = Load3Dmodel("ant/formicaRufa.mfbx");
 			geometryProperties(antGeometry, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation((float) (3*Math.PI/2), 0f, 0f) );
 			
-			//create a sphere Geometry
-			//sphereGeometry = Load3Dmodel("sphere/sphere_10mm.obj");
-			//geometryProperties(sphereGeometry, 2f, new Vector3d(100.0f, 0.0f, 0.0f), new Rotation(0.0f, 0.0f ,0.1f));
-			//sphereGeometry.setCoordinateSystemID(sphereGeometry.getCoordinateSystemID());
-			
-			//flowerGeometry = Load3Dmodel("plumBlossom/plum blossom in glass cup_fbx.mfbx");
-			//geometryProperties(flowerGeometry, 0.08f, new Vector3d(0.0f, 0.0f, 200.0f), new Rotation(0.0f, 0.0f ,0.1f));
-			
-			
 			//creates the walls around the game area
 			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
 			geometryProperties(wallGeometry1, 20f, new Vector3d(850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
-			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
-			geometryProperties(wallGeometry1, 20f, new Vector3d(-850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
-			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
-			geometryProperties(wallGeometry1, 20f, new Vector3d(0f, 720f, 0f), new Rotation(0f, 0f, 0f));
-			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
-			geometryProperties(wallGeometry1, 20f, new Vector3d(0f, -720f, 0f), new Rotation(0f, 0f, 0f));
+			wallGeometry2 = Load3Dmodel("wall/wall.mfbx");
+			geometryProperties(wallGeometry2, 20f, new Vector3d(-850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
+			wallGeometry3 = Load3Dmodel("wall/wall.mfbx");
+			geometryProperties(wallGeometry3, 20f, new Vector3d(0f, 720f, 0f), new Rotation(0f, 0f, 0f));
+			wallGeometry4 = Load3Dmodel("wall/wall.mfbx");
+			geometryProperties(wallGeometry4, 20f, new Vector3d(0f, -720f, 0f), new Rotation(0f, 0f, 0f));
 			
 			//creates the tower
 			towerGeometry1 = Load3Dmodel("tower/tower.mfbx");
@@ -197,23 +194,44 @@ public class GameActivity extends ARViewActivity
 		super.onDrawFrame();
 
 		// If content not loaded yet, do nothing
-		if ( wallGeometry1 == null || towerGeometry1 == null)
-			return;
 
-//		//direction of outgoing paintball, will later be based on how you interact with the screen (TODO).
-//		if(paintballGeometry.getIsRendered() == true)
-//		{
-//			direction = new Vector3d(30f, 30f, -20f);
-//		}
+		if ( wallGeometry4 == null || towerGeometry4== null || paintballGeometry == null)
+			return;
+				
 
 		//add movement to paintball until it reaches groundlevel. When the ball reaches groundlevel
 		//it becomes invisible and returns to start position and can be triggered again.
-		paintballGeometry.setTranslation(paintballGeometry.getTranslation().add(direction));
-		if(paintballGeometry.getTranslation().getZ() <= 0f)
+		if(paintballGeometry.isVisible())
 		{
-			paintballGeometry.setVisible(false);
-			paintballGeometry.setTranslation(new Vector3d(-600f, -450f, 370f));
-			direction = new Vector3d (0f, 0f, 0f);
+
+			// physics calculated with Euler model
+			totalForce.setX(gravity.getX());
+			totalForce.setY(gravity.getY());
+			totalForce.setZ(gravity.getZ());
+			
+			acceleration.setX(totalForce.getX() / mass);
+			acceleration.setY(totalForce.getY() / mass);
+			acceleration.setZ(totalForce.getZ() / mass);
+			
+			velocity.setX(velocity.getX()+timestep*acceleration.getX());
+			velocity.setY(velocity.getY()+timestep*acceleration.getY());
+			velocity.setZ(velocity.getZ()+timestep*acceleration.getZ());
+			
+			Vector3d possition = paintballGeometry.getTranslation();
+			possition.setX(possition.getX()+timestep*velocity.getX());
+			possition.setY(possition.getY()+timestep*velocity.getY());
+			possition.setZ(possition.getZ()+timestep*velocity.getZ());
+			
+			/*possition.setX(velocity.getX());
+			possition.setY(velocity.getY());
+			possition.setZ(velocity.getZ());*/
+			paintballGeometry.setTranslation(possition);
+			//paintballGeometry.setTranslation(paintballGeometry.getTranslation().add(velocity));
+			if(paintballGeometry.getTranslation().getZ() <= 0f)
+			{
+				paintballGeometry.setVisible(false);
+			}
+
 		}
 
 		// add rotation relative current angel 
@@ -231,12 +249,14 @@ public class GameActivity extends ARViewActivity
 		//check if the touched geometry is the canon geometry, if true shot a paintball else do nothing
 		if(geometry.equals(canonGeometry1))
 		{	
-			paintballGeometry.setVisible(true);
-			direction = new Vector3d(30f, 30f, -20f);
+			if(!paintballGeometry.isVisible())
+			{
+				paintballGeometry.setTranslation(new Vector3d(-600f, -450f, 370f));
+				velocity = new Vector3d(200f, 200f, 0f);
+				paintballGeometry.setVisible(true);
+			}
 
-			
 		}
-
 	}
 	
 	
