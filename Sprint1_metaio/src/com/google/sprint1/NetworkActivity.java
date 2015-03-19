@@ -53,21 +53,22 @@ public class NetworkActivity extends Activity {
 		
 		mNsdHelper.initializeNsd();
 		
-
-	}
-	
-	/** Called when the user clicks the Register button */
-	public void clickAdvertise(View view) {
-		// in order to start the game we need to extract our assets to the
-		// metaio SDK
+		//Register to network
 		if(mConnection.getLocalPort() > -1) {
             mNsdHelper.registerService(mConnection.getLocalPort());
         } else {
             Log.d(TAG, "ServerSocket isn't bound.");
         }
+		
+		mNsdHelper.discoverServices();
+		
+		Log.d(TAG, "REGISTER DONE JENS!!");
+
 	}
 	
-	public void clickDiscover(View v){
+	/** Called when the user clicks the Discover button */
+	
+	public void clickDiscoveryy(View v){
 		mNsdHelper.discoverServices();
 	}
 	

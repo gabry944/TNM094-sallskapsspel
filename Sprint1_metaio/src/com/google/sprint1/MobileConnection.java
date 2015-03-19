@@ -12,7 +12,7 @@ public class MobileConnection {
 
 	private Handler mUpdateHandler;
 	private MobileServer mMobileServer;
-
+	
 	private static final String TAG = "MobileConnection";
 
 	private Socket mSocket;
