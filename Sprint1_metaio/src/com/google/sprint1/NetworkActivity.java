@@ -154,6 +154,10 @@ public class NetworkActivity extends Activity {
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}
+	
+	public void sendData(View view) {
+		//mConnection.sendData("Data from another person! :O"));
+	}
 
 	@Override
 	protected void onPause() {
