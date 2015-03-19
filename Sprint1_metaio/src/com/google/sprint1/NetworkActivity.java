@@ -147,8 +147,9 @@ public class NetworkActivity extends Activity {
 		listAdapter.clear();
 		listAdapter.addAll(mNsdHelper.getChosenServiceInfoList());
 		listAdapter.notifyDataSetChanged();
-		
+
 	}
+
 	/** Called when the user clicks the mainMenu button (huvudmeny) */
 	public void mainMenu(View view) {
 		Intent intentmenu = new Intent(this, MainActivity.class);
@@ -158,7 +159,11 @@ public class NetworkActivity extends Activity {
 	@Override
 	protected void onPause() {
 		if (mNsdHelper != null) {
-			mNsdHelper.stopDiscovery();
+
+			Log.d(TAG, "Pausad");
+			// mNsdHelper.stopDiscovery();
+			mNsdHelper.tearDown();
+			mNsdHelper = null;
 		}
 		super.onPause();
 	}
@@ -166,23 +171,24 @@ public class NetworkActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+
 		if (mNsdHelper != null) {
+			Log.d(TAG, "Resumed");
+
+			mNsdHelper.registerService(mConnection.getLocalPort());
 			mNsdHelper.discoverServices();
-			listAdapter.notifyDataSetChanged();
+
 		}
 
 	}
 
-	@Override
-	protected void onStop() {
-		super.onStop();
-	}
-
-	@Override
 	protected void onDestroy() {
 
-		Log.d(TAG, "tearing down");
-		mNsdHelper.tearDown();
+		Log.d(TAG, "Destroyed");
+		if (mNsdHelper != null) {
+			mNsdHelper.tearDown();
+			mNsdHelper = null;
+		}
 		mConnection.tearDown();
 		super.onDestroy();
 	}
