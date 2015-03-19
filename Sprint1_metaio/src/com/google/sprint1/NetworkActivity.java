@@ -162,6 +162,7 @@ public class NetworkActivity extends Activity {
 		super.onResume();
 		if (mNsdHelper != null) {
 			mNsdHelper.discoverServices();
+			listAdapter.notifyDataSetChanged();
 		}
 
 	}

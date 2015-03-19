@@ -68,7 +68,7 @@ public class NsdHelper {
 
 			@Override
 			public void onServiceFound(NsdServiceInfo service) {
-				Log.d(TAG, "Service discovery success" + service);
+				Log.d(TAG, "Service discovery success. Found: " + service.getServiceName());
 				if (!service.getServiceType().equals(SERVICE_TYPE)) {
 					Log.d(TAG,
 							"Unknown Service Type: " + service.getServiceType());
@@ -84,7 +84,7 @@ public class NsdHelper {
 
 			@Override
 			public void onServiceLost(NsdServiceInfo service) {
-				Log.e(TAG, "service lost" + service);
+				Log.e(TAG, "service lost: " + service.getServiceName());
 				mServices.remove(service);
 				if (mService == service) {
 					mService = null;
