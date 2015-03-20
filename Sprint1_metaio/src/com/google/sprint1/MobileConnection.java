@@ -68,6 +68,14 @@ public class MobileConnection {
 		mSocket = socket;
 	}
 
+	public synchronized void sendData(String msg)
+	{
+		if(!(mGameClient == null))
+			mGameClient.sendData(msg);
+		else
+			Log.d(TAG, "Not connected to any server. Cannot send message");
+	}
+	
 	public synchronized void updateData(String msg, boolean local) {
 		Log.e(TAG, "Updating message: " + msg);
 
@@ -239,7 +247,9 @@ public class MobileConnection {
 
 		public void sendData(String msg) {
 			try {
+				Log.d(TAG, "calling getSocket()");
 				Socket socket = getSocket();
+				Log.d(TAG, socket.toString());
 				if (socket == null) {
 					Log.d(CLIENT_TAG, "Socket is null, wtf?");
 				} else if (socket.getOutputStream() == null) {
@@ -251,7 +261,7 @@ public class MobileConnection {
 						true);
 				out.println(msg);
 				out.flush();
-				updateData(msg, true);
+				//updateData(msg, true);
 			} catch (UnknownHostException e) {
 				Log.d(CLIENT_TAG, "Unknown Host", e);
 			} catch (IOException e) {
