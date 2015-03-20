@@ -2,10 +2,15 @@ package com.google.sprint1;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
 
 public class NetworkService extends Service {
+	
+	Handler mUpdateHandler;
+	NsdHelper mNsdHelper;
+	MobileConnection mConnection;
 
 	@Override
 	public IBinder onBind(Intent inten) {
@@ -16,6 +21,12 @@ public class NetworkService extends Service {
 	@Override
 	public void onCreate() {
 		Toast.makeText(this, "My service created", Toast.LENGTH_LONG).show();
+		
+		mUpdateHandler = new Handler();
+		mConnection = new MobileConnection(mUpdateHandler);
+		mNsdHelper = new NsdHelper(this);
+
+		mNsdHelper.initializeNsd();
 	}
 
 	@Override

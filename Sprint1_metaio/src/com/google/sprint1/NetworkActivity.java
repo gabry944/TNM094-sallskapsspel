@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
+import com.google.sprint1.NetworkService;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -38,8 +39,8 @@ public class NetworkActivity extends Activity {
 										// AssetExtraxter class
 
 	private Handler mUpdateHandler;
-	NsdHelper mNsdHelper;
-	MobileConnection mConnection;
+	//NsdHelper mNsdHelper;
+	//MobileConnection mConnection;
 
 	ArrayAdapter<NsdServiceInfo> listAdapter;
 
@@ -57,10 +58,10 @@ public class NetworkActivity extends Activity {
 		startGame = new AssetsExtracter();
 
 		mUpdateHandler = new Handler();
-		mConnection = new MobileConnection(mUpdateHandler);
-		mNsdHelper = new NsdHelper(this);
+		//mConnection = new MobileConnection(mUpdateHandler);
+		//mNsdHelper = new NsdHelper(this);
 
-		mNsdHelper.initializeNsd();
+		//mNsdHelper.initializeNsd();
 
 		ListView listView = (ListView) findViewById(R.id.serviceView);
 
