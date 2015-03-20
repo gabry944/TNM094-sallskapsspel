@@ -36,6 +36,7 @@ public class NetworkActivity extends Activity {
 
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
+
 	private Handler mUpdateHandler;
 	NsdHelper mNsdHelper;
 	MobileConnection mConnection;
@@ -90,7 +91,8 @@ public class NetworkActivity extends Activity {
 											int which) {
 										NsdServiceInfo service = listAdapter
 												.getItem(pos);
-										service = mNsdHelper.resolveService(service);
+										service = mNsdHelper
+												.resolveService(service);
 										if (service != null) {
 											Log.d(TAG, "Connecting to: "
 													+ service.getServiceName());
@@ -136,8 +138,7 @@ public class NetworkActivity extends Activity {
 
 	public void updateAdapter(View view) {
 		listAdapter.clear();
-		for (int i = 0; i < mNsdHelper.getFoundServices().size(); i ++)
-		{
+		for (int i = 0; i < mNsdHelper.getFoundServices().size(); i++) {
 			listAdapter.add(mNsdHelper.getFoundServices().get(i));
 		}
 		listAdapter.notifyDataSetChanged();
@@ -149,28 +150,30 @@ public class NetworkActivity extends Activity {
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}
-	
+
 	public void sendData(View view) {
 		Log.d(TAG, "sendData clicked!");
 		mConnection.sendData("Data from another client.");
+
 	}
 
 	@Override
 	protected void onPause() {
+
 		if (mNsdHelper != null) {
 
 			Log.d(TAG, "Pausad");
-			// mNsdHelper.stopDiscovery();
 			mNsdHelper.tearDown();
 			mNsdHelper = null;
 		}
+
 		super.onPause();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+
 		mNsdHelper = new NsdHelper(this);
 		mNsdHelper.initializeNsd();
 		if (mNsdHelper != null) {

@@ -95,7 +95,7 @@ public class GameActivity extends ARViewActivity
 			/** Load Marker */
 			// Getting a file path for tracking configuration XML file
 			File trackingConfigFile = AssetsManager.getAssetPathAsFile(
-					getApplicationContext(), "TrackingData_MarkerlessFast.xml"); 
+					getApplicationContext(), "marker.zip"); 
 			
 			// Assigning tracking configuration
 			boolean result = metaioSDK
@@ -114,7 +114,7 @@ public class GameActivity extends ARViewActivity
 			sphereGeometry = Load3Dmodel("sphere/sphere_10mm.obj");
 			geometryProperties(sphereGeometry, 2f, new Vector3d(100.0f, 0.0f, 0.0f), new Rotation(0.0f, 0.0f ,0.1f));
 			
-			flowerGeometry = Load3Dmodel("plumBlossom/plum blossom in glass cup_fbx.mfbx");
+			flowerGeometry = Load3Dmodel("plumBlossom/plum blossom in glass cup_fbx.zip");
 			geometryProperties(flowerGeometry, 0.08f, new Vector3d(0.0f, 0.0f, 200.0f), new Rotation(0.0f, 0.0f ,0.1f));
 			
 			//sphereGeometry.setCoordinateSystemID(sphereGeometry.getCoordinateSystemID());			
