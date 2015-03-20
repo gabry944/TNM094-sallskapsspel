@@ -241,7 +241,5 @@ public class NetworkActivity extends Activity {
 			}
 			finish();
 		}
-
 	}
-
 }
