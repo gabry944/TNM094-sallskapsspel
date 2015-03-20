@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -72,6 +74,13 @@ public class MobileConnection {
 	{
 		if(!(mGameClient == null))
 			mGameClient.sendData(msg);
+		else
+			Log.d(TAG, "Not connected to any server. Cannot send message");
+	}
+	public synchronized void sendData(Object obj)
+	{
+		if(!(mGameClient == null))
+			mGameClient.sendData(obj);
 		else
 			Log.d(TAG, "Not connected to any server. Cannot send message");
 	}
@@ -212,14 +221,18 @@ public class MobileConnection {
 			@Override
 			public void run() {
 
-				BufferedReader input;
+				//BufferedReader input;
+				ObjectInputStream input;
 				try {
-					input = new BufferedReader(new InputStreamReader(
-							mSocket.getInputStream()));
+					
+					//input = new BufferedReader(new InputStreamReader(
+					//		mSocket.getInputStream()));
+					input = new ObjectInputStream(getSocket().getInputStream());
+					
 					while (!Thread.currentThread().isInterrupted()) {
 
 						String messageStr = null;
-						messageStr = input.readLine();
+						messageStr = input.readObject().toString();
 						if (messageStr != null) {
 							Log.d(CLIENT_TAG, "Read from the stream: "
 									+ messageStr);
@@ -233,6 +246,9 @@ public class MobileConnection {
 
 				} catch (IOException e) {
 					Log.e(CLIENT_TAG, "Server loop error: ", e);
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}
@@ -245,6 +261,35 @@ public class MobileConnection {
 			}
 		}
 
+		public void sendData(Object obj) {
+			try {
+				Log.d(TAG, "calling getSocket()");
+				Socket socket = getSocket();
+				Log.d(TAG, socket.toString());
+				if (socket == null) {
+					Log.d(CLIENT_TAG, "Socket is null, wtf?");
+				} else if (socket.getOutputStream() == null) {
+					Log.d(CLIENT_TAG, "Socket output stream is null, wtf?");
+				}
+
+				ObjectOutputStream outStream = null;
+				outStream = new ObjectOutputStream(socket.getOutputStream());
+				outStream.writeObject(obj);
+				
+				//out.println(msg);
+				//out.flush();
+				//updateData(msg, true);
+				
+			} catch (UnknownHostException e) {
+				Log.d(CLIENT_TAG, "Unknown Host", e);
+			} catch (IOException e) {
+				Log.d(CLIENT_TAG, "I/O Exception", e);
+			} catch (Exception e) {
+				Log.d(CLIENT_TAG, "Error3", e);
+			}
+			Log.d(CLIENT_TAG, "Client sent message: " + obj);
+		}
+		
 		public void sendData(String msg) {
 			try {
 				Log.d(TAG, "calling getSocket()");
