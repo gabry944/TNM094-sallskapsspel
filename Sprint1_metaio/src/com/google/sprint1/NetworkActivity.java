@@ -15,6 +15,7 @@ import android.net.nsd.NsdServiceInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -38,6 +39,7 @@ public class NetworkActivity extends Activity {
 										// AssetExtraxter class
 
 	private Handler mUpdateHandler;
+	private Handler mNSDHandler;
 	NsdHelper mNsdHelper;
 	MobileConnection mConnection;
 
@@ -56,9 +58,41 @@ public class NetworkActivity extends Activity {
 		/* Start game */
 		startGame = new AssetsExtracter();
 
-		mUpdateHandler = new Handler();
+		mUpdateHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+
+			}
+		};
+
+		mNSDHandler = new Handler() {
+			@Override
+			// Called whenever a message is sent to the handler.
+			// Currently assumes that the message contains a NsdServiceInfo
+			// object.
+			public void handleMessage(Message msg) {
+				NsdServiceInfo service;
+				// If message is of type 1, meaning "delete list".
+				// TODO: Should probably be an enum
+				if (msg.what == 1) {
+					listAdapter.clear();
+				}
+				// If key is "found", add to the adapter
+				else if ((service = (NsdServiceInfo) msg.getData().get("found")) != null) {
+					listAdapter.add(service);
+				}
+				// If key is "lost", remove from adapter
+				else if ((service = (NsdServiceInfo) msg.getData().get("lost")) != null) {
+					listAdapter.remove(service);
+				}
+				// Notify adapter that the list is updated.
+				listAdapter.notifyDataSetChanged();
+
+			}
+		};
+
 		mConnection = new MobileConnection(mUpdateHandler);
-		mNsdHelper = new NsdHelper(this);
+		mNsdHelper = new NsdHelper(this, mNSDHandler);
 
 		mNsdHelper.initializeNsd();
 
@@ -67,19 +101,21 @@ public class NetworkActivity extends Activity {
 		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
 				android.R.layout.simple_list_item_1,
 				new ArrayList<NsdServiceInfo>());
+
 		listView.setAdapter(listAdapter);
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
+			// When clicking on a service, an AlertDialog window pops up
+			// to allow you to connect to said service.
 			public void onItemClick(AdapterView parent, View view,
 					final int pos, long id) {
 
-				// 1. Instantiate an AlertDialog.Builder with its constructor
+				// Instantiate an AlertDialog.Builder with its constructor
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						NetworkActivity.this);
 
-				// 2. Chain together various setter methods to set the dialog
-				// characteristics
+				// set vari
 				builder.setMessage(
 						"Connect to "
 								+ listAdapter.getItem(pos).getServiceName()
@@ -115,18 +151,12 @@ public class NetworkActivity extends Activity {
 								});
 				// 3. Get the AlertDialog from create()
 				AlertDialog dialog = builder.create();
+				// Show the AlertDialog
 				dialog.show();
 			}
 
 		});
 
-	}
-
-
-	public void clickDiscover(View v) {
-
-		mNsdHelper.discoverServices();
-		updateAdapter(v);
 	}
 
 	/** Called when the user clicks the start Game button (starta spel) */
@@ -136,24 +166,15 @@ public class NetworkActivity extends Activity {
 		startGame.execute(0); // Starts the assetsExtracter class
 	}
 
-	public void updateAdapter(View view) {
-		listAdapter.clear();
-		for (int i = 0; i < mNsdHelper.getFoundServices().size(); i++) {
-			listAdapter.add(mNsdHelper.getFoundServices().get(i));
-		}
-		listAdapter.notifyDataSetChanged();
-
-	}
-
 	/** Called when the user clicks the mainMenu button (huvudmeny) */
 	public void mainMenu(View view) {
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}
 
+	/** Called when the user clicks the Send Data button */
 	public void sendData(View view) {
 		TestClass test = new TestClass(5, "hej");
-		Log.d(TAG, "sendData clicked!");
 		mConnection.sendData(test);
 
 	}
@@ -175,7 +196,7 @@ public class NetworkActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 
-		mNsdHelper = new NsdHelper(this);
+		mNsdHelper = new NsdHelper(this, mNSDHandler);
 		mNsdHelper.initializeNsd();
 		if (mNsdHelper != null) {
 			Log.d(TAG, "Resumed");

@@ -62,7 +62,6 @@ public class MobileConnection {
 				try {
 					mSocket.close();
 				} catch (IOException e) {
-					// TODO(alexlucas): Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -70,13 +69,6 @@ public class MobileConnection {
 		mSocket = socket;
 	}
 
-	public synchronized void sendData(String msg)
-	{
-		if(!(mGameClient == null))
-			mGameClient.sendData(msg);
-		else
-			Log.d(TAG, "Not connected to any server. Cannot send message");
-	}
 	public synchronized void sendData(Object obj)
 	{
 		if(!(mGameClient == null))
@@ -86,21 +78,9 @@ public class MobileConnection {
 	}
 	
 	public synchronized void updateData(String msg, boolean local) {
-		Log.e(TAG, "Updating message: " + msg);
-
-		if (local) {
-			msg = "me: " + msg;
-		} else {
-			msg = "them: " + msg;
-		}
-
-		Bundle messageBundle = new Bundle();
-		messageBundle.putString("msg", msg);
-
-		Message message = new Message();
-		message.setData(messageBundle);
-		mUpdateHandler.sendMessage(message);
-
+		
+		//TODO: Send data back to activity using mUpdateHandler.
+		
 	}
 
 	private Socket getSocket() {
@@ -131,10 +111,6 @@ public class MobileConnection {
 			public void run() {
 
 				try {
-					// Since discovery will happen via Nsd, we don't need to
-					// care which port is
-					// used. Just grab an available one and advertise it via
-					// Nsd.
 					mServerSocket = new ServerSocket(0);
 					setLocalPort(mServerSocket.getLocalPort());
 
@@ -176,11 +152,8 @@ public class MobileConnection {
 
 		class SendingThread implements Runnable {
 
-			BlockingQueue<String> mMessageQueue;
-			private int QUEUE_CAPACITY = 10;
-
 			public SendingThread() {
-				mMessageQueue = new ArrayBlockingQueue<String>(QUEUE_CAPACITY);
+				
 			}
 
 			@Override
@@ -205,40 +178,31 @@ public class MobileConnection {
 				}
 
 				while (true) {
-					try {
-						String msg = mMessageQueue.take();
-						sendData(msg);
-					} catch (InterruptedException ie) {
-						Log.d(CLIENT_TAG,
-								"Message sending loop interrupted, exiting");
-					}
+					
 				}
 			}
 		}
-
+		/** This thread takes care of all the incoming packets from the active connections and deals with them */
 		class ReceivingThread implements Runnable {
 
 			@Override
 			public void run() {
 
-				//BufferedReader input;
 				ObjectInputStream input;
 				try {
 					
-					//input = new BufferedReader(new InputStreamReader(
-					//		mSocket.getInputStream()));
 					input = new ObjectInputStream(getSocket().getInputStream());
 					
 					while (!Thread.currentThread().isInterrupted()) {
-
+						//Loop that reads data from the stream. Currently just converts object to String and sends them along. 
+						
 						String messageStr = null;
 						messageStr = input.readObject().toString();
+						
 						if (messageStr != null) {
-							Log.d(CLIENT_TAG, "Read from the stream: "
-									+ messageStr);
+							Log.d(CLIENT_TAG, "Read from the stream: " + messageStr);
 							updateData(messageStr, false);
 						} else {
-							Log.d(CLIENT_TAG, "The nulls! The nulls!");
 							break;
 						}
 					}
@@ -253,19 +217,13 @@ public class MobileConnection {
 			}
 		}
 
-		public void tearDown() {
-			try {
-				getSocket().close();
-			} catch (IOException ioe) {
-				Log.e(CLIENT_TAG, "Error when closing server socket.");
-			}
-		}
-
+		
+		/** Sends a serializable object to the sockets output stream */
 		public void sendData(Object obj) {
 			try {
-				Log.d(TAG, "calling getSocket()");
+				
 				Socket socket = getSocket();
-				Log.d(TAG, socket.toString());
+				//Checks if socket is active for safety
 				if (socket == null) {
 					Log.d(CLIENT_TAG, "Socket is null, wtf?");
 				} else if (socket.getOutputStream() == null) {
@@ -276,10 +234,6 @@ public class MobileConnection {
 				outStream = new ObjectOutputStream(socket.getOutputStream());
 				outStream.writeObject(obj);
 				
-				//out.println(msg);
-				//out.flush();
-				//updateData(msg, true);
-				
 			} catch (UnknownHostException e) {
 				Log.d(CLIENT_TAG, "Unknown Host", e);
 			} catch (IOException e) {
@@ -287,34 +241,17 @@ public class MobileConnection {
 			} catch (Exception e) {
 				Log.d(CLIENT_TAG, "Error3", e);
 			}
-			Log.d(CLIENT_TAG, "Client sent message: " + obj);
+			Log.d(CLIENT_TAG, "Client sent data: " + obj);
 		}
 		
-		public void sendData(String msg) {
+		/** Called to close down socket */
+		public void tearDown() {
 			try {
-				Log.d(TAG, "calling getSocket()");
-				Socket socket = getSocket();
-				Log.d(TAG, socket.toString());
-				if (socket == null) {
-					Log.d(CLIENT_TAG, "Socket is null, wtf?");
-				} else if (socket.getOutputStream() == null) {
-					Log.d(CLIENT_TAG, "Socket output stream is null, wtf?");
-				}
-
-				PrintWriter out = new PrintWriter(new BufferedWriter(
-						new OutputStreamWriter(getSocket().getOutputStream())),
-						true);
-				out.println(msg);
-				out.flush();
-				//updateData(msg, true);
-			} catch (UnknownHostException e) {
-				Log.d(CLIENT_TAG, "Unknown Host", e);
-			} catch (IOException e) {
-				Log.d(CLIENT_TAG, "I/O Exception", e);
-			} catch (Exception e) {
-				Log.d(CLIENT_TAG, "Error3", e);
+				getSocket().close();
+			} catch (IOException ioe) {
+				Log.e(CLIENT_TAG, "Error when closing server socket.");
 			}
-			Log.d(CLIENT_TAG, "Client sent message: " + msg);
 		}
+		
 	}
 }

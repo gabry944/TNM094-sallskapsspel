@@ -18,22 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-
-            <Button
-                android:id="@+id/discoverButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="clickDiscover"
-                android:text="Discover" />
-            
-            <Button
-                android:id="@+id/updateListButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="updateAdapter"
-                android:text="Update List" />
-
-            
             <Button
                 android:id="@+id/sendDataButton"
                 android:layout_width="wrap_content"
@@ -70,9 +54,7 @@
                 android:onClick="mainMenu"
                 android:text="@string/Huvudmeny"
                 android:textColor="#000000" />
-
         </LinearLayout>
-
     </LinearLayout>
 
 </RelativeLayout>
