@@ -36,6 +36,7 @@ public class NetworkActivity extends Activity {
 
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
+	
 	private Handler mUpdateHandler;
 	NsdHelper mNsdHelper;
 	MobileConnection mConnection;
@@ -168,7 +169,6 @@ public class NetworkActivity extends Activity {
 		if (mNsdHelper != null) {
 
 			Log.d(TAG, "Pausad");
-			// mNsdHelper.stopDiscovery();
 			mNsdHelper.tearDown();
 			mNsdHelper = null;
 		}
