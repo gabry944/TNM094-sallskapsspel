@@ -40,9 +40,6 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 
 	private static final String TAG = "myLog";
 
-	/*is the game in Initialization face?*/
-	boolean Initialization;
-
 	/*Variables for objects in the game*/
 	private IGeometry antGeometry;
 	private IGeometry wallGeometry1;
@@ -57,7 +54,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	private IGeometry canonGeometry3;
 	private IGeometry towerGeometry4;
 	private IGeometry canonGeometry4;
-	private IGeometry splashGeometry;
+
 	
 	private Vector3d startTouch;
 	private Vector3d endTouch;
@@ -69,8 +66,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
     private GestureLibrary gestureLib;
     protected FrameLayout frameLayout;
 	
-	private PaintBall paint_ball_object;
-	PaintBall new_paint_ball;
+	PaintBall paint_ball_object;
 	private ArrayList<PaintBall> exsisting_paint_balls;
 	
 
@@ -82,9 +78,6 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	float timeStep;
 	float mass;
 	
-	/*delkaration av variabler som används i renderingsloopen*/
-	float SphereMoveX = 2f;
-	
 	/** Attaching layout to the activity */
 	@Override
 	public int getGUILayout()
@@ -94,12 +87,11 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		return R.layout.activity_game;
 	}
 	
-
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		
+
 		//setup to handle gestures
 
 //	    GestureOverlayView gestureOverlayView = new GestureOverlayView(this);
@@ -122,8 +114,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
         //gestureOverlayView.addOnGesturePerformedListener(this);
         //this.setContentView(gestureOverlayView);
 		
-		paint_ball_object = new PaintBall();
-		exsisting_paint_balls = new ArrayList<PaintBall>();
+		exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		
 		//velocity and direction of outgoing paintball, will later be based on how you interact with the screen (TODO).
 		acceleration =  new Vector3d(0f, 0f, 0f);
@@ -136,11 +127,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		touchVec =  new Vector3d(0f, 0f, 0f);
 		startTouch =  new Vector3d(0f, 0f, 0f);
 		endTouch =  new Vector3d(0f, 0f, 0f);
-		
-		Initialization = true;
 	}
-
-		
 
 	/** Called when the user clicks the Exit button (krysset) */
 	public void onExitButtonClick(View v) {
@@ -208,67 +195,68 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	{
 		try 
 		{
-			if (Initialization)
+			/** Load Marker */
+			// Getting a file path for tracking configuration XML file
+			File trackingConfigFile = AssetsManager.getAssetPathAsFile(
+					getApplicationContext(), "TrackingData_MarkerlessFast.xml"); 
+			
+			// Assigning tracking configuration
+			boolean result = metaioSDK
+					.setTrackingConfiguration(trackingConfigFile); 
+			
+			MetaioDebug.log("Tracking data loaded: " + result);				
+			
+			/** Load Object */
+
+			//create ant geometry
+			antGeometry = Load3Dmodel("ant/formicaRufa.mfbx");
+			geometryProperties(antGeometry, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation((float) (3*Math.PI/2), 0f, 0f) );
+			
+			//creates the walls around the game area
+			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
+			geometryProperties(wallGeometry1, 20f, new Vector3d(850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
+			wallGeometry2 = Load3Dmodel("wall/wall.mfbx");
+			geometryProperties(wallGeometry2, 20f, new Vector3d(-850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
+			wallGeometry3 = Load3Dmodel("wall/wall.mfbx");
+			geometryProperties(wallGeometry3, 20f, new Vector3d(0f, 720f, 0f), new Rotation(0f, 0f, 0f));
+			wallGeometry4 = Load3Dmodel("wall/wall.mfbx");
+			geometryProperties(wallGeometry4, 20f, new Vector3d(0f, -720f, 0f), new Rotation(0f, 0f, 0f));
+			
+			//creates the tower
+			towerGeometry1 = Load3Dmodel("tower/tower.mfbx");
+			geometryProperties(towerGeometry1, 4f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
+			canonGeometry1 = Load3Dmodel("tower/canon.mfbx");
+			geometryProperties(canonGeometry1, 4f, new Vector3d(-650f, -520f, 330f), new Rotation(0f, 0f, 0f));
+			towerGeometry2 = Load3Dmodel("tower/tower.mfbx");
+			geometryProperties(towerGeometry2, 4f, new Vector3d(650f, 520f, 0f), new Rotation(0f, 0f, 0f));
+			canonGeometry2 = Load3Dmodel("tower/canon.mfbx");
+			geometryProperties(canonGeometry2, 4f, new Vector3d(650f, 520f, 330f), new Rotation(0f, 0f, 0f));
+			towerGeometry3 = Load3Dmodel("tower/tower.mfbx");
+			geometryProperties(towerGeometry3, 4f, new Vector3d(-650f, 520f, 0f), new Rotation(0f, 0f, 0f));
+			canonGeometry3 = Load3Dmodel("tower/canon.mfbx");
+			geometryProperties(canonGeometry3, 4f, new Vector3d(-650f, 520f, 330f), new Rotation(0f, 0f, 0f));
+			towerGeometry4 = Load3Dmodel("tower/tower.mfbx");
+			geometryProperties(towerGeometry4, 4f, new Vector3d(650f, -520f, 0f), new Rotation(0f, 0f, 0f));
+			canonGeometry4 = Load3Dmodel("tower/canon.mfbx");
+			geometryProperties(canonGeometry4, 4f, new Vector3d(650f, -520f, 330f), new Rotation(0f, 0f, 0f));
+			
+			//creates a list of paint balls
+			for(int i = 0; i < 20; i++)
 			{
-				/** Load Marker */
-				// Getting a file path for tracking configuration XML file
-				File trackingConfigFile = AssetsManager.getAssetPathAsFile(
-						getApplicationContext(), "TrackingData_MarkerlessFast.xml"); 
+				// create new paint ball
+				paint_ball_object = new PaintBall();
 				
-				// Assigning tracking configuration
-				boolean result = metaioSDK
-						.setTrackingConfiguration(trackingConfigFile); 
-				
-				MetaioDebug.log("Tracking data loaded: " + result);				
-				
-				/** Load Object */
-	
-				//create ant geometry
-				antGeometry = Load3Dmodel("ant/formicaRufa.mfbx");
-				geometryProperties(antGeometry, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation((float) (3*Math.PI/2), 0f, 0f) );
-				
-				//creates the walls around the game area
-				wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
-				geometryProperties(wallGeometry1, 20f, new Vector3d(850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
-				wallGeometry2 = Load3Dmodel("wall/wall.mfbx");
-				geometryProperties(wallGeometry2, 20f, new Vector3d(-850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
-				wallGeometry3 = Load3Dmodel("wall/wall.mfbx");
-				geometryProperties(wallGeometry3, 20f, new Vector3d(0f, 720f, 0f), new Rotation(0f, 0f, 0f));
-				wallGeometry4 = Load3Dmodel("wall/wall.mfbx");
-				geometryProperties(wallGeometry4, 20f, new Vector3d(0f, -720f, 0f), new Rotation(0f, 0f, 0f));
-				
-				//creates the tower
-				towerGeometry1 = Load3Dmodel("tower/tower.mfbx");
-				geometryProperties(towerGeometry1, 4f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
-				canonGeometry1 = Load3Dmodel("tower/canon.mfbx");
-				geometryProperties(canonGeometry1, 4f, new Vector3d(-650f, -520f, 330f), new Rotation(0f, 0f, 0f));
-				towerGeometry2 = Load3Dmodel("tower/tower.mfbx");
-				geometryProperties(towerGeometry2, 4f, new Vector3d(650f, 520f, 0f), new Rotation(0f, 0f, 0f));
-				canonGeometry2 = Load3Dmodel("tower/canon.mfbx");
-				geometryProperties(canonGeometry2, 4f, new Vector3d(650f, 520f, 330f), new Rotation(0f, 0f, 0f));
-				towerGeometry3 = Load3Dmodel("tower/tower.mfbx");
-				geometryProperties(towerGeometry3, 4f, new Vector3d(-650f, 520f, 0f), new Rotation(0f, 0f, 0f));
-				canonGeometry3 = Load3Dmodel("tower/canon.mfbx");
-				geometryProperties(canonGeometry3, 4f, new Vector3d(-650f, 520f, 330f), new Rotation(0f, 0f, 0f));
-				towerGeometry4 = Load3Dmodel("tower/tower.mfbx");
-				geometryProperties(towerGeometry4, 4f, new Vector3d(650f, -520f, 0f), new Rotation(0f, 0f, 0f));
-				canonGeometry4 = Load3Dmodel("tower/canon.mfbx");
-				geometryProperties(canonGeometry4, 4f, new Vector3d(650f, -520f, 330f), new Rotation(0f, 0f, 0f));
-				
+				// add properties to the paint ball
 				paint_ball_object.geometry = Load3Dmodel("tower/paintball.obj");
-				geometryProperties(paint_ball_object.geometry, 2f, new Vector3d(-600f, -450f, 370f), new Rotation(0f, 0f, 0f));
-				paint_ball_object.geometry.setVisible(false);
+				paint_ball_object.splashGeometry = Load3Dmodel("tower/splash.mfbx");
+				paint_ball_object.velocity = new Vector3d(0f, 0f, 0f);
+				geometryProperties(paint_ball_object.geometry, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+				geometryProperties(paint_ball_object.splashGeometry, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+				paint_ball_object.geometry.setVisible(false);	
+				paint_ball_object.splashGeometry.setVisible(false);
 				
-				splashGeometry = Load3Dmodel("tower/splash.mfbx");
-				geometryProperties(splashGeometry, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
-				splashGeometry.setVisible(false);
-				Initialization = false;
-			}
-			else
-			{
-				new_paint_ball = new PaintBall();
-				new_paint_ball.geometry = Load3Dmodel("tower/paintball.obj");
-				new_paint_ball.geometry.setVisible(true);
+				// add paint ball to list of paint balls
+				exsisting_paint_balls.add(paint_ball_object);
 			}
 		}
 		catch (Exception e)
@@ -304,37 +292,20 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		{
 			for(PaintBall obj : exsisting_paint_balls)
 			{
-				if(obj.geometry.isVisible()) //TODO dubbel koll, ska bort
+				if(obj.geometry.isVisible()) 
 				{
 					// move object one frame
 					physicPositionCalibration(obj);
 					// checks for collision with ground 	
 					if(obj.geometry.getTranslation().getZ() <= 0f)
-					{
-						splashGeometry.setTranslation(obj.geometry.getTranslation());
-						splashGeometry.setVisible(true);
+					{	
+						obj.splashGeometry.setTranslation(obj.geometry.getTranslation());
+						obj.splashGeometry.setVisible(true);
 						obj.geometry.setVisible(false);
-						exsisting_paint_balls.remove(obj);
 					}
 				}
-
 			}
 		}
-		/*
-		if(paint_ball_object.geometry.isVisible())
-		{
-			// move object one frame
-			physicPositionCalibration(paint_ball_object);
-			// checks for collision with ground 
-
-			if(paint_ball_object.geometry.getTranslation().getZ() <= 0f)
-			{
-				paint_ball_object.geometry.setVisible(false);
-			}
-
-		}*/
-		// add rotation relative current angel 
-		//flowerGeometry.setRotation(new Rotation(0.0f, 0.0f ,0.01f),true);
 		
 		//onTouchEvent(null);
 		
@@ -345,34 +316,30 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	
 	protected void onGeometryTouched(IGeometry geometry) 
 	{	
-		/*check if the touched geometry is the canon geometry, if true shot a paintball else do nothing
-		if(geometry.equals(canonGeometry1))
-		{	
-			if(!paint_ball_object.geometry.isVisible())
-			{
-				paint_ball_object.geometry.setTranslation(new Vector3d(-600f, -450f, 370f));
-				paint_ball_object.velocity = new Vector3d(100f, 100f, 0f);
-				paint_ball_object.geometry.setVisible(true);
-				exsisting_paint_balls.add(paint_ball_object);
-			}
-		}
-		if(geometry.equals(canonGeometry2))
-		{	
-			//exsisting_paint_balls.add(new_paint_ball);
-		}*/
+		
 	}
 	
-//	public void onShootButtonClick(View v)
-//	{
-//		if(!paint_ball_object.geometry.isVisible())
-//		{
-//			paint_ball_object.geometry.setTranslation(new Vector3d(-600f, -450f, 370f));
-//			paint_ball_object.velocity = new Vector3d(100f, 100f, 0f);
-//			paint_ball_object.geometry.setVisible(true);
-//			exsisting_paint_balls.add(paint_ball_object);
-//		}
-//	}
-
+	public void onShootButtonClick(View v)
+	{
+		if (!exsisting_paint_balls.isEmpty())
+		{
+			for(PaintBall obj : exsisting_paint_balls)
+			{
+				if(!obj.geometry.isVisible()) 
+				{
+					obj.geometry.setTranslation(new Vector3d(-600f, -450f, 370f));
+					obj.velocity = new Vector3d(50f, 50f, 0f);
+					obj.geometry.setVisible(true);
+					break;
+				}
+			}
+		}
+		else
+		{
+			MetaioDebug.log(Log.ERROR, "No elements in exsisting paint balls");
+		}
+	}
+	
     @Override
     public boolean dispatchTouchEvent(MotionEvent event)
     {

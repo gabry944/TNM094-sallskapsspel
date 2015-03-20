@@ -9,6 +9,7 @@ public class PaintBall
 		public Vector3d velocity;
 		public Vector3d direction;
 		public IGeometry geometry; 
+		public IGeometry splashGeometry;
 		
 		public PaintBall() {
 			geometry = null;
