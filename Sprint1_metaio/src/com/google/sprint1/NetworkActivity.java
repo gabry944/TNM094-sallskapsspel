@@ -154,8 +154,9 @@ public class NetworkActivity extends Activity {
 	}
 
 	public void sendData(View view) {
+		TestClass test = new TestClass(5, "hej");
 		Log.d(TAG, "sendData clicked!");
-		mConnection.sendData("Data from another client.");
+		mConnection.sendData(test);
 
 	}
 
