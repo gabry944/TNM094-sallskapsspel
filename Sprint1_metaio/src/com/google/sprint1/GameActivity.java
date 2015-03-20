@@ -2,14 +2,19 @@ package com.google.sprint1;
 
 import java.io.File;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.google.sprint1.NetworkService.LocalBinder;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
@@ -32,10 +37,15 @@ public class GameActivity extends ARViewActivity
 	private GestureHandlerAndroid mGestureHandler;
 	private int mGestureMask;
 	private IGeometry flowerGeometry;
-
+	
+	//Variables for Service handling
+	NetworkService mService;
+	boolean mBound = false;
 	
 	/*delkaration av variabler som används i renderingsloopen*/
 	float SphereMoveX = 2f;
+	
+	public static final String TAG = "GameActivity";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -44,6 +54,28 @@ public class GameActivity extends ARViewActivity
 		mGestureMask  = GestureHandler.GESTURE_ALL;
 		mGestureHandler = new GestureHandlerAndroid(metaioSDK,mGestureMask);
 		
+	}
+	
+	@Override
+	protected void onStop() {		
+		super.onStop();
+		
+		//Unbind from service
+		if(mBound){
+			unbindService(mServiceConnection);
+			mBound=false;
+		}
+	}
+	
+	@Override
+	protected void onStart(){
+		super.onStart();
+		
+		//Bind to NetworkService
+		Log.d(TAG, "Binder");
+
+		Intent intent = new Intent(this, NetworkService.class);
+		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 	}
 	
 	
@@ -219,4 +251,22 @@ public class GameActivity extends ARViewActivity
 		// No callbacks needed 
 		return null;
 	}
+	
+	/** Defines callbacks for service binding, passed to bindService() */
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            LocalBinder binder = (LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
 }
