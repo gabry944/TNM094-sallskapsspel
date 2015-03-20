@@ -90,6 +90,7 @@ public class NetworkActivity extends Activity {
 											int which) {
 										NsdServiceInfo service = listAdapter
 												.getItem(pos);
+										service = mNsdHelper.resolveService(service);
 										if (service != null) {
 											Log.d(TAG, "Connecting to: "
 													+ service.getServiceName());
@@ -145,9 +146,9 @@ public class NetworkActivity extends Activity {
 
 	public void updateAdapter(View view) {
 		listAdapter.clear();
-		for (int i = 0; i < mNsdHelper.getChosenServiceInfoList().size(); i ++)
+		for (int i = 0; i < mNsdHelper.getFoundServices().size(); i ++)
 		{
-			listAdapter.add(mNsdHelper.getChosenServiceInfoList().get(i));
+			listAdapter.add(mNsdHelper.getFoundServices().get(i));
 		}
 		listAdapter.notifyDataSetChanged();
 

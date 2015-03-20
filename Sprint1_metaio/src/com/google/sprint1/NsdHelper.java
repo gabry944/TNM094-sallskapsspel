@@ -36,11 +36,13 @@ public class NsdHelper {
 	public static final String SERVICE_TYPE = "_http._tcp.";
 
 	public static final String TAG = "NsdHelper";
-	public String mServiceName = "ARGame";
+	public String mServiceName = "";
+	public static String SERVICE_NAME = "ARGame";
 
 	public boolean haveActiveService = false;
+	public boolean serviceResolved = false;
 	NsdServiceInfo mService;
-	List<NsdServiceInfo> mServices = new ArrayList<NsdServiceInfo>();
+	List<NsdServiceInfo> mFoundServices = new ArrayList<NsdServiceInfo>();
 
 	public NsdHelper(Context context) {
 		mContext = context;
@@ -72,8 +74,6 @@ public class NsdHelper {
 			public void onDiscoveryStarted(String regType) {
 				Log.d(TAG, "Service discovery started");
 
-				mServices.clear();
-
 			}
 
 			@Override
@@ -88,9 +88,10 @@ public class NsdHelper {
 				} else if (service.getServiceName().equals(mServiceName)) {
 					Log.d(TAG, "Same machine: " + mServiceName);
 					haveActiveService = true;
-				} else if (service.getServiceName().contains(mServiceName)) {
-					// mServices.add(service);
-					mNsdManager.resolveService(service, mResolveListener);
+				} else if (service.getServiceName().contains(SERVICE_NAME)) {
+					Log.d(TAG, "Service added to List.");
+					mFoundServices.add(service);
+					//mNsdManager.resolveService(service, mResolveListener);
 
 				} 
 			}
@@ -98,11 +99,9 @@ public class NsdHelper {
 			@Override
 			public void onServiceLost(NsdServiceInfo service) {
 				Log.e(TAG, "service lost: " + service.getServiceName());
-				mServices.remove(service);
+				mFoundServices.remove(service);
 				if (mService == service) {
 					mService = null;
-				}
-				if (service.getServiceName().equals(mServiceName)) {
 					haveActiveService = false;
 				}
 			}
@@ -133,8 +132,7 @@ public class NsdHelper {
 			public void onResolveFailed(NsdServiceInfo serviceInfo,
 					int errorCode) {
 				Log.e(TAG, "Resolve failed. Error code: " + errorCode);
-				mServices.remove(serviceInfo);
-
+				serviceResolved = true;
 			}
 
 			@Override
@@ -149,7 +147,8 @@ public class NsdHelper {
 				}
 
 				mService = serviceInfo;
-				mServices.add(serviceInfo);
+				serviceResolved = true;
+				//mFoundServices.add(serviceInfo);
 			}
 		};
 	}
@@ -191,7 +190,7 @@ public class NsdHelper {
 		if (!haveActiveService) {
 			NsdServiceInfo serviceInfo = new NsdServiceInfo();
 			serviceInfo.setPort(port);
-			serviceInfo.setServiceName(mServiceName);
+			serviceInfo.setServiceName(SERVICE_NAME);
 			serviceInfo.setServiceType(SERVICE_TYPE);
 			mNsdManager.registerService(serviceInfo,
 					NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
@@ -202,7 +201,8 @@ public class NsdHelper {
 	}
 
 	public void discoverServices() {
-
+		
+		mFoundServices.clear();
 		mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD,
 				mDiscoveryListener);
 	}
@@ -211,13 +211,22 @@ public class NsdHelper {
 		mNsdManager.stopServiceDiscovery(mDiscoveryListener);
 	}
 
+	public NsdServiceInfo resolveService(NsdServiceInfo service) {
+		serviceResolved = false;
+		mNsdManager.resolveService(service, mResolveListener);
+		while (!serviceResolved)
+		{
+			//Wait for service to be resolved
+		}
+		return mService;
+	}
 	public NsdServiceInfo getChosenServiceInfo() {
 		return mService;
 	}
 
 
-	public List<NsdServiceInfo> getChosenServiceInfoList() {
-		return mServices;
+	public List<NsdServiceInfo> getFoundServices() {
+		return mFoundServices;
 	}
 
 
