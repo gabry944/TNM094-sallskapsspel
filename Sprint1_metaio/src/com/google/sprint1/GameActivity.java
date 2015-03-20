@@ -5,6 +5,10 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.gesture.Gesture;
+import android.gesture.GestureLibraries;
+import android.gesture.GestureLibrary;
+import android.gesture.Prediction;
+import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.os.Bundle;
 import android.support.v4.view.VelocityTrackerCompat;
@@ -14,6 +18,9 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.GridView;
+import android.widget.Toast;
 
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.MetaioDebug;
@@ -27,7 +34,7 @@ import com.metaio.tools.io.AssetsManager;
  * GameActivity to handle the game
  *
  */
-public class GameActivity extends ARViewActivity implements OnGesturePerformedListener
+public class GameActivity extends ARViewActivity //implements OnGesturePerformedListener
 {
 
 	private static final String TAG = "myLog";
@@ -47,10 +54,16 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 	private IGeometry towerGeometry4;
 	private IGeometry canonGeometry4;
 
+	
 	private Vector3d startTouch;
 	private Vector3d endTouch;
 	private Vector3d touchVec; 		//endTouch-startTouch
 	
+	//to enable gesture tracking
+	protected GridView surfaceView;
+    protected GestureOverlayView gestureOverlayView;
+    private GestureLibrary gestureLib;
+    protected FrameLayout frameLayout;
 	
 	PaintBall paint_ball_object;
 	private ArrayList<PaintBall> exsisting_paint_balls;
@@ -82,11 +95,26 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 		super.onCreate(savedInstanceState);
 
 		//setup to handle gestures
-		android.gesture.GestureOverlayView gestureOverlayView = new android.gesture.GestureOverlayView(this);
-		View inflate = getLayoutInflater().inflate(R.layout.activity_game, null);
-		gestureOverlayView.addView(inflate);
-		gestureOverlayView.addOnGesturePerformedListener(this);
-		setContentView(gestureOverlayView);
+
+//	    GestureOverlayView gestureOverlayView = new GestureOverlayView(this);
+//	    View inflate = getLayoutInflater().inflate(R.layout.activity_game, null);
+//	    gestureOverlayView.addView(inflate);
+//	    gestureOverlayView.addOnGesturePerformedListener(this);
+//	    gestureLib = GestureLibraries.fromRawResource(this, R.raw.gestures);
+//	    if (!gestureLib.load()) {
+//	    	Log.d(TAG, "hEJ");
+//	      finish();
+//	    }
+//	    Log.d(TAG, "Då");
+//	    setContentView(gestureOverlayView);
+//	    Log.d(TAG, "på");
+        //gestureOverlayView.setOrientation(gestureOverlayView.ORIENTATION_VERTICAL);
+        //gestureOverlayView.setEventsInterceptionEnabled(true);
+        //gestureOverlayView.setGestureStrokeType(gestureOverlayView.GESTURE_STROKE_TYPE_MULTIPLE);
+        //gestureOverlayView.addView(new View(this) , 600, 800);
+        //mLibrary = GestureLibraries.fromRawResource(this, R.raw.gestures);
+        //gestureOverlayView.addOnGesturePerformedListener(this);
+        //this.setContentView(gestureOverlayView);
 		
 		exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		
@@ -115,6 +143,7 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 	 * Returns the loaded model if success, otherwise null*/
 	private IGeometry Load3Dmodel(String filePath)
 	{
+
 		//Getting the full file path for a 3D geometry
 		final File modelPath = AssetsManager.getAssetPathAsFile(getApplicationContext(), filePath);
 		//First check if model is found
@@ -269,7 +298,8 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 		else if (antGeometry.getTranslation().getX() > 350f)
 			temp = -2f;
 		
-		antGeometry.setTranslation(new Vector3d(antGeometry.getTranslation().getX()+temp, 0.0f, 0.0f));
+		antGeometry.setTranslation(new Vector3d(0.0f, 0.0f, 0.0f), true);
+
 
 		if (!exsisting_paint_balls.isEmpty())
 		{
@@ -286,20 +316,15 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 					Vector3d max = antGeometry.getBoundingBox(true).getMax();
 					Log.d(TAG, "min = " + antGeometry.getTranslation().getX() + min.getX() );
 					Log.d(TAG, "MAX = " + antGeometry.getTranslation().getX() + max.getX());
-					if (obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMax().getX() > antGeometry.getTranslation().getX() + 2f * min.getX() && 
-						obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMin().getX() < antGeometry.getTranslation().getX() + 2f * max.getX()/*  &&
-						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMax().getY() > antGeometry.getTranslation().getY() + 2f * min.getY() && 
-						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMin().getY() < antGeometry.getTranslation().getY() + 2f * max.getY())*/&&
-						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMax().getZ() > antGeometry.getTranslation().getZ() + 2f * min.getZ() && 
-						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMin().getZ() < antGeometry.getTranslation().getZ() + 2f * max.getZ() )
+					if (obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMax().getX() > antGeometry.getTranslation().getX() + 2 * min.getX() -100 && 
+						obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMin().getX() < antGeometry.getTranslation().getX() + 2 * max.getX() +100 &&
+						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMax().getY() > antGeometry.getTranslation().getY() + 2 * min.getY() -100 && 
+						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMin().getY() < antGeometry.getTranslation().getY() + 2 * max.getY() +100 &&
+						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMax().getZ() > antGeometry.getTranslation().getZ() + 2 * min.getZ() -100 && 
+						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMin().getZ() < antGeometry.getTranslation().getZ() + 2 * max.getZ() +100 )
 					{
 						antGeometry.setRotation(new Rotation((float) (3*Math.PI/4), 0f, 0f),true);
 						//antGeometry.setVisible(false);
-					}
-					if (obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMax().getY() > antGeometry.getTranslation().getY() + 2f * min.getY() && 
-						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMin().getY() < antGeometry.getTranslation().getY() + 2f * max.getY())
-					{
-						antGeometry.setVisible(false);
 					}
 				
 					// checks for collision with ground 	
@@ -345,64 +370,35 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 			MetaioDebug.log(Log.ERROR, "No elements in exsisting paint balls");
 		}
 	}
-
-	//addOnGestureListener(GestureOverlayVire.OnGestureListener listener)
 	
-	
-	public void GestureOverlayView(Context context)
-	{
-		Log.d(TAG, "hej");
-	}
-	
-    private VelocityTracker mVelocityTracker = null;
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        int index = event.getActionIndex();
-        int action = event.getActionMasked();
-        int pointerId = event.getPointerId(index);
-        Log.d(TAG, "hejhej");
+    public boolean dispatchTouchEvent(MotionEvent event)
+    {
+        int action = event.getActionMasked();      
 
         switch(action) {
             case MotionEvent.ACTION_DOWN:
-                if(mVelocityTracker == null) {
-                    // Retrieve a new VelocityTracker object to watch the velocity of a motion.
-                    mVelocityTracker = VelocityTracker.obtain();
-                    startTouch = new Vector3d(event.getX(), event.getY(), 0f);
-                    Log.d(TAG, "startTouch ="+ startTouch);
-                }
-                else {
-                    // Reset the velocity tracker back to its initial state.
-                    mVelocityTracker.clear();
-                }
-                // Add a user's movement to the tracker.
-                mVelocityTracker.addMovement(event);
+
+                startTouch = new Vector3d((event.getX()), event.getY(), 0f);
+                Log.d(TAG, "startTouch ="+ startTouch);
                 break;
             case MotionEvent.ACTION_MOVE:
-                mVelocityTracker.addMovement(event);
-                // When you want to determine the velocity, call 
-                // computeCurrentVelocity(). Then call getXVelocity() 
-                // and getYVelocity() to retrieve the velocity for each pointer ID. 
-                mVelocityTracker.computeCurrentVelocity(1000);
-                // Log velocity of pixels per second
-                // Best practice to use VelocityTrackerCompat where possible.
-                Log.d("", "X velocity: " + 
-                        VelocityTrackerCompat.getXVelocity(mVelocityTracker, 
-                        pointerId));
-                Log.d("", "Y velocity: " + 
-                        VelocityTrackerCompat.getYVelocity(mVelocityTracker,
-                        pointerId));
-                antGeometry.setTranslation(new Vector3d(VelocityTrackerCompat.getXVelocity(mVelocityTracker, pointerId)
-                										,VelocityTrackerCompat.getYVelocity(mVelocityTracker, pointerId)
-                										,0f));
                 break;
             case MotionEvent.ACTION_UP:
-            	endTouch = new Vector3d(event.getX(), event.getY(), 0f);
-            	touchVec = endTouch.subtract(startTouch);
+            	endTouch = new Vector3d((event.getX()), event.getY(), 0f);
+            	touchVec = new Vector3d(-(endTouch.getX()-startTouch.getX()),
+            							  endTouch.getY() -startTouch.getY(),
+            							  0f);
+            	Log.d(TAG, "endTouch ="+ endTouch);
+            	Log.d(TAG, "touchVec = " + touchVec);
+        		if(!paint_ball_object.geometry.isVisible())
+        		{
+            		paint_ball_object.geometry.setTranslation(new Vector3d(-600f, -450f, 370f));
+        			paint_ball_object.velocity = touchVec;
+        			paint_ball_object.geometry.setVisible(true);
+        			exsisting_paint_balls.add(paint_ball_object);
             	break;
-            case MotionEvent.ACTION_CANCEL:
-                // Return a VelocityTracker object back to be re-used by others.
-                mVelocityTracker.recycle();
-                break;
+        		}
         }
         return true;
     }
@@ -413,13 +409,6 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 	{
 		// No callbacks needed 
 		return null;
-	}
-
-	@Override
-	public void onGesturePerformed(android.gesture.GestureOverlayView gestureOverlayView, Gesture gesture)
-	{
-		Log.d(TAG, "hejhejhej");
-	      antGeometry.setTranslation(new Vector3d(100f*(float)(gesture.getLength()), 0f, 0f));
 	}
 
 }
