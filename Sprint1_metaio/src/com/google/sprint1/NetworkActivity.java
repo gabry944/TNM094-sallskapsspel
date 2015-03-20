@@ -167,12 +167,14 @@ public class NetworkActivity extends Activity {
 
 	@Override
 	protected void onPause() {
+		
 		if (mNsdHelper != null) {
 
 			Log.d(TAG, "Pausad");
 			mNsdHelper.tearDown();
 			mNsdHelper = null;
 		}
+		
 		super.onPause();
 	}
 

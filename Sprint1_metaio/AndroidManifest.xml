@@ -17,6 +17,8 @@
 
     <!-- Permissions for Network Service Discovery (NSD) -->
     <uses-permission android:name="android.permission.INTERNET" />
+    
+
 
     <!-- Required OpenGLES 2.x -->
     <uses-feature
@@ -36,6 +38,10 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <!-- Declaration of the NetworkService which runs in the background -->
+        <service android:enabled="true"
+            	 android:name="com.google.sprint1.NetworkService">
+        </service>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
