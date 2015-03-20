@@ -3,18 +3,20 @@ package com.google.sprint1;
 
 import java.io.File;
 
+import android.content.Context;
+import android.gesture.Gesture;
+import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.os.Bundle;
+import android.support.v4.view.VelocityTrackerCompat;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
- 
 
 import com.metaio.sdk.ARViewActivity;
-import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
-import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
 import com.metaio.sdk.jni.Rotation;
@@ -24,9 +26,9 @@ import com.metaio.tools.io.AssetsManager;
  * GameActivity to handle the game
  *
  */
-public class GameActivity extends ARViewActivity 
+public class GameActivity extends ARViewActivity implements OnGesturePerformedListener
 {
-
+	private static final String TAG = "myLog";
 	/*Variables for objects in the game*/
 	private IGeometry antGeometry;
 	private IGeometry wallGeometry1;
@@ -42,9 +44,12 @@ public class GameActivity extends ARViewActivity
 	private IGeometry towerGeometry4;
 	private IGeometry canonGeometry4;
 	private IGeometry paintballGeometry;
-	private GestureHandlerAndroid mGestureHandler;
-	private int mGestureMask;
-
+	private IGeometry splashGeometry;
+	private boolean canShoot;
+	private Vector3d startTouch;
+	private Vector3d endTouch;
+	private Vector3d touchVec; 		//endTouch-startTouch
+	
 	//Variables for physics calibration
 	Vector3d acceleration;
 	Vector3d velocity;
@@ -56,23 +61,6 @@ public class GameActivity extends ARViewActivity
 	/*delkaration av variabler som används i renderingsloopen*/
 	float SphereMoveX = 2f;
 	
-	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		mGestureMask  = GestureHandler.GESTURE_ALL;
-		mGestureHandler = new GestureHandlerAndroid(metaioSDK,mGestureMask);
-		
-		//velocity and direction of outgoing paintball, will later be based on how you interact with the screen (TODO).
-		acceleration =  new Vector3d(0f, 0f, 0f);
-		velocity =  new Vector3d(0f, 0f, 0f);
-		totalForce =  new Vector3d(0f, 0f, 0f);
-		gravity = new Vector3d(0f, 0f, -9.82f);
-		timestep = 0.1f;								//0.1s
-		mass = 0.1f;		   							//0.1kg
-	}
-	
-	
 	/** Attaching layout to the activity */
 	@Override
 	public int getGUILayout()
@@ -81,6 +69,33 @@ public class GameActivity extends ARViewActivity
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		return R.layout.activity_game;
 	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		
+		//setup to handle gestures
+		android.gesture.GestureOverlayView gestureOverlayView = new android.gesture.GestureOverlayView(this);
+		View inflate = getLayoutInflater().inflate(R.layout.activity_game, null);
+		gestureOverlayView.addView(inflate);
+		gestureOverlayView.addOnGesturePerformedListener(this);
+		setContentView(gestureOverlayView);
+		
+		//velocity and direction of outgoing paintball, will later be based on how you interact with the screen (TODO).
+		acceleration =  new Vector3d(0f, 0f, 0f);
+		velocity =  new Vector3d(0f, 0f, 0f);
+		totalForce =  new Vector3d(0f, 0f, 0f);
+		gravity = new Vector3d(0f, 0f, -9.82f);
+		timestep = 0.1f;								//0.1s
+		mass = 0.1f;		   							//0.1kg
+		canShoot = false;
+		touchVec =  new Vector3d(0f, 0f, 0f);
+		startTouch =  new Vector3d(0f, 0f, 0f);
+		endTouch =  new Vector3d(0f, 0f, 0f);
+	}
+	
+	
 
 	/** Called when the user clicks the Exit button (krysset) */
 	public void onExitButtonClick(View v) {
@@ -168,6 +183,9 @@ public class GameActivity extends ARViewActivity
 			paintballGeometry = Load3Dmodel("tower/paintball.obj");
 			geometryProperties(paintballGeometry, 2f, new Vector3d(-600f, -450f, 370f), new Rotation(0f, 0f, 0f));
 			paintballGeometry.setVisible(false);
+			splashGeometry = Load3Dmodel("tower/splash.mfbx");
+			geometryProperties(splashGeometry, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+			splashGeometry.setVisible(false);
 			
 
 		}
@@ -197,8 +215,45 @@ public class GameActivity extends ARViewActivity
 
 		if ( wallGeometry4 == null || towerGeometry4== null || paintballGeometry == null)
 			return;
+		
+		//Log.d(TAG, "touchVec = "+ touchVec);
+		antGeometry.setTranslation(touchVec, true);
 				
+		if(canShoot == true)
+		{
 
+			// physics calculated with Euler model
+			totalForce.setX(gravity.getX());
+			totalForce.setY(gravity.getY());
+			totalForce.setZ(gravity.getZ());
+			
+			acceleration.setX(totalForce.getX() / mass);
+			acceleration.setY(totalForce.getY() / mass);
+			acceleration.setZ(totalForce.getZ() / mass);
+			
+			velocity.setX(velocity.getX()+timestep*acceleration.getX());
+			velocity.setY(velocity.getY()+timestep*acceleration.getY());
+			velocity.setZ(velocity.getZ()+timestep*acceleration.getZ());
+			
+			Vector3d position = paintballGeometry.getTranslation();
+			position.setX(position.getX()+timestep*velocity.getX());
+			position.setY(position.getY()+timestep*velocity.getY());
+			position.setZ(position.getZ()+timestep*velocity.getZ());
+			
+			/*possition.setX(velocity.getX());
+			position.setY(velocity.getY());
+			position.setZ(velocity.getZ());*/
+			paintballGeometry.setTranslation(position);
+			//paintballGeometry.setTranslation(paintballGeometry.getTranslation().add(velocity));
+			if(paintballGeometry.getTranslation().getZ() <= 0f)
+			{
+				paintballGeometry.setVisible(false);
+				splashGeometry.setTranslation(paintballGeometry.getTranslation());
+				splashGeometry.setVisible(true);
+				canShoot = false;
+			}
+
+		}
 		//add movement to paintball until it reaches groundlevel. When the ball reaches groundlevel
 		//it becomes invisible and returns to start position and can be triggered again.
 		if(paintballGeometry.isVisible())
@@ -217,19 +272,21 @@ public class GameActivity extends ARViewActivity
 			velocity.setY(velocity.getY()+timestep*acceleration.getY());
 			velocity.setZ(velocity.getZ()+timestep*acceleration.getZ());
 			
-			Vector3d possition = paintballGeometry.getTranslation();
-			possition.setX(possition.getX()+timestep*velocity.getX());
-			possition.setY(possition.getY()+timestep*velocity.getY());
-			possition.setZ(possition.getZ()+timestep*velocity.getZ());
+			Vector3d position = paintballGeometry.getTranslation();
+			position.setX(position.getX()+timestep*velocity.getX());
+			position.setY(position.getY()+timestep*velocity.getY());
+			position.setZ(position.getZ()+timestep*velocity.getZ());
 			
 			/*possition.setX(velocity.getX());
-			possition.setY(velocity.getY());
-			possition.setZ(velocity.getZ());*/
-			paintballGeometry.setTranslation(possition);
+			position.setY(velocity.getY());
+			position.setZ(velocity.getZ());*/
+			paintballGeometry.setTranslation(position);
 			//paintballGeometry.setTranslation(paintballGeometry.getTranslation().add(velocity));
 			if(paintballGeometry.getTranslation().getZ() <= 0f)
 			{
 				paintballGeometry.setVisible(false);
+				splashGeometry.setTranslation(paintballGeometry.getTranslation());
+				splashGeometry.setVisible(true);
 			}
 
 		}
@@ -260,40 +317,74 @@ public class GameActivity extends ARViewActivity
 	}
 	
 	
-	/** function to handle actions when touching the screen */
-	@Override
-	public boolean onTouchEvent(MotionEvent event) 
+	public void onShootButtonClick(View v)
 	{
-		int eventaction = event.getAction();
-		
-		switch(eventaction)
-		{
-		case MotionEvent.ACTION_DOWN:
-			antGeometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
-			break;
-			
-		case MotionEvent.ACTION_MOVE:
-			antGeometry.setTranslation(new Vector3d(100.0f, 0.0f, 0.0f), true);
-			break;
-			
-		case MotionEvent.ACTION_UP:
-			antGeometry.setTranslation(new Vector3d(0f,0f,0f), true);
-			break;
-		}
-		
-		return true;
+		canShoot=true;
+		paintballGeometry.setTranslation(new Vector3d(-600f, -450f, 370f));
+		velocity = new Vector3d(200f, 200f, 0f);
+		paintballGeometry.setVisible(true);
 	}
 	
+	//addOnGestureListener(GestureOverlayVire.OnGestureListener listener)
 	
-	@Override
-	public boolean onTouch(View v, MotionEvent event)
+	
+	public void GestureOverlayView(Context context)
 	{
-		super.onTouch(v, event);
-
-		mGestureHandler.onTouch(v, event);
-
-		return true;
+		Log.d(TAG, "hej");
 	}
+	
+    private VelocityTracker mVelocityTracker = null;
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int index = event.getActionIndex();
+        int action = event.getActionMasked();
+        int pointerId = event.getPointerId(index);
+        Log.d(TAG, "hejhej");
+
+        switch(action) {
+            case MotionEvent.ACTION_DOWN:
+                if(mVelocityTracker == null) {
+                    // Retrieve a new VelocityTracker object to watch the velocity of a motion.
+                    mVelocityTracker = VelocityTracker.obtain();
+                    startTouch = new Vector3d(event.getX(), event.getY(), 0f);
+                    Log.d(TAG, "startTouch ="+ startTouch);
+                }
+                else {
+                    // Reset the velocity tracker back to its initial state.
+                    mVelocityTracker.clear();
+                }
+                // Add a user's movement to the tracker.
+                mVelocityTracker.addMovement(event);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                mVelocityTracker.addMovement(event);
+                // When you want to determine the velocity, call 
+                // computeCurrentVelocity(). Then call getXVelocity() 
+                // and getYVelocity() to retrieve the velocity for each pointer ID. 
+                mVelocityTracker.computeCurrentVelocity(1000);
+                // Log velocity of pixels per second
+                // Best practice to use VelocityTrackerCompat where possible.
+                Log.d("", "X velocity: " + 
+                        VelocityTrackerCompat.getXVelocity(mVelocityTracker, 
+                        pointerId));
+                Log.d("", "Y velocity: " + 
+                        VelocityTrackerCompat.getYVelocity(mVelocityTracker,
+                        pointerId));
+                antGeometry.setTranslation(new Vector3d(VelocityTrackerCompat.getXVelocity(mVelocityTracker, pointerId)
+                										,VelocityTrackerCompat.getYVelocity(mVelocityTracker, pointerId)
+                										,0f));
+                break;
+            case MotionEvent.ACTION_UP:
+            	endTouch = new Vector3d(event.getX(), event.getY(), 0f);
+            	touchVec = endTouch.subtract(startTouch);
+            	break;
+            case MotionEvent.ACTION_CANCEL:
+                // Return a VelocityTracker object back to be re-used by others.
+                mVelocityTracker.recycle();
+                break;
+        }
+        return true;
+    }
 	
 
 	/** Not used at the moment*/
@@ -303,4 +394,13 @@ public class GameActivity extends ARViewActivity
 		// No callbacks needed 
 		return null;
 	}
+
+
+	@Override
+	public void onGesturePerformed(android.gesture.GestureOverlayView gestureOverlayView, Gesture gesture)
+	{
+		Log.d(TAG, "hejhejhej");
+	      antGeometry.setTranslation(new Vector3d(100f*(float)(gesture.getLength()), 0f, 0f));
+	}
+
 }
