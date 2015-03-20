@@ -64,7 +64,6 @@ public class NsdHelper {
 		initializeRegistrationListener();
 		discoverServices();
 
-
 	}
 
 	public void initializeDiscoveryListener() {
@@ -79,8 +78,9 @@ public class NsdHelper {
 			@Override
 			public void onServiceFound(NsdServiceInfo service) {
 
-				Log.d(TAG, "Service discovery success. Found: " + service.getServiceName());
-
+				Log.d(TAG,
+						"Service discovery success. Found: "
+								+ service.getServiceName());
 
 				if (!service.getServiceType().equals(SERVICE_TYPE)) {
 					Log.d(TAG,
@@ -91,9 +91,9 @@ public class NsdHelper {
 				} else if (service.getServiceName().contains(SERVICE_NAME)) {
 					Log.d(TAG, "Service added to List.");
 					mFoundServices.add(service);
-					//mNsdManager.resolveService(service, mResolveListener);
+					// mNsdManager.resolveService(service, mResolveListener);
 
-				} 
+				}
 			}
 
 			@Override
@@ -148,7 +148,7 @@ public class NsdHelper {
 
 				mService = serviceInfo;
 				serviceResolved = true;
-				//mFoundServices.add(serviceInfo);
+				// mFoundServices.add(serviceInfo);
 			}
 		};
 	}
@@ -172,7 +172,8 @@ public class NsdHelper {
 			@Override
 			public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
 
-				Log.d(TAG, "Service unregistered: " + serviceInfo.getServiceName());
+				Log.d(TAG,
+						"Service unregistered: " + serviceInfo.getServiceName());
 
 			}
 
@@ -201,7 +202,7 @@ public class NsdHelper {
 	}
 
 	public void discoverServices() {
-		
+
 		mFoundServices.clear();
 		mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD,
 				mDiscoveryListener);
@@ -214,21 +215,19 @@ public class NsdHelper {
 	public NsdServiceInfo resolveService(NsdServiceInfo service) {
 		serviceResolved = false;
 		mNsdManager.resolveService(service, mResolveListener);
-		while (!serviceResolved)
-		{
-			//Wait for service to be resolved
+		while (!serviceResolved) {
+			// Wait for service to be resolved
 		}
 		return mService;
 	}
+
 	public NsdServiceInfo getChosenServiceInfo() {
 		return mService;
 	}
 
-
 	public List<NsdServiceInfo> getFoundServices() {
 		return mFoundServices;
 	}
-
 
 	public void tearDown() {
 		Log.d(TAG, "tearing down");
