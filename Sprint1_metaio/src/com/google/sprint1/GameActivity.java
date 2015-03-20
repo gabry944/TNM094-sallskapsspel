@@ -1,6 +1,5 @@
 package com.google.sprint1;
 
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -65,6 +64,9 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 	float timeStep;
 	float mass;
 	
+	float temp;
+	
+	
 	/** Attaching layout to the activity */
 	@Override
 	public int getGUILayout()
@@ -99,6 +101,8 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 		touchVec =  new Vector3d(0f, 0f, 0f);
 		startTouch =  new Vector3d(0f, 0f, 0f);
 		endTouch =  new Vector3d(0f, 0f, 0f);
+		
+		temp = 20f;
 	}
 
 	/** Called when the user clicks the Exit button (krysset) */
@@ -181,7 +185,8 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 
 			//create ant geometry
 			antGeometry = Load3Dmodel("ant/formicaRufa.mfbx");
-			geometryProperties(antGeometry, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation((float) (3*Math.PI/2), 0f, 0f) );
+			//geometryProperties(antGeometry, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation((float) (3*Math.PI/2), 0f, 0f) );
+			geometryProperties(antGeometry, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation(0f, 0f, 0f) );
 			
 			//creates the walls around the game area
 			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
@@ -252,12 +257,19 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 
 		// If content not loaded yet, do nothing
 
-		if ( wallGeometry4 == null || towerGeometry4== null || paint_ball_object == null)
+		if ( wallGeometry4 == null || towerGeometry4== null || exsisting_paint_balls.isEmpty())
 			return;
 		
 		//Log.d(TAG, "touchVec = "+ touchVec);
-		antGeometry.setTranslation(touchVec, true);
-
+		//antGeometry.setTranslation(touchVec, true);
+		
+		//move ant
+		if (antGeometry.getTranslation().getX() < -350f)
+			temp = 2f;
+		else if (antGeometry.getTranslation().getX() > 350f)
+			temp = -2f;
+		
+		antGeometry.setTranslation(new Vector3d(antGeometry.getTranslation().getX()+temp, 0.0f, 0.0f));
 
 		if (!exsisting_paint_balls.isEmpty())
 		{
@@ -267,7 +279,29 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 				{
 					// move object one frame
 					physicPositionCalibration(obj);
-					Log.d(TAG, "Zvalue =" + obj.geometry.getTranslation().getZ());
+					//Log.d(TAG, "Zvalue =" + obj.geometry.getTranslation().getZ());
+					
+					// checks for collision with ant					
+					Vector3d min = antGeometry.getBoundingBox(true).getMin();
+					Vector3d max = antGeometry.getBoundingBox(true).getMax();
+					Log.d(TAG, "min = " + antGeometry.getTranslation().getX() + min.getX() );
+					Log.d(TAG, "MAX = " + antGeometry.getTranslation().getX() + max.getX());
+					if (obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMax().getX() > antGeometry.getTranslation().getX() + 2f * min.getX() && 
+						obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMin().getX() < antGeometry.getTranslation().getX() + 2f * max.getX()/*  &&
+						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMax().getY() > antGeometry.getTranslation().getY() + 2f * min.getY() && 
+						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMin().getY() < antGeometry.getTranslation().getY() + 2f * max.getY())*/&&
+						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMax().getZ() > antGeometry.getTranslation().getZ() + 2f * min.getZ() && 
+						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMin().getZ() < antGeometry.getTranslation().getZ() + 2f * max.getZ() )
+					{
+						antGeometry.setRotation(new Rotation((float) (3*Math.PI/4), 0f, 0f),true);
+						//antGeometry.setVisible(false);
+					}
+					if (obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMax().getY() > antGeometry.getTranslation().getY() + 2f * min.getY() && 
+						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMin().getY() < antGeometry.getTranslation().getY() + 2f * max.getY())
+					{
+						antGeometry.setVisible(false);
+					}
+				
 					// checks for collision with ground 	
 					if(obj.geometry.getTranslation().getZ() <= 0f)
 					{	
