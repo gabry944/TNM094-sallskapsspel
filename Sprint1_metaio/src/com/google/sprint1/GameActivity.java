@@ -33,9 +33,6 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 
 	private static final String TAG = "myLog";
 
-	/*is the game in Initialization face?*/
-	boolean Initialization;
-
 	/*Variables for objects in the game*/
 	private IGeometry antGeometry;
 	private IGeometry wallGeometry1;
@@ -51,9 +48,6 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 	private IGeometry towerGeometry4;
 	private IGeometry canonGeometry4;
 
-	private IGeometry paintballGeometry;
-	private IGeometry splashGeometry;
-	private boolean canShoot;
 	private Vector3d startTouch;
 	private Vector3d endTouch;
 	private Vector3d touchVec; 		//endTouch-startTouch
@@ -70,9 +64,6 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 	Vector3d gravity;
 	float timeStep;
 	float mass;
-	
-	/*delkaration av variabler som används i renderingsloopen*/
-	float SphereMoveX = 2f;
 	
 	/** Attaching layout to the activity */
 	@Override
@@ -105,12 +96,9 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 		timeStep = 0.2f;								//0.1s
 		mass = 0.1f;		   							//0.1kg
 
-		canShoot = false;
 		touchVec =  new Vector3d(0f, 0f, 0f);
 		startTouch =  new Vector3d(0f, 0f, 0f);
 		endTouch =  new Vector3d(0f, 0f, 0f);
-		
-		Initialization = true;
 	}
 
 	/** Called when the user clicks the Exit button (krysset) */
@@ -226,17 +214,21 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 			//creates a list of paint balls
 			for(int i = 0; i < 20; i++)
 			{
+				// create new paint ball
 				paint_ball_object = new PaintBall();
+				
+				// add properties to the paint ball
 				paint_ball_object.geometry = Load3Dmodel("tower/paintball.obj");
+				paint_ball_object.splashGeometry = Load3Dmodel("tower/splash.mfbx");
+				paint_ball_object.velocity = new Vector3d(0f, 0f, 0f);
 				geometryProperties(paint_ball_object.geometry, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
-				paint_ball_object.geometry.setVisible(false);			
+				geometryProperties(paint_ball_object.splashGeometry, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+				paint_ball_object.geometry.setVisible(false);	
+				paint_ball_object.splashGeometry.setVisible(false);
+				
+				// add paint ball to list of paint balls
 				exsisting_paint_balls.add(paint_ball_object);
 			}
-				
-			splashGeometry = Load3Dmodel("tower/splash.mfbx");
-			geometryProperties(splashGeometry, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
-			splashGeometry.setVisible(false);
-
 		}
 		catch (Exception e)
 		{
@@ -278,17 +270,14 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 					Log.d(TAG, "Zvalue =" + obj.geometry.getTranslation().getZ());
 					// checks for collision with ground 	
 					if(obj.geometry.getTranslation().getZ() <= 0f)
-					{
-						splashGeometry.setTranslation(obj.geometry.getTranslation());
-						splashGeometry.setVisible(true);
+					{	
+						obj.splashGeometry.setTranslation(obj.geometry.getTranslation());
+						obj.splashGeometry.setVisible(true);
 						obj.geometry.setVisible(false);
 					}
 				}
-
 			}
 		}
-		// add rotation relative current angel 
-		//flowerGeometry.setRotation(new Rotation(0.0f, 0.0f ,0.01f),true);
 		
 		//onTouchEvent(null);
 		
@@ -313,7 +302,6 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 					obj.geometry.setTranslation(new Vector3d(-600f, -450f, 370f));
 					obj.velocity = new Vector3d(50f, 50f, 0f);
 					obj.geometry.setVisible(true);
-					exsisting_paint_balls.add(obj);
 					break;
 				}
 			}
@@ -324,7 +312,6 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 		}
 	}
 
-	
 	//addOnGestureListener(GestureOverlayVire.OnGestureListener listener)
 	
 	
@@ -385,8 +372,6 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
         }
         return true;
     }
-	
-
 
 	/** Not used at the moment*/
 	@Override
@@ -395,8 +380,6 @@ public class GameActivity extends ARViewActivity implements OnGesturePerformedLi
 		// No callbacks needed 
 		return null;
 	}
-
-
 
 	@Override
 	public void onGesturePerformed(android.gesture.GestureOverlayView gestureOverlayView, Gesture gesture)

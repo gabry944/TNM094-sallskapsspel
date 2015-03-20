@@ -7,7 +7,8 @@ import com.metaio.sdk.jni.Vector3d;
 public class PaintBall 
 {
 		public Vector3d velocity;
-		public IGeometry geometry; 
+		public IGeometry geometry;
+		public IGeometry splashGeometry;
 		
 		public PaintBall() {
 			geometry = null;
