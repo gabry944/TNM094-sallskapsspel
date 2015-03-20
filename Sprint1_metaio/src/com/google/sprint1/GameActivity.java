@@ -316,12 +316,12 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 					Vector3d max = antGeometry.getBoundingBox(true).getMax();
 					Log.d(TAG, "min = " + antGeometry.getTranslation().getX() + min.getX() );
 					Log.d(TAG, "MAX = " + antGeometry.getTranslation().getX() + max.getX());
-					if (obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMax().getX() > antGeometry.getTranslation().getX() + 2 * min.getX() -100 && 
-						obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMin().getX() < antGeometry.getTranslation().getX() + 2 * max.getX() +100 &&
-						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMax().getY() > antGeometry.getTranslation().getY() + 2 * min.getY() -100 && 
-						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMin().getY() < antGeometry.getTranslation().getY() + 2 * max.getY() +100 &&
-						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMax().getZ() > antGeometry.getTranslation().getZ() + 2 * min.getZ() -100 && 
-						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMin().getZ() < antGeometry.getTranslation().getZ() + 2 * max.getZ() +100 )
+					if (obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMax().getX() > antGeometry.getTranslation().getX() + 2 * min.getX() -10 && 
+						obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMin().getX() < antGeometry.getTranslation().getX() + 2 * max.getX() +10 &&
+						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMax().getY() > antGeometry.getTranslation().getY() + 2 * min.getY() -50 && 
+						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMin().getY() < antGeometry.getTranslation().getY() + 2 * max.getY() +50 &&
+						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMax().getZ() > antGeometry.getTranslation().getZ() + 2 * min.getZ() -10 && 
+						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMin().getZ() < antGeometry.getTranslation().getZ() + 2 * max.getZ() +10 )
 					{
 						antGeometry.setRotation(new Rotation((float) (3*Math.PI/4), 0f, 0f),true);
 						//antGeometry.setVisible(false);
@@ -332,6 +332,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 					{	
 						obj.splashGeometry.setTranslation(obj.geometry.getTranslation());
 						obj.splashGeometry.setVisible(true);
+						obj.velocity = new Vector3d(0f, 0f, 0f);
 						obj.geometry.setVisible(false);
 					}
 				}
@@ -350,26 +351,6 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		
 	}
 	
-	public void onShootButtonClick(View v)
-	{
-		if (!exsisting_paint_balls.isEmpty())
-		{
-			for(PaintBall obj : exsisting_paint_balls)
-			{
-				if(!obj.geometry.isVisible()) 
-				{
-					obj.geometry.setTranslation(new Vector3d(-600f, -450f, 370f));
-					obj.velocity = new Vector3d(50f, 50f, 0f);
-					obj.geometry.setVisible(true);
-					break;
-				}
-			}
-		}
-		else
-		{
-			MetaioDebug.log(Log.ERROR, "No elements in exsisting paint balls");
-		}
-	}
 	
     @Override
     public boolean dispatchTouchEvent(MotionEvent event)
@@ -396,7 +377,6 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             		paint_ball_object.geometry.setTranslation(new Vector3d(-600f, -450f, 370f));
         			paint_ball_object.velocity = touchVec;
         			paint_ball_object.geometry.setVisible(true);
-        			exsisting_paint_balls.add(paint_ball_object);
             	break;
         		}
         }
