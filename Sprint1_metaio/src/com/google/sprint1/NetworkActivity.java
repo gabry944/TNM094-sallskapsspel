@@ -143,6 +143,7 @@ public class NetworkActivity extends Activity {
 	public void startGame(View view) {
 		// in order to start the game we need to extract our assets to the
 		// metaio SDK
+		startService(new Intent(this, NetworkService.class));
 		startGame.execute(0); // Starts the assetsExtracter class
 	}
 

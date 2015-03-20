@@ -2,6 +2,7 @@ package com.google.sprint1;
 
 import java.io.File;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -57,6 +58,7 @@ public class GameActivity extends ARViewActivity
 
 	/** Called when the user clicks the Exit button (krysset) */
 	public void onExitButtonClick(View v) {
+		stopService(new Intent(this, NetworkService.class));
 		finish();
 	}
 	
