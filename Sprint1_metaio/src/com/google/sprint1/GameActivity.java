@@ -54,6 +54,8 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	private IGeometry towerGeometry4;
 	private IGeometry canonGeometry4;
 
+	PaintBall paint_ball_object;
+	private ArrayList<PaintBall> exsisting_paint_balls;
 	
 	private Vector3d startTouch;
 	private Vector3d endTouch;
@@ -65,9 +67,8 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
     private GestureLibrary gestureLib;
     protected FrameLayout frameLayout;
 	
-	PaintBall paint_ball_object;
-	private ArrayList<PaintBall> exsisting_paint_balls;
-	
+	// point count
+    protected int point; 
 
 	//Variables for physics calibration
 	Vector3d acceleration;
@@ -131,6 +132,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		endTouch =  new Vector3d(0f, 0f, 0f);
 		
 		temp = 20f;
+		point = 0;
 	}
 
 	/** Called when the user clicks the Exit button (krysset) */
@@ -298,7 +300,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		else if (antGeometry.getTranslation().getX() > 350f)
 			temp = -2f;
 		
-		antGeometry.setTranslation(new Vector3d(0.0f, 0.0f, 0.0f), true);
+		antGeometry.setTranslation(new Vector3d(temp, 0.0f, 0.0f), true);
 
 
 		if (!exsisting_paint_balls.isEmpty())
@@ -325,6 +327,11 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 					{
 						antGeometry.setRotation(new Rotation((float) (3*Math.PI/4), 0f, 0f),true);
 						//antGeometry.setVisible(false);
+						obj.splashGeometry.setTranslation(obj.geometry.getTranslation());
+						obj.splashGeometry.setVisible(true);
+						obj.velocity = new Vector3d(0f, 0f, 0f);
+						obj.geometry.setVisible(false);
+						point++;
 					}
 				
 					// checks for collision with ground 	
