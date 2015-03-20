@@ -120,16 +120,6 @@ public class NetworkActivity extends Activity {
 
 	}
 
-	/** Called when the user clicks the Register button */
-	public void clickAdvertise(View view) {
-		// in order to start the game we need to extract our assets to the
-		// metaio SDK
-		if (mConnection.getLocalPort() > -1) {
-			mNsdHelper.registerService(mConnection.getLocalPort());
-		} else {
-			Log.d(TAG, "ServerSocket isn't bound.");
-		}
-	}
 
 	public void clickDiscover(View v) {
 
@@ -161,7 +151,8 @@ public class NetworkActivity extends Activity {
 	}
 	
 	public void sendData(View view) {
-		//mConnection.sendData("Data from another person! :O"));
+		Log.d(TAG, "sendData clicked!");
+		mConnection.sendData("Data from another client.");
 	}
 
 	@Override
