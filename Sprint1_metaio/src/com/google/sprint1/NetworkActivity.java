@@ -46,13 +46,13 @@ public class NetworkActivity extends Activity {
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
 
-//	private Handler mUpdateHandler;
-	private Handler mNSDHandler;
-	//NsdHelper mNsdHelper;
-	//MobileConnection mConnection;
+	// private Handler mUpdateHandler;
+	Handler mNSDHandler;
+	// NsdHelper mNsdHelper;
+	// MobileConnection mConnection;
 
 	// Variables for Service handling
-	NetworkService mService;
+	private NetworkService mService;
 	boolean mBound = false;
 
 	ArrayAdapter<NsdServiceInfo> listAdapter;
@@ -70,15 +70,15 @@ public class NetworkActivity extends Activity {
 		/* Start game */
 		startGame = new AssetsExtracter();
 
-//		mUpdateHandler = new Handler() {
-//			@Override
-//			public void handleMessage(Message msg) {
-//
-//			}
-//		};
+		// mUpdateHandler = new Handler() {
+		// @Override
+		// public void handleMessage(Message msg) {
+		//
+		// }
+		// };
 
 		Log.d(TAG, "Precis vid init av mNSDHandler");
-		
+
 		mNSDHandler = new Handler() {
 			@Override
 			// Called whenever a message is sent to the handler.
@@ -104,17 +104,15 @@ public class NetworkActivity extends Activity {
 
 			}
 		};
-		
+
 		Log.d(TAG, "Precis efter init av mNSDHandler");
-		
-		
-		mService.initNsdHelper(mNSDHandler);
 
+		// mService.initNsdHelper(mNSDHandler);
 
-		//mConnection = new MobileConnection(mUpdateHandler);
-		//mNsdHelper = new NsdHelper(this, mNSDHandler);
-		
-		//mNsdHelper.initializeNsd();
+		// mConnection = new MobileConnection(mUpdateHandler);
+		// mNsdHelper = new NsdHelper(this, mNSDHandler);
+
+		// mNsdHelper.initializeNsd();
 
 		ListView listView = (ListView) findViewById(R.id.serviceView);
 
@@ -152,9 +150,10 @@ public class NetworkActivity extends Activity {
 										if (service != null) {
 											Log.d(TAG, "Connecting to: "
 													+ service.getServiceName());
-											mService.mConnection.connectToServer(
-													service.getHost(),
-													service.getPort());
+											mService.mConnection
+													.connectToServer(
+															service.getHost(),
+															service.getPort());
 										} else {
 											Log.d(TAG,
 													"No service to connect to!");
@@ -198,17 +197,30 @@ public class NetworkActivity extends Activity {
 		TestClass test = new TestClass(5, "hej");
 		mService.mConnection.sendData(test);
 
+//		if (mService == null) {
+//			System.out.println("mService är null");
+//		} else {
+//			// int i = mService.getRandomNumber();
+//			// System.out.println(i);
+//
+//			mService.initNsdHelper(mNSDHandler);
+//
+//		}
+//		
+//		mService.mNsdHelper.registerService(mService.mConnection.getLocalPort());
+//		mService.mNsdHelper.discoverServices();
+
 	}
 
 	@Override
 	protected void onPause() {
 
-//		if (mService.mNsdHelper != null) {
-//
-//			Log.d(TAG, "Pausad");
-//			mService.mNsdHelper.tearDown();
-//			mService.mNsdHelper = null;
-//		}
+		// if (mService.mNsdHelper != null) {
+		//
+		// Log.d(TAG, "Pausad");
+		// mService.mNsdHelper.tearDown();
+		// mService.mNsdHelper = null;
+		// }
 
 		super.onPause();
 	}
@@ -217,24 +229,17 @@ public class NetworkActivity extends Activity {
 	protected void onStop() {
 		super.onStop();
 
-		// Unbind from service
-		if (mBound) {
-			unbindService(mServiceConnection);
-			mBound = false;
-		}
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		
+
 		Log.d(TAG, "Vid bindService");
 
 		// Bind to NetworkService
 		Intent intent = new Intent(this, NetworkService.class);
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
-		
-		Log.d(TAG, "1");
 
 	}
 
@@ -242,29 +247,34 @@ public class NetworkActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 
-//		mNsdHelper = new NsdHelper(this, mNSDHandler);
-//		mNsdHelper.initializeNsd();
-//		if (mNsdHelper != null) {
-//			Log.d(TAG, "Resumed");
-//
-//			mNsdHelper.registerService(mConnection.getLocalPort());
-//			mNsdHelper.discoverServices();
-//
-//		}
-		//mService.mNSDHandler = this.mNSDHandler;
+		// mNsdHelper = new NsdHelper(this, mNSDHandler);
+		// mNsdHelper.initializeNsd();
+		// if (mNsdHelper != null) {
+		// Log.d(TAG, "Resumed");
+		//
+		// mNsdHelper.registerService(mConnection.getLocalPort());
+		// mNsdHelper.discoverServices();
+		//
+		// }
+		// mService.mNSDHandler = this.mNSDHandler;
 		Log.d(TAG, "2");
-
 
 	}
 
 	protected void onDestroy() {
 
-//		Log.d(TAG, "Destroyed");
-//		if (mNsdHelper != null) {
-//			mNsdHelper.tearDown();
-//			mNsdHelper = null;
-//		}
-//		mConnection.tearDown();
+		// Log.d(TAG, "Destroyed");
+		// if (mNsdHelper != null) {
+		// mNsdHelper.tearDown();
+		// mNsdHelper = null;
+		// }
+		// mConnection.tearDown();
+
+		// Unbind from service
+		if (mBound) {
+			unbindService(mServiceConnection);
+			mBound = false;
+		}
 		super.onDestroy();
 	}
 
@@ -319,7 +329,18 @@ public class NetworkActivity extends Activity {
 			mService = binder.getService();
 			mBound = true;
 			
+			if (mService == null) {
+				System.out.println("mService är null");
+			} else {
+				// int i = mService.getRandomNumber();
+				// System.out.println(i);
+
+				mService.initNsdHelper(mNSDHandler);
+
+			}
 			
+			mService.mNsdHelper.registerService(mService.mConnection.getLocalPort());
+			mService.mNsdHelper.discoverServices();
 
 		}
 

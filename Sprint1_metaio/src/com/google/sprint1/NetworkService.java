@@ -31,6 +31,8 @@ public class NetworkService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
+		Log.d(TAG, "Bind i Service");
+
 		// TODO Auto-generated method stub
 		return mBinder;
 	}
@@ -89,29 +91,15 @@ public class NetworkService extends Service {
 		Toast.makeText(this, "My service destroyed", Toast.LENGTH_LONG).show();
 		Log.d(TAG, "DestroyedInService");
 
-//		if (mNsdHelper != null) {
-//			mNsdHelper.tearDown();
-//			mNsdHelper = null;
-//		}
-//		mConnection.tearDown();
+		if (mNsdHelper != null) {
+			mNsdHelper.tearDown();
+			mNsdHelper = null;
+		}
+		mConnection.tearDown();
 
 		super.onDestroy();
 	}
 
-	public void onStartCommand() {
-		Toast.makeText(this, "My service started", Toast.LENGTH_LONG).show();
-
-		// if (mNsdHelper != null) {
-		/*
-		 * Log.d(TAG, "Resumed");
-		 * 
-		 * mNsdHelper.registerService(mConnection.getLocalPort());
-		 * mNsdHelper.discoverServices();
-		 */
-
-		// }
-
-	}
 
 	public class LocalBinder extends Binder {
 		NetworkService getService() {

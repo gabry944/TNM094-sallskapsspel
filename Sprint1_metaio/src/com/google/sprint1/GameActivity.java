@@ -39,7 +39,7 @@ public class GameActivity extends ARViewActivity {
 	private IGeometry flowerGeometry;
 
 	// Variables for Service handling
-	NetworkService mService;
+	private NetworkService mService;
 	boolean mBound = false;
 
 	/* delkaration av variabler som används i renderingsloopen */

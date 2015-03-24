@@ -46,13 +46,6 @@ public class NsdHelper {
 
 	}
 
-	public void initDiscoveryListener() {
-		initializeDiscoveryListener();
-		initializeRegistrationListener();
-		discoverServices();
-
-	}
-
 	public void initializeDiscoveryListener() {
 		mDiscoveryListener = new NsdManager.DiscoveryListener() {
 
