@@ -106,6 +106,9 @@ public class NetworkActivity extends Activity {
 		};
 		
 		Log.d(TAG, "Precis efter init av mNSDHandler");
+		
+		
+		mService.initNsdHelper(mNSDHandler);
 
 
 		//mConnection = new MobileConnection(mUpdateHandler);
@@ -311,11 +314,12 @@ public class NetworkActivity extends Activity {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			// We've bound to LocalService, cast the IBinder and get
 			// LocalService instance
+			Log.d(TAG, "3");
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 			mBound = true;
 			
-			Log.d(TAG, "3");
+			
 
 		}
 

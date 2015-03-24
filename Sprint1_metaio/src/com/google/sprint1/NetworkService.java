@@ -43,8 +43,8 @@ public class NetworkService extends Service {
 		mConnection = new MobileConnection(mUpdateHandler);
 		
 
-		Log.d(TAG, "Vid mNsdHelper");
-		mNsdHelper = new NsdHelper(this, mNSDHandler);
+//		Log.d(TAG, "Vid mNsdHelper");
+//		mNsdHelper = new NsdHelper(this, mNSDHandler);
 		
 		mUpdateHandler = new Handler() {
 			@Override
@@ -81,7 +81,7 @@ public class NetworkService extends Service {
 		// }
 		// };
 
-		mNsdHelper.initializeNsd();
+//		mNsdHelper.initializeNsd();
 	}
 
 	@Override
@@ -121,6 +121,14 @@ public class NetworkService extends Service {
 
 	public int getRandomNumber() {
 		return mGenerator.nextInt(100);
+	}
+	
+	public void initNsdHelper(Handler handler){
+		Log.d(TAG, "Vid mNsdHelper");
+		mNsdHelper = new NsdHelper(this, handler);
+		
+		mNsdHelper.initializeNsd();
+
 	}
 
 }
