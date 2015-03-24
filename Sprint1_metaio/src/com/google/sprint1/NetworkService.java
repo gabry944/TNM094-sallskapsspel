@@ -37,23 +37,18 @@ public class NetworkService extends Service {
 		mUpdateHandler = new Handler();
 		mConnection = new MobileConnection(mUpdateHandler);
 		
-		mUpdateHandler = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-
-			}
-		};
+//		mUpdateHandler = new Handler() {
+//			@Override
+//			public void handleMessage(Message msg) {
+//
+//			}
+//		};
 	}
 
 	@Override
 	public void onDestroy() {
 		Toast.makeText(this, "My service destroyed", Toast.LENGTH_LONG).show();
-		Log.d(TAG, "DestroyedInService");
 
-		if (mNsdHelper != null) {
-			mNsdHelper.tearDown();
-			mNsdHelper = null;
-		}
 		mConnection.tearDown();
 
 		super.onDestroy();

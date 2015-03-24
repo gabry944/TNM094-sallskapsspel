@@ -177,28 +177,8 @@ public class NetworkActivity extends Activity {
 	}
 
 	@Override
-	protected void onPause() {
-
-		if (mService.mNsdHelper != null) {
-			Log.d(TAG, "Pausad");
-			mService.mNsdHelper.tearDown();
-			mService.mNsdHelper = null;
-		}
-
-		super.onPause();
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-
-	}
-
-	@Override
 	protected void onStart() {
 		super.onStart();
-
-		Log.d(TAG, "Vid bindService");
 
 		// Bind to NetworkService
 		Intent intent = new Intent(this, NetworkService.class);
@@ -210,7 +190,7 @@ public class NetworkActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 
-		// mmNsdHelper = new NsdHelper(this, mNSDHandler);
+		// mmNsdHelper = new Ngit statussdHelper(this, mNSDHandler);
 		// mNsdHelper.initializeNsd();
 		// if (mNsdHelper != null) {
 		// Log.d(TAG, "Resumed");
@@ -224,11 +204,10 @@ public class NetworkActivity extends Activity {
 
 	protected void onDestroy() {
 
-		 Log.d(TAG, "Destroyed");
-		 if (mService.mNsdHelper != null) {
-			 mService.mNsdHelper.tearDown();
-			 mService.mNsdHelper.stopDiscovery();
-		 }
+		if (mService.mNsdHelper != null) {
+			mService.mNsdHelper.tearDown();
+			mService.mNsdHelper.stopDiscovery();
+		}
 
 		// Unbind from service
 		if (mBound) {
@@ -284,7 +263,6 @@ public class NetworkActivity extends Activity {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			// We've bound to LocalService, cast the IBinder and get
 			// LocalService instance
-			Log.d(TAG, "3");
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 			mBound = true;
