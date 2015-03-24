@@ -21,18 +21,11 @@ public class NetworkService extends Service {
 	NsdHelper mNsdHelper;
 	MobileConnection mConnection;
 
-	// ArrayAdapter<NsdServiceInfo> listAdapter;
-
-	public int k;
-
 	private final IBinder mBinder = new LocalBinder();
 	private final Random mGenerator = new Random();
 
-
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.d(TAG, "Bind i Service");
-
 		// TODO Auto-generated method stub
 		return mBinder;
 	}
@@ -44,46 +37,12 @@ public class NetworkService extends Service {
 		mUpdateHandler = new Handler();
 		mConnection = new MobileConnection(mUpdateHandler);
 		
-
-//		Log.d(TAG, "Vid mNsdHelper");
-//		mNsdHelper = new NsdHelper(this, mNSDHandler);
-		
 		mUpdateHandler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
 
 			}
 		};
-
-		// mNSDHandler = new Handler() {
-		// @Override
-		// // Called whenever a message is sent to the handler.
-		// // Currently assumes that the message contains a NsdServiceInfo
-		// // object.
-		// public void handleMessage(Message msg) {
-		// NsdServiceInfo service;
-		// // If message is of type 1, meaning "delete list".
-		// // TODO: Should probably be an enum
-		// if (msg.what == 1) {
-		// listAdapter.clear();
-		// }
-		// // If key is "found", add to the adapter
-		// else if ((service = (NsdServiceInfo) msg.getData().get("found")) !=
-		// null) {
-		// listAdapter.add(service);
-		// }
-		// // If key is "lost", remove from adapter
-		// else if ((service = (NsdServiceInfo) msg.getData().get("lost")) !=
-		// null) {
-		// listAdapter.remove(service);
-		// }
-		// // Notify adapter that the list is updated.
-		// listAdapter.notifyDataSetChanged();
-		//
-		// }
-		// };
-
-//		mNsdHelper.initializeNsd();
 	}
 
 	@Override
