@@ -45,11 +45,7 @@ public class NetworkActivity extends Activity {
 
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
-
-	// private Handler mUpdateHandler;
 	Handler mNSDHandler;
-	// NsdHelper mNsdHelper;
-	// MobileConnection mConnection;
 
 	// Variables for Service handling
 	private NetworkService mService;
@@ -69,15 +65,6 @@ public class NetworkActivity extends Activity {
 
 		/* Start game */
 		startGame = new AssetsExtracter();
-
-		// mUpdateHandler = new Handler() {
-		// @Override
-		// public void handleMessage(Message msg) {
-		//
-		// }
-		// };
-
-		Log.d(TAG, "Precis vid init av mNSDHandler");
 
 		mNSDHandler = new Handler() {
 			@Override
@@ -104,15 +91,6 @@ public class NetworkActivity extends Activity {
 
 			}
 		};
-
-		Log.d(TAG, "Precis efter init av mNSDHandler");
-
-		// mService.initNsdHelper(mNSDHandler);
-
-		// mConnection = new MobileConnection(mUpdateHandler);
-		// mNsdHelper = new NsdHelper(this, mNSDHandler);
-
-		// mNsdHelper.initializeNsd();
 
 		ListView listView = (ListView) findViewById(R.id.serviceView);
 
@@ -196,31 +174,16 @@ public class NetworkActivity extends Activity {
 	public void sendData(View view) {
 		TestClass test = new TestClass(5, "hej");
 		mService.mConnection.sendData(test);
-
-//		if (mService == null) {
-//			System.out.println("mService är null");
-//		} else {
-//			// int i = mService.getRandomNumber();
-//			// System.out.println(i);
-//
-//			mService.initNsdHelper(mNSDHandler);
-//
-//		}
-//		
-//		mService.mNsdHelper.registerService(mService.mConnection.getLocalPort());
-//		mService.mNsdHelper.discoverServices();
-
 	}
 
 	@Override
 	protected void onPause() {
 
-		// if (mService.mNsdHelper != null) {
-		//
-		// Log.d(TAG, "Pausad");
-		// mService.mNsdHelper.tearDown();
-		// mService.mNsdHelper = null;
-		// }
+		if (mService.mNsdHelper != null) {
+			Log.d(TAG, "Pausad");
+			mService.mNsdHelper.tearDown();
+			mService.mNsdHelper = null;
+		}
 
 		super.onPause();
 	}
@@ -247,7 +210,7 @@ public class NetworkActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 
-		// mNsdHelper = new NsdHelper(this, mNSDHandler);
+		// mmNsdHelper = new NsdHelper(this, mNSDHandler);
 		// mNsdHelper.initializeNsd();
 		// if (mNsdHelper != null) {
 		// Log.d(TAG, "Resumed");
@@ -256,8 +219,6 @@ public class NetworkActivity extends Activity {
 		// mNsdHelper.discoverServices();
 		//
 		// }
-		// mService.mNSDHandler = this.mNSDHandler;
-		Log.d(TAG, "2");
 
 	}
 
@@ -328,18 +289,17 @@ public class NetworkActivity extends Activity {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 			mBound = true;
-			
+
 			if (mService == null) {
 				System.out.println("mService är null");
 			} else {
-				// int i = mService.getRandomNumber();
-				// System.out.println(i);
 
 				mService.initNsdHelper(mNSDHandler);
 
 			}
-			
-			mService.mNsdHelper.registerService(mService.mConnection.getLocalPort());
+
+			mService.mNsdHelper.registerService(mService.mConnection
+					.getLocalPort());
 			mService.mNsdHelper.discoverServices();
 
 		}
