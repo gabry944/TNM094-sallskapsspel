@@ -12,5 +12,12 @@
         android:background="@android:color/transparent"
         android:onClick="onExitButtonClick"
         android:src="@drawable/cancel" />
+
+    <Button
+        android:id="@+id/sendData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send Data"
+        android:onClick="onClickSendData" />
     
 </FrameLayout>

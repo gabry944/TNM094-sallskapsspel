@@ -91,6 +91,11 @@ public class GameActivity extends ARViewActivity {
 		stopService(new Intent(this, NetworkService.class));
 		finish();
 	}
+	
+	public void onClickSendData(View v) {
+		TestClass test = new TestClass(5, "hej");
+		mService.mConnection.sendData(test);
+	}
 
 	/**
 	 * Create a geometry, the string input gives the filepach (relative from the
