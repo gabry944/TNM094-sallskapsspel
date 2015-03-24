@@ -3,25 +3,15 @@ package com.google.sprint1;
 import java.io.File;
 import java.util.ArrayList;
 
-import android.content.Context;
-import android.gesture.Gesture;
-import android.gesture.GestureLibraries;
-import android.gesture.GestureLibrary;
-import android.gesture.Prediction;
 import android.gesture.GestureOverlayView;
-import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.os.Bundle;
-import android.support.v4.view.VelocityTrackerCompat;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.MetaioDebug;
@@ -66,7 +56,6 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	//to enable gesture tracking
 	protected GridView surfaceView;
     protected GestureOverlayView gestureOverlayView;
-    private GestureLibrary gestureLib;
     protected FrameLayout frameLayout;
 	
 	// point count
@@ -337,36 +326,6 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	{	
 		// Only implemented because its required by the parent class
 	}
-	
-	/*public void onShootButtonClick(View v)
-	{
-		if (!exsisting_paint_balls.isEmpty())
-		{
-			for(PaintBall obj : exsisting_paint_balls)
-			{
-				if(!obj.geometry.isVisible()) 
-				{
-					obj.geometry.setTranslation(new Vector3d(-600f, -450f, 370f));
-					obj.velocity = new Vector3d(50f, 50f, 0f);
-					obj.geometry.setVisible(true);
-					break;
-				}
-			}
-		}
-		else
-		{
-			MetaioDebug.log(Log.ERROR, "No elements in exsisting paint balls");
-		}
-	}	
-	
-	//addOnGestureListener(GestureOverlayVire.OnGestureListener listener)
-	
-	public void GestureOverlayView(Context context)
-	{
-		Log.d(TAG, "hej");
-	}
-	
-    private VelocityTracker mVelocityTracker = null;*/
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event)
