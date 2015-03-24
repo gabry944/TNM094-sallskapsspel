@@ -46,10 +46,10 @@ public class NetworkActivity extends Activity {
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
 
-	private Handler mUpdateHandler;
+//	private Handler mUpdateHandler;
 	private Handler mNSDHandler;
-	NsdHelper mNsdHelper;
-	MobileConnection mConnection;
+	//NsdHelper mNsdHelper;
+	//MobileConnection mConnection;
 
 	// Variables for Service handling
 	NetworkService mService;
@@ -70,13 +70,15 @@ public class NetworkActivity extends Activity {
 		/* Start game */
 		startGame = new AssetsExtracter();
 
-		mUpdateHandler = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
+//		mUpdateHandler = new Handler() {
+//			@Override
+//			public void handleMessage(Message msg) {
+//
+//			}
+//		};
 
-			}
-		};
-
+		Log.d(TAG, "Precis vid init av mNSDHandler");
+		
 		mNSDHandler = new Handler() {
 			@Override
 			// Called whenever a message is sent to the handler.
@@ -102,11 +104,14 @@ public class NetworkActivity extends Activity {
 
 			}
 		};
+		
+		Log.d(TAG, "Precis efter init av mNSDHandler");
 
-		mConnection = new MobileConnection(mUpdateHandler);
-		mNsdHelper = new NsdHelper(this, mNSDHandler);
 
-		mNsdHelper.initializeNsd();
+		//mConnection = new MobileConnection(mUpdateHandler);
+		//mNsdHelper = new NsdHelper(this, mNSDHandler);
+		
+		//mNsdHelper.initializeNsd();
 
 		ListView listView = (ListView) findViewById(R.id.serviceView);
 
@@ -139,12 +144,12 @@ public class NetworkActivity extends Activity {
 											int which) {
 										NsdServiceInfo service = listAdapter
 												.getItem(pos);
-										service = mNsdHelper
+										service = mService.mNsdHelper
 												.resolveService(service);
 										if (service != null) {
 											Log.d(TAG, "Connecting to: "
 													+ service.getServiceName());
-											mConnection.connectToServer(
+											mService.mConnection.connectToServer(
 													service.getHost(),
 													service.getPort());
 										} else {
@@ -188,19 +193,19 @@ public class NetworkActivity extends Activity {
 	/** Called when the user clicks the Send Data button */
 	public void sendData(View view) {
 		TestClass test = new TestClass(5, "hej");
-		mConnection.sendData(test);
+		mService.mConnection.sendData(test);
 
 	}
 
 	@Override
 	protected void onPause() {
 
-		if (mNsdHelper != null) {
-
-			Log.d(TAG, "Pausad");
-			mNsdHelper.tearDown();
-			mNsdHelper = null;
-		}
+//		if (mService.mNsdHelper != null) {
+//
+//			Log.d(TAG, "Pausad");
+//			mService.mNsdHelper.tearDown();
+//			mService.mNsdHelper = null;
+//		}
 
 		super.onPause();
 	}
@@ -219,36 +224,44 @@ public class NetworkActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
+		
+		Log.d(TAG, "Vid bindService");
 
 		// Bind to NetworkService
 		Intent intent = new Intent(this, NetworkService.class);
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+		
+		Log.d(TAG, "1");
+
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 
-		mNsdHelper = new NsdHelper(this, mNSDHandler);
-		mNsdHelper.initializeNsd();
-		if (mNsdHelper != null) {
-			Log.d(TAG, "Resumed");
+//		mNsdHelper = new NsdHelper(this, mNSDHandler);
+//		mNsdHelper.initializeNsd();
+//		if (mNsdHelper != null) {
+//			Log.d(TAG, "Resumed");
+//
+//			mNsdHelper.registerService(mConnection.getLocalPort());
+//			mNsdHelper.discoverServices();
+//
+//		}
+		//mService.mNSDHandler = this.mNSDHandler;
+		Log.d(TAG, "2");
 
-			mNsdHelper.registerService(mConnection.getLocalPort());
-			mNsdHelper.discoverServices();
-
-		}
 
 	}
 
 	protected void onDestroy() {
 
-		Log.d(TAG, "Destroyed");
-		if (mNsdHelper != null) {
-			mNsdHelper.tearDown();
-			mNsdHelper = null;
-		}
-		mConnection.tearDown();
+//		Log.d(TAG, "Destroyed");
+//		if (mNsdHelper != null) {
+//			mNsdHelper.tearDown();
+//			mNsdHelper = null;
+//		}
+//		mConnection.tearDown();
 		super.onDestroy();
 	}
 
@@ -301,6 +314,9 @@ public class NetworkActivity extends Activity {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 			mBound = true;
+			
+			Log.d(TAG, "3");
+
 		}
 
 		@Override
