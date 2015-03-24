@@ -173,7 +173,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			/** Load Marker */
 			// Getting a file path for tracking configuration XML file
 			File trackingConfigFile = AssetsManager.getAssetPathAsFile(
-					getApplicationContext(), "marker.zip"); 
+					getApplicationContext(), "marker/TrackingData_PictureMarker.xml"); 
 			
 			// Assigning tracking configuration
 			boolean result = metaioSDK

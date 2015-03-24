@@ -105,7 +105,7 @@
                                 their values. It is advised to set these 
                                 attributes to augment the image independently 
                                 of the reference image resolution. -->
-                        <referenceImage qualityThreshold="0.70">glue_picture_marker_2.png</referenceImage>
+                        <referenceImage qualityThreshold="0.70">splash.png</referenceImage>
                     </MarkerParameters>
                 </Parameters>
             </SensorCOS>
