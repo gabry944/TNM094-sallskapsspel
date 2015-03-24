@@ -175,6 +175,17 @@ public class NetworkActivity extends Activity {
 		TestClass test = new TestClass(5, "hej");
 		mService.mConnection.sendData(test);
 	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		if(mService.mNsdHelper != null){
+			mService.mNsdHelper.tearDown();
+			mService.mNsdHelper = null;
+		}
+
+	}
 
 	@Override
 	protected void onStart() {
@@ -190,16 +201,23 @@ public class NetworkActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-		// mmNsdHelper = new Ngit statussdHelper(this, mNSDHandler);
-		// mNsdHelper.initializeNsd();
-		// if (mNsdHelper != null) {
-		// Log.d(TAG, "Resumed");
-		//
-		// mNsdHelper.registerService(mConnection.getLocalPort());
-		// mNsdHelper.discoverServices();
-		//
-		// }
+		
+		try{
+			if(mService.mNsdHelper == null){
+				 mService.initNsdHelper(mNSDHandler);
+				 mService.mNsdHelper.initializeNsd();
+			}
+			
+			 if (mService.mNsdHelper != null) {
+			 Log.d(TAG, "Resumed");
+			
+			 mService.mNsdHelper.registerService(mService.mConnection.getLocalPort());
+			 mService.mNsdHelper.discoverServices();
+			
+			 }
+		}catch(NullPointerException e){
+			
+		}
 
 	}
 
