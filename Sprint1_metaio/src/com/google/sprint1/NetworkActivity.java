@@ -180,7 +180,8 @@ public class NetworkActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 
-		// Bind to NetworkService
+		// Bind to NetworkService. The service will not destroy 
+		// until there is no activity bounded to it
 		Intent intent = new Intent(this, NetworkService.class);
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 
@@ -203,13 +204,15 @@ public class NetworkActivity extends Activity {
 	}
 
 	protected void onDestroy() {
-
+		
+		//Check if mNsdHelper is not null(will throw NullPointerException otherwise).
+		//Tearing mNsdHelper down(unregister from network and stops the discovery).
 		if (mService.mNsdHelper != null) {
 			mService.mNsdHelper.tearDown();
-			mService.mNsdHelper.stopDiscovery();
 		}
 
-		// Unbind from service
+		// Unbind from service, GameActivity will manage to bind before and
+		//therefore the service will still be active.
 		if (mBound) {
 			unbindService(mServiceConnection);
 			mBound = false;
@@ -266,17 +269,21 @@ public class NetworkActivity extends Activity {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 			mBound = true;
-
+			
+			//Initialize mNsdHelper with the mNSDHandler 
 			if (mService == null) {
 				System.out.println("mService är null");
-			} else {
+			}
+			else {
 
 				mService.initNsdHelper(mNSDHandler);
 
 			}
-
+			
+			//Registrate the game on the network
 			mService.mNsdHelper.registerService(mService.mConnection
 					.getLocalPort());
+			//Start discovery to look for other peers
 			mService.mNsdHelper.discoverServices();
 
 		}

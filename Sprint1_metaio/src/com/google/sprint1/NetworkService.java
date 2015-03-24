@@ -17,7 +17,6 @@ public class NetworkService extends Service {
 	public static final String TAG = "NetworkService";
 
 	private Handler mUpdateHandler;
-    Handler mNSDHandler = null;
 	NsdHelper mNsdHelper;
 	MobileConnection mConnection;
 
@@ -31,29 +30,28 @@ public class NetworkService extends Service {
 	}
 
 	@Override
-	public void onCreate() {
-		Toast.makeText(this, "My service created", Toast.LENGTH_LONG).show();
-
+	public void onCreate() {		
+		
+		//Creates new handler and a MobileConnection
 		mUpdateHandler = new Handler();
 		mConnection = new MobileConnection(mUpdateHandler);
-		
-//		mUpdateHandler = new Handler() {
-//			@Override
-//			public void handleMessage(Message msg) {
-//
-//			}
-//		};
+
+		// mUpdateHandler = new Handler() {
+		// @Override
+		// public void handleMessage(Message msg) {
+		//
+		// }
+		// };
 	}
 
 	@Override
 	public void onDestroy() {
-		Toast.makeText(this, "My service destroyed", Toast.LENGTH_LONG).show();
-
+		
+		//Tearing MobileConnection down when user exits app
 		mConnection.tearDown();
 
 		super.onDestroy();
 	}
-
 
 	public class LocalBinder extends Binder {
 		NetworkService getService() {
@@ -61,14 +59,9 @@ public class NetworkService extends Service {
 		}
 	}
 
-	public int getRandomNumber() {
-		return mGenerator.nextInt(100);
-	}
-	
-	public void initNsdHelper(Handler handler){
-		Log.d(TAG, "Vid mNsdHelper");
+	public void initNsdHelper(Handler handler) {
+		//Initialize new mNsdHandler with "handler"
 		mNsdHelper = new NsdHelper(this, handler);
-		
 		mNsdHelper.initializeNsd();
 
 	}
