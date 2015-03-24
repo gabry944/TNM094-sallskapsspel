@@ -55,9 +55,11 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	private IGeometry canonGeometry3;
 	private IGeometry towerGeometry4;
 	private IGeometry canonGeometry4;
+	private IGeometry crosshair;
 
 	
 	private Vector3d startTouch;
+	private Vector3d currentTouch;
 	private Vector3d endTouch;
 	private Vector3d touchVec; 		//endTouch-startTouch
 	
@@ -101,6 +103,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		mass = 0.1f;		   							//0.1kg
 
 		touchVec =  new Vector3d(0f, 0f, 0f);
+		currentTouch = new Vector3d(0f, 0f, 0f);
 		startTouch =  new Vector3d(0f, 0f, 0f);
 		endTouch =  new Vector3d(0f, 0f, 0f);
 		
@@ -219,6 +222,10 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			canonGeometry4 = Load3Dmodel("tower/canon.mfbx");
 			geometryProperties(canonGeometry4, 4f, new Vector3d(650f, -520f, 330f), new Rotation(0f, 0f, 0f));
 			
+			//Load crosshair
+			crosshair = Load3Dmodel("crosshair/crosshair.mfbx");
+			geometryProperties(crosshair, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+			crosshair.setVisible(false);
 			//creates a list of paint balls
 			for(int i = 0; i < 20; i++)
 			{
@@ -327,6 +334,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		
 	}
     @Override
+    /** Function to handle touch input */
     public boolean dispatchTouchEvent(MotionEvent event)
     {
         int action = event.getActionMasked();      
@@ -336,16 +344,30 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 
                 startTouch = new Vector3d((event.getX()), event.getY(), 0f);
                 Log.d(TAG, "startTouch ="+ startTouch);
+                crosshair.setVisible(true);
                 break;
             case MotionEvent.ACTION_MOVE:
+            	//gives the coordinates of your finger touch all the time to be able to calculate a crosshair 
+            	currentTouch = new Vector3d(-(event.getX()-startTouch.getX()),
+						  event.getY() -startTouch.getY(),
+						  0f);
+            	
+            	crosshair.setTranslation(new Vector3d( -600f+8f*currentTouch.getX(),
+            										   -450f+8f*currentTouch.getY(),
+            										   0f));
+            	
+            	
+            	Log.d(TAG, "currentTouch = " + currentTouch);
+            
                 break;
             case MotionEvent.ACTION_UP:
             	endTouch = new Vector3d((event.getX()), event.getY(), 0f);
             	touchVec = new Vector3d(-(endTouch.getX()-startTouch.getX()),
             							  endTouch.getY() -startTouch.getY(),
             							  0f);
-            	Log.d(TAG, "endTouch ="+ endTouch);
-            	Log.d(TAG, "touchVec = " + touchVec);
+            	crosshair.setVisible(false);
+            	//Log.d(TAG, "endTouch ="+ endTouch);
+            	//Log.d(TAG, "touchVec = " + touchVec);
         		if(!paint_ball_object.geometry.isVisible())
         		{
             		paint_ball_object.geometry.setTranslation(new Vector3d(-600f, -450f, 370f));
@@ -359,6 +381,12 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
         return true;
     }
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+	}
+	
 	/** Not used at the moment*/
 	@Override
 	protected IMetaioSDKCallback getMetaioSDKCallbackHandler()

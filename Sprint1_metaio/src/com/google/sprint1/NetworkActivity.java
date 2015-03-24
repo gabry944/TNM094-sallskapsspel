@@ -43,6 +43,7 @@ public class NetworkActivity extends Activity implements PeerListListener {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_network);
 		
 		/*Start game*/
@@ -117,6 +118,7 @@ public class NetworkActivity extends Activity implements PeerListListener {
 	public void onPause() {
 		super.onPause();
 		unregisterReceiver(mReceiver);
+		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 	}
 
 	@Override
