@@ -20,6 +20,7 @@ public class MainActivity extends Activity {
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_main);
 	}
 
@@ -37,6 +38,12 @@ public class MainActivity extends Activity {
 		Intent intentSettings = new Intent(this, SettingsActivity.class);
 		startActivity(intentSettings);
 
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 	}
 
 }

@@ -15,7 +15,14 @@ public class SettingsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_settings);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 	}
 
 }

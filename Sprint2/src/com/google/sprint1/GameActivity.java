@@ -33,7 +33,8 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	
 
 	/*Variables for objects in the game*/
-	private IGeometry antGeometry;
+	private IGeometry antGeometry1;
+	private IGeometry antGeometry2;
 	private IGeometry wallGeometry1;
 	private IGeometry wallGeometry2;
 	private IGeometry wallGeometry3;
@@ -46,11 +47,13 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	private IGeometry canonGeometry3;
 	private IGeometry towerGeometry4;
 	private IGeometry canonGeometry4;
+	private IGeometry crosshair;
 
 	PaintBall paint_ball_object;
 	private ArrayList<PaintBall> exsisting_paint_balls;
 	
 	private Vector3d startTouch;
+	private Vector3d currentTouch;
 	private Vector3d endTouch;
 	private Vector3d touchVec; 		//endTouch-startTouch
 	
@@ -101,6 +104,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		mass = 0.1f;		   							//0.1kg
 
 		touchVec =  new Vector3d(0f, 0f, 0f);
+		currentTouch = new Vector3d(0f, 0f, 0f);
 		startTouch =  new Vector3d(0f, 0f, 0f);
 		endTouch =  new Vector3d(0f, 0f, 0f);
 		
@@ -188,9 +192,10 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			/** Load Object */
 
 			//create ant geometry
-			antGeometry = Load3Dmodel("ant/formicaRufa.mfbx");
-			//geometryProperties(antGeometry, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation((float) (3*Math.PI/2), 0f, 0f) );
-			geometryProperties(antGeometry, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation(0f, 0f, 0f) );
+			antGeometry1 = Load3Dmodel("ant/formicaRufa.mfbx");
+			geometryProperties(antGeometry1, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation(0f, 0f, 0f) );	
+			antGeometry2 = Load3Dmodel("ant/formicaRufa.mfbx");
+			geometryProperties(antGeometry2, 10f, new Vector3d(100.0f, -100.0f, 0.0f), new Rotation(0f, 0f, 0f) );
 			
 			//creates the walls around the game area
 			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
@@ -220,6 +225,10 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			canonGeometry4 = Load3Dmodel("tower/canon.mfbx");
 			geometryProperties(canonGeometry4, 4f, new Vector3d(650f, -520f, 330f), new Rotation(0f, 0f, 0f));
 			
+			//Load crosshair
+			crosshair = Load3Dmodel("crosshair/crosshair.mfbx");
+			geometryProperties(crosshair, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+			crosshair.setVisible(false);
 			//creates a list of paint balls
 			for(int i = 0; i < 20; i++)
 			{
@@ -268,12 +277,13 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		//antGeometry.setTranslation(touchVec, true);
 		
 		//move ant
-		if (antGeometry.getTranslation().getX() < -350f)
+		if (antGeometry1.getTranslation().getX() < -350f)
 			temp = 2f;
-		else if (antGeometry.getTranslation().getX() > 350f)
+		else if (antGeometry1.getTranslation().getX() > 350f)
 			temp = -2f;
 		
-		antGeometry.setTranslation(new Vector3d(temp, temp, 0.0f), true);
+		antGeometry1.setTranslation(new Vector3d(temp, temp, 0.0f), true);
+		antGeometry2.setTranslation(new Vector3d(-temp, -temp, 0.0f), true);
 
 		if (!exsisting_paint_balls.isEmpty())
 		{
@@ -285,21 +295,10 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 					physicPositionCalibration(obj);
 					//Log.d(TAG, "Zvalue =" + obj.geometry.getTranslation().getZ());
 					
-					// checks for collision with ant					
-					Vector3d min = antGeometry.getBoundingBox(true).getMin();
-					Vector3d max = antGeometry.getBoundingBox(true).getMax();
-					//Log.d(TAG, "min = " + antGeometry.getTranslation().getX() + min.getX() );
-					//Log.d(TAG, "MAX = " + antGeometry.getTranslation().getX() + max.getX());
-					if (obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMax().getX() > antGeometry.getTranslation().getX() + 2 * min.getX() -100 && 
-						obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMin().getX() < antGeometry.getTranslation().getX() + 2 * max.getX() +100 &&
-						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMax().getY() > antGeometry.getTranslation().getY() + 2 * min.getY() -100 && 
-						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMin().getY() < antGeometry.getTranslation().getY() + 2 * max.getY() +100 &&
-						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMax().getZ() > antGeometry.getTranslation().getZ() + 2 * min.getZ() -100 && 
-						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMin().getZ() < antGeometry.getTranslation().getZ() + 2 * max.getZ() +100 )
-
+						
+					if(checkCollision( obj, antGeometry1))
 					{
-						antGeometry.setRotation(new Rotation((float) (3*Math.PI/4), 0f, 0f),true);
-						//antGeometry.setVisible(false);
+						antGeometry1.setRotation(new Rotation((float) (3*Math.PI/4), 0f, 0f),true);
 						obj.splashGeometry.setTranslation(obj.geometry.getTranslation());
 						obj.splashGeometry.setVisible(true);
 						obj.velocity = new Vector3d(0f, 0f, 0f);
@@ -309,8 +308,18 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 						//displayPoints.setText("Ponts:" + point);
 						//displayPoints = (TextView)findViewById(R.id.editText1);
 						//(TextView)findViewById(R.id.editText1).setText("Ponts:" + point);
-					}					
-				
+					}
+					
+					if(checkCollision( obj, antGeometry2))
+					{
+						antGeometry2.setRotation(new Rotation((float) (3*Math.PI/4), 0f, 0f),true);
+						obj.splashGeometry.setTranslation(obj.geometry.getTranslation());
+						obj.splashGeometry.setVisible(true);
+						obj.velocity = new Vector3d(0f, 0f, 0f);
+						obj.geometry.setVisible(false);
+						point++;		
+					}
+									
 					// checks for collision with ground 	
 					if(obj.geometry.getTranslation().getZ() <= 0f)
 					{	
@@ -333,6 +342,23 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		//onTouchEvent(null);
 	}
 	
+	public boolean checkCollision(PaintBall obj, IGeometry obj2)
+	{
+		Vector3d min = obj2.getBoundingBox(true).getMin();
+		Vector3d max = obj2.getBoundingBox(true).getMax();
+
+		if (obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMax().getX() > obj2.getTranslation().getX() + 2 * min.getX() -100 && 
+			obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMin().getX() < obj2.getTranslation().getX() + 2 * max.getX() +100 &&
+			obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMax().getY() > obj2.getTranslation().getY() + 2 * min.getY() -100 && 
+			obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMin().getY() < obj2.getTranslation().getY() + 2 * max.getY() +100 &&
+			obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMax().getZ() > obj2.getTranslation().getZ() + 2 * min.getZ() -100 && 
+			obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMin().getZ() < obj2.getTranslation().getZ() + 2 * max.getZ() +100 )
+
+			return true;
+		else 
+			return false;
+	}
+	
 	/** function that activates when an object is being touched*/
 	@Override
 	protected void onGeometryTouched(IGeometry geometry) 
@@ -341,6 +367,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	}
 
     @Override
+    /** Function to handle touch input */
     public boolean dispatchTouchEvent(MotionEvent event)
     {
         int action = event.getActionMasked();      
@@ -350,14 +377,29 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 
                 startTouch = new Vector3d((event.getX()), event.getY(), 0f);
                 //Log.d(TAG, "startTouch ="+ startTouch);
+                crosshair.setVisible(true);
                 break;
             case MotionEvent.ACTION_MOVE:
+            	//gives the coordinates of your finger touch all the time to be able to calculate a crosshair 
+            	currentTouch = new Vector3d(-(event.getX()-startTouch.getX()),
+						  event.getY() -startTouch.getY(),
+						  0f);
+            	
+            	crosshair.setTranslation(new Vector3d( -600f+8.4f*currentTouch.getX(),
+            										   -450f+8.4f*currentTouch.getY(),
+            										   0f));
+            	
+            	
+            	Log.d(TAG, "currentTouch = " + currentTouch);
+            
                 break;
             case MotionEvent.ACTION_UP:
             	endTouch = new Vector3d((event.getX()), event.getY(), 0f);
             	touchVec = new Vector3d(-(endTouch.getX()-startTouch.getX()),
             							  endTouch.getY() -startTouch.getY(),
             							  0f);
+            	crosshair.setVisible(false);
+
             	//Log.d(TAG, "endTouch ="+ endTouch);
             	//Log.d(TAG, "touchVec = " + touchVec);
         		if(!paint_ball_object.geometry.isVisible())
@@ -373,6 +415,12 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
         return true;
     }
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+	}
+	
 	/** Not used at the moment*/
 	@Override
 	protected IMetaioSDKCallback getMetaioSDKCallbackHandler()
