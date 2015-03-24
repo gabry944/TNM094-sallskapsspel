@@ -224,12 +224,10 @@ public class NetworkActivity extends Activity {
 
 	protected void onDestroy() {
 
-		// Log.d(TAG, "Destroyed");
-		// if (mNsdHelper != null) {
-		// mNsdHelper.tearDown();
-		// mNsdHelper = null;
-		// }
-		// mConnection.tearDown();
+		 Log.d(TAG, "Destroyed");
+		 if (mService.mNsdHelper != null) {
+			 mService.mNsdHelper.tearDown();
+		 }
 
 		// Unbind from service
 		if (mBound) {
