@@ -227,6 +227,7 @@ public class NetworkActivity extends Activity {
 		 Log.d(TAG, "Destroyed");
 		 if (mService.mNsdHelper != null) {
 			 mService.mNsdHelper.tearDown();
+			 mService.mNsdHelper.stopDiscovery();
 		 }
 
 		// Unbind from service
