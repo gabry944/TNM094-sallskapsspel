@@ -12,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.MetaioDebug;
@@ -60,6 +61,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	
 	// point count
     protected int point; 
+    TextView displayPoints;
 
 	//Variables for physics calibration
 	Vector3d acceleration;
@@ -84,9 +86,11 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);		
 		
 		exsisting_paint_balls = new ArrayList<PaintBall>(20);
+
+		displayPoints = (TextView) findViewById(R.id.myPoints);
 		
 		//velocity and direction of outgoing paintball, will later be based on how you interact with the screen (TODO).
 		acceleration =  new Vector3d(0f, 0f, 0f);
@@ -301,8 +305,11 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 						obj.velocity = new Vector3d(0f, 0f, 0f);
 						obj.geometry.setVisible(false);
 						point++;
-					}
-					
+						//displayPoints = (TextView)findViewById(R.id.myPoints);
+						//displayPoints.setText("Ponts:" + point);
+						//displayPoints = (TextView)findViewById(R.id.editText1);
+						//(TextView)findViewById(R.id.editText1).setText("Ponts:" + point);
+					}					
 				
 					// checks for collision with ground 	
 					if(obj.geometry.getTranslation().getZ() <= 0f)
@@ -313,6 +320,12 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 						obj.splashGeometry.setVisible(true);
 						obj.velocity = new Vector3d(0f, 0f, 0f);
 						obj.geometry.setVisible(false);
+						
+						Log.d(TAG, "before display =");
+						displayPoints.setText("Test"); //måste laga detta fungerar ej (TODO)
+						Log.d(TAG, "after display =");
+
+						//TextView newtext = (TextView) findViewById(R.id.editText1);
 					}
 				}
 			}
@@ -336,7 +349,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             case MotionEvent.ACTION_DOWN:
 
                 startTouch = new Vector3d((event.getX()), event.getY(), 0f);
-                Log.d(TAG, "startTouch ="+ startTouch);
+                //Log.d(TAG, "startTouch ="+ startTouch);
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;
@@ -345,13 +358,13 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             	touchVec = new Vector3d(-(endTouch.getX()-startTouch.getX()),
             							  endTouch.getY() -startTouch.getY(),
             							  0f);
-            	Log.d(TAG, "endTouch ="+ endTouch);
-            	Log.d(TAG, "touchVec = " + touchVec);
+            	//Log.d(TAG, "endTouch ="+ endTouch);
+            	//Log.d(TAG, "touchVec = " + touchVec);
         		if(!paint_ball_object.geometry.isVisible())
         		{
             		paint_ball_object.geometry.setTranslation(new Vector3d(-600f, -450f, 370f));
         			paint_ball_object.velocity = touchVec;
-                	Log.d(TAG, "vel = " + paint_ball_object.velocity);
+                	//Log.d(TAG, "vel = " + paint_ball_object.velocity);
         			
         			paint_ball_object.geometry.setVisible(true);
             	break;
