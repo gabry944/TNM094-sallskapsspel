@@ -42,7 +42,8 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	
 
 	/*Variables for objects in the game*/
-	private IGeometry antGeometry;
+	private IGeometry antGeometry1;
+	private IGeometry antGeometry2;
 	private IGeometry wallGeometry1;
 	private IGeometry wallGeometry2;
 	private IGeometry wallGeometry3;
@@ -198,9 +199,10 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			/** Load Object */
 
 			//create ant geometry
-			antGeometry = Load3Dmodel("ant/formicaRufa.mfbx");
-			//geometryProperties(antGeometry, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation((float) (3*Math.PI/2), 0f, 0f) );
-			geometryProperties(antGeometry, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation(0f, 0f, 0f) );
+			antGeometry1 = Load3Dmodel("ant/formicaRufa.mfbx");
+			geometryProperties(antGeometry1, 10f, new Vector3d(-100.0f, 100.0f, 0.0f), new Rotation(0f, 0f, 0f) );	
+			antGeometry2 = Load3Dmodel("ant/formicaRufa.mfbx");
+			geometryProperties(antGeometry2, 10f, new Vector3d(100.0f, -100.0f, 0.0f), new Rotation(0f, 0f, 0f) );
 			
 			//creates the walls around the game area
 			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
@@ -282,12 +284,13 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		//antGeometry.setTranslation(touchVec, true);
 		
 		//move ant
-		if (antGeometry.getTranslation().getX() < -350f)
+		if (antGeometry1.getTranslation().getX() < -350f)
 			temp = 2f;
-		else if (antGeometry.getTranslation().getX() > 350f)
+		else if (antGeometry1.getTranslation().getX() > 350f)
 			temp = -2f;
 		
-		antGeometry.setTranslation(new Vector3d(temp, temp, 0.0f), true);
+		antGeometry1.setTranslation(new Vector3d(temp, temp, 0.0f), true);
+		antGeometry2.setTranslation(new Vector3d(-temp, -temp, 0.0f), true);
 
 		if (!exsisting_paint_balls.isEmpty())
 		{
@@ -299,26 +302,25 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 					physicPositionCalibration(obj);
 					//Log.d(TAG, "Zvalue =" + obj.geometry.getTranslation().getZ());
 					
-					// checks for collision with ant					
-					Vector3d min = antGeometry.getBoundingBox(true).getMin();
-					Vector3d max = antGeometry.getBoundingBox(true).getMax();
-					//Log.d(TAG, "min = " + antGeometry.getTranslation().getX() + min.getX() );
-					//Log.d(TAG, "MAX = " + antGeometry.getTranslation().getX() + max.getX());
-					if (obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMax().getX() > antGeometry.getTranslation().getX() + 2 * min.getX() -100 && 
-						obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMin().getX() < antGeometry.getTranslation().getX() + 2 * max.getX() +100 &&
-						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMax().getY() > antGeometry.getTranslation().getY() + 2 * min.getY() -100 && 
-						obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMin().getY() < antGeometry.getTranslation().getY() + 2 * max.getY() +100 &&
-						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMax().getZ() > antGeometry.getTranslation().getZ() + 2 * min.getZ() -100 && 
-						obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMin().getZ() < antGeometry.getTranslation().getZ() + 2 * max.getZ() +100 )
-
+						
+					if(checkCollision( obj, antGeometry1))
 					{
-						antGeometry.setRotation(new Rotation((float) (3*Math.PI/4), 0f, 0f),true);
-						//antGeometry.setVisible(false);
+						antGeometry1.setRotation(new Rotation((float) (3*Math.PI/4), 0f, 0f),true);
 						obj.splashGeometry.setTranslation(obj.geometry.getTranslation());
 						obj.splashGeometry.setVisible(true);
 						obj.velocity = new Vector3d(0f, 0f, 0f);
 						obj.geometry.setVisible(false);
 						point++;
+					}
+					
+					if(checkCollision( obj, antGeometry2))
+					{
+						antGeometry2.setRotation(new Rotation((float) (3*Math.PI/4), 0f, 0f),true);
+						obj.splashGeometry.setTranslation(obj.geometry.getTranslation());
+						obj.splashGeometry.setVisible(true);
+						obj.velocity = new Vector3d(0f, 0f, 0f);
+						obj.geometry.setVisible(false);
+						point++;		
 					}
 					
 				
@@ -336,6 +338,23 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			}
 		}
 		return;
+	}
+	
+	public boolean checkCollision(PaintBall obj, IGeometry obj2)
+	{
+		Vector3d min = obj2.getBoundingBox(true).getMin();
+		Vector3d max = obj2.getBoundingBox(true).getMax();
+
+		if (obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMax().getX() > obj2.getTranslation().getX() + 2 * min.getX() -100 && 
+			obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMin().getX() < obj2.getTranslation().getX() + 2 * max.getX() +100 &&
+			obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMax().getY() > obj2.getTranslation().getY() + 2 * min.getY() -100 && 
+			obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMin().getY() < obj2.getTranslation().getY() + 2 * max.getY() +100 &&
+			obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMax().getZ() > obj2.getTranslation().getZ() + 2 * min.getZ() -100 && 
+			obj.geometry.getTranslation().getZ() + obj.geometry.getBoundingBox().getMin().getZ() < obj2.getTranslation().getZ() + 2 * max.getZ() +100 )
+
+			return true;
+		else 
+			return false;
 	}
 	
 	/** function that activates when an object is being touched*/
@@ -363,8 +382,8 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 						  event.getY() -startTouch.getY(),
 						  0f);
             	
-            	crosshair.setTranslation(new Vector3d( -600f+8f*currentTouch.getX(),
-            										   -450f+8f*currentTouch.getY(),
+            	crosshair.setTranslation(new Vector3d( -600f+8.4f*currentTouch.getX(),
+            										   -450f+8.4f*currentTouch.getY(),
             										   0f));
             	
             	
