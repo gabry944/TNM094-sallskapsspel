@@ -66,11 +66,9 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	private Vector3d endTouch;
 	private Vector3d touchVec; 		//endTouch-startTouch
 	
-	//to enable gesture tracking
-	protected GridView surfaceView;
-    protected GestureOverlayView gestureOverlayView;
-    private GestureLibrary gestureLib;
-    protected FrameLayout frameLayout;
+	
+	Player player;
+	private ArrayList<Player> players;
 	
 	// point count
     protected int point; 
@@ -102,7 +100,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		
 		exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		
-		//velocity and direction of outgoing paintball, will later be based on how you interact with the screen (TODO).
+		//velocity and direction of outgoing paintball
 		acceleration =  new Vector3d(0f, 0f, 0f);
 		velocity =  new Vector3d(0f, 0f, 0f);
 		totalForce =  new Vector3d(0f, 0f, 0f);
@@ -114,6 +112,8 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		currentTouch = new Vector3d(0f, 0f, 0f);
 		startTouch =  new Vector3d(0f, 0f, 0f);
 		endTouch =  new Vector3d(0f, 0f, 0f);
+		
+		player = new Player(1);
 		
 		temp = 20f;
 		point = 0;
@@ -370,7 +370,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 
         switch(action) {
             case MotionEvent.ACTION_DOWN:
-
+            	//screen coordinates for first touch
                 startTouch = new Vector3d((event.getX()), event.getY(), 0f);
                 Log.d(TAG, "startTouch ="+ startTouch);
                 crosshair.setVisible(true);
@@ -381,14 +381,15 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 						  event.getY() -startTouch.getY(),
 						  0f);
             	
-            	crosshair.setTranslation(new Vector3d( -600f+8.4f*currentTouch.getX(),
-            										   -450f+8.4f*currentTouch.getY(),
+            	crosshair.setTranslation(new Vector3d( player.position.getX()+8.4f*currentTouch.getX(),
+            										   player.position.getY()+8.4f*currentTouch.getY(),
             										   0f));
             	
             	Log.d(TAG, "currentTouch = " + currentTouch);
             
                 break;
             case MotionEvent.ACTION_UP:
+            	//coordinates for the last touch
             	endTouch = new Vector3d((event.getX()), event.getY(), 0f);
             	touchVec = new Vector3d(-(endTouch.getX()-startTouch.getX()),
             							  endTouch.getY() -startTouch.getY(),
@@ -398,7 +399,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             	//Log.d(TAG, "touchVec = " + touchVec);
         		if(!paint_ball_object.geometry.isVisible())
         		{
-            		paint_ball_object.geometry.setTranslation(new Vector3d(-600f, -450f, 370f));
+            		paint_ball_object.geometry.setTranslation(player.position);
         			paint_ball_object.velocity = touchVec;
                 	Log.d(TAG, "vel = " + paint_ball_object.velocity);
         			
@@ -409,9 +410,11 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
         return true;
     }
 
+    /** Pause function, makes you return to the main menu when pressing "back" */
 	@Override
 	public void onPause() {
 		super.onPause();
+		//creates a fade between scenes
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 	}
 	

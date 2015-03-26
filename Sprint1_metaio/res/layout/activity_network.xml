@@ -54,4 +54,44 @@
         android:onClick="checkForPeers"
         android:text="Check for Peers" />
 
+    <CheckBox
+        android:id="@+id/checkBox2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkBox1"
+        android:layout_alignBottom="@+id/checkBox1"
+        android:layout_alignRight="@+id/button1"
+        android:textStyle="bold"
+        android:text="Tower 2" />
+
+    <CheckBox
+        android:id="@+id/checkBox3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/button2"
+        android:layout_below="@+id/checkBox1"
+        android:layout_marginTop="35dp"
+        android:textStyle="bold"
+        android:text="Tower 3" />
+
+    <CheckBox
+        android:id="@+id/checkBox4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/checkBox2"
+        android:layout_below="@+id/checkBox1"
+        android:layout_marginTop="50dp"
+        android:textStyle="bold"
+        android:text="Tower 4" />
+
+    <CheckBox
+        android:id="@+id/checkBox1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button2"
+        android:layout_below="@+id/peerButton"
+        android:layout_marginTop="66dp"
+        android:textStyle="bold"
+        android:text="Tower 1" />
+
 </RelativeLayout>
