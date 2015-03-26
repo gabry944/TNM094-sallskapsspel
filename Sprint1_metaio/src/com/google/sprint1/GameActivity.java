@@ -321,8 +321,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 						obj.velocity = new Vector3d(0f, 0f, 0f);
 						obj.geometry.setVisible(false);
 						point++;		
-					}
-					
+					}					
 				
 					// checks for collision with ground 	
 					if(obj.geometry.getTranslation().getZ() <= 0f)
@@ -385,7 +384,6 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             	crosshair.setTranslation(new Vector3d( -600f+8.4f*currentTouch.getX(),
             										   -450f+8.4f*currentTouch.getY(),
             										   0f));
-            	
             	
             	Log.d(TAG, "currentTouch = " + currentTouch);
             
