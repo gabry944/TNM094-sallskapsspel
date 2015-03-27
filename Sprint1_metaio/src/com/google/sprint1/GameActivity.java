@@ -57,6 +57,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	private IGeometry towerGeometry4;
 	private IGeometry canonGeometry4;
 	private IGeometry crosshair;
+	private IGeometry arrowAim;
 
 	PaintBall paint_ball_object;
 	private ArrayList<PaintBall> exsisting_paint_balls;
@@ -234,8 +235,14 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			
 			//Load crosshair
 			crosshair = Load3Dmodel("crosshair/crosshair.mfbx");
-			geometryProperties(crosshair, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+			geometryProperties(crosshair, 0f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
 			crosshair.setVisible(false);
+			
+			arrowAim = Load3Dmodel("crosshair/arrow.obj");
+			geometryProperties(arrowAim, 2f, new Vector3d(-550, -450, 380f), new Rotation((float) (3*Math.PI/2), 0f, 0f));
+			arrowAim.setVisible(false);
+			
+			
 			//creates a list of paint balls
 			for(int i = 0; i < 20; i++)
 			{
@@ -374,6 +381,8 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
                 startTouch = new Vector3d((event.getX()), event.getY(), 0f);
                 Log.d(TAG, "startTouch ="+ startTouch);
                 crosshair.setVisible(true);
+                arrowAim.setVisible(true);
+                arrowAim.setScale(new Vector3d( 0f, 2f, 2f));
                 break;
             case MotionEvent.ACTION_MOVE:
             	//gives the coordinates of your finger touch all the time to be able to calculate a crosshair 
@@ -385,6 +394,9 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             										   player.position.getY()+8.4f*currentTouch.getY(),
             										   0f));
             	
+            	arrowAim.setScale(new Vector3d( Math.abs(currentTouch.getX()+currentTouch.getY())*0.01f, 2f, 2f));
+            	setArrowRotation(currentTouch);
+            	
             	Log.d(TAG, "currentTouch = " + currentTouch);
             
                 break;
@@ -395,6 +407,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             							  endTouch.getY() -startTouch.getY(),
             							  0f);
             	crosshair.setVisible(false);
+            	arrowAim.setVisible(false);
             	//Log.d(TAG, "endTouch ="+ endTouch);
             	//Log.d(TAG, "touchVec = " + touchVec);
         		if(!paint_ball_object.geometry.isVisible())
@@ -410,7 +423,18 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
         return true;
     }
 
-    /** Pause function, makes you return to the main menu when pressing "back" */
+    /** Function to set the rotation of the arrow aim */
+    private void setArrowRotation(Vector3d deltaTouch) 
+    {
+		float deltaX = deltaTouch.getX();
+		float deltaY = -deltaTouch.getY();
+		
+		float theta = (float) Math.tanh((deltaY/deltaX)); 	// * (Math.PI/180)
+		arrowAim.setRotation(new Rotation(0f, theta, 0f));
+		
+	}
+
+	/** Pause function, makes you return to the main menu when pressing "back" */
 	@Override
 	public void onPause() {
 		super.onPause();
