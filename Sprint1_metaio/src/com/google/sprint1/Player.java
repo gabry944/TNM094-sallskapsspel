@@ -7,6 +7,7 @@ public class Player {
 	
 	public int id;
 	public Vector3d position;
+	public boolean superPower; 
 	private Vector3d startPosPlayer1 = new Vector3d(-600f, -450f, 370f);
 	private Vector3d startPosPlayer2 = new Vector3d(-600f, 450f, 370f);
 	private Vector3d startPosPlayer3 = new Vector3d(600f, -450f, 370f);
@@ -17,6 +18,7 @@ public class Player {
 	{
 		id = 0;		//id of player 1-4
 		position = new Vector3d(0f, 0f, 0f);	//position of canon
+		superPower = false;
 	}
 	
 	public Player(int id)
