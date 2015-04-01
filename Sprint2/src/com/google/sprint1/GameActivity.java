@@ -310,7 +310,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		antGeometry1.setTranslation(new Vector3d(temp, temp, 0.0f), true);
 		antGeometry2.setTranslation(new Vector3d(-temp, -temp, 0.0f), true);
 		
-
+		//onGeometryTouched(canonGeometry1);
 		if (!exsisting_paint_balls.isEmpty())
 		{
 			for(PaintBall obj : exsisting_paint_balls)
@@ -334,6 +334,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 						obj.splashGeometry.setVisible(true);
 						obj.velocity = new Vector3d(0f, 0f, 0f);
 						obj.geometry.setVisible(false);
+						obj.paintballShadow.setVisible(false);
 						point++;
 						//displayPoints = (TextView)findViewById(R.id.myPoints);
 						//displayPoints.setText("Ponts:" + point);
@@ -348,6 +349,8 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 						obj.splashGeometry.setVisible(true);
 						obj.velocity = new Vector3d(0f, 0f, 0f);
 						obj.geometry.setVisible(false);
+						obj.paintballShadow.setVisible(false);
+						
 						point++;		
 					}
 					
@@ -403,6 +406,11 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	protected void onGeometryTouched(IGeometry geometry) 
 	{	
 		// Only implemented because its required by the parent class
+		if(geometry == canonGeometry1)
+		{
+			Log.d(TAG, "hej");
+		}
+		
 	}
 
     @Override
