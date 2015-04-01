@@ -31,11 +31,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-/** Activity to handle the screen between mainmenu and the gamescreen
- *  
-* where players should connect to each other before entering gamemode.
-* 
-*  
+/**
+ * Activity to handle the screen between mainmenu and the gamescreen
+ * 
+ * where players should connect to each other before entering gamemode.
+ * 
+ * 
  */
 
 public class NetworkActivity extends Activity {
@@ -49,18 +50,17 @@ public class NetworkActivity extends Activity {
 	boolean mBound = false;
 
 	public static final String TAG = "NetworkActivity";
-	
+
 	ArrayAdapter<NsdServiceInfo> listAdapter;
 
-
-	// function to set up layout of activity
+	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_network);
-
 
 		/* Start game */
 		startGame = new AssetsExtracter();
@@ -110,7 +110,6 @@ public class NetworkActivity extends Activity {
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						NetworkActivity.this);
 
-				// set vari
 				builder.setMessage(
 						"Connect to "
 								+ listAdapter.getItem(pos).getServiceName()
@@ -156,9 +155,8 @@ public class NetworkActivity extends Activity {
 
 	/** Called when the user clicks the start Game button (starta spel) */
 	public void startGame(View view) {
-		// in order to start the game we need to extract our assets to the
+		// In order to start the game we need to extract our assets to the
 		// metaio SDK
-		// startService(new Intent(this, NetworkService.class));
 		startGame.execute(0); // Starts the assetsExtracter class
 	}
 
@@ -173,13 +171,15 @@ public class NetworkActivity extends Activity {
 		TestClass test = new TestClass(5, "hej");
 		mService.mConnection.sendData(test);
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-
-		if(mService.mNsdHelper != null){
+		// If mNsdHelper is other than null it will be teared down.
+		// This is done to unregister from the network and stop the
+		// service discovery.
+		if (mService.mNsdHelper != null) {
 			mService.mNsdHelper.tearDown();
 			mService.mNsdHelper = null;
 		}
@@ -190,7 +190,7 @@ public class NetworkActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 
-		// Bind to NetworkService. The service will not destroy 
+		// Bind to NetworkService. The service will not destroy
 		// until there is no activity bounded to it
 		Intent intent = new Intent(this, NetworkService.class);
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
@@ -200,36 +200,44 @@ public class NetworkActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		try{
-			if(mService.mNsdHelper == null){
-				 mService.initNsdHelper(mNSDHandler);
-				 mService.mNsdHelper.initializeNsd();
+
+		try {
+			// If mNsdHelper is null(which always should happen because it is
+			// set to null in onResume()), it will then reinitialize
+			if (mService.mNsdHelper == null) {
+				mService.initNsdHelper(mNSDHandler);
+				// mService.mNsdHelper.initializeNsd();
 			}
-			
-			 if (mService.mNsdHelper != null) {
-			 Log.d(TAG, "Resumed");
-			
-			 mService.mNsdHelper.registerService(mService.mConnection.getLocalPort());
-			 mService.mNsdHelper.discoverServices();
-			
-			 }
-		}catch(NullPointerException e){
-			
+
+			// If not null, mNsdHelper will only register service on the network
+			// and
+			// start service discovery.
+			if (mService.mNsdHelper != null) {
+				Log.d(TAG, "Resumed");
+
+				mService.mNsdHelper.registerService(mService.mConnection
+						.getLocalPort());
+				mService.mNsdHelper.discoverServices();
+
+			}
+		} catch (NullPointerException e) {
+
 		}
 
 	}
 
 	protected void onDestroy() {
-		
-		//Check if mNsdHelper is not null(will throw NullPointerException otherwise).
-		//Tearing mNsdHelper down(unregister from network and stops the discovery).
+
+		// Check if mNsdHelper is not null(will throw NullPointerException
+		// otherwise).
+		// Tearing mNsdHelper down(unregister from network and stops the
+		// discovery).
 		if (mService.mNsdHelper != null) {
 			mService.mNsdHelper.tearDown();
 		}
 
 		// Unbind from service, GameActivity will manage to bind before and
-		//therefore the service will still be active.
+		// therefore the service will still be active.
 		if (mBound) {
 			unbindService(mServiceConnection);
 			mBound = false;
@@ -248,12 +256,12 @@ public class NetworkActivity extends Activity {
 			try {
 				// Extract all assets except Menu. Overwrite existing files for
 				// debug build only.
-				 final String[] ignoreList = {"Menu", "webkit", "sounds",
-				 "images", "webkitsec"};
-				 AssetsManager.extractAllAssets(getApplicationContext(), "",
-				 ignoreList, BuildConfig.DEBUG);
-				//AssetsManager.extractAllAssets(getApplicationContext(),
-				//		BuildConfig.DEBUG);
+				final String[] ignoreList = { "Menu", "webkit", "sounds",
+						"images", "webkitsec" };
+				AssetsManager.extractAllAssets(getApplicationContext(), "",
+						ignoreList, BuildConfig.DEBUG);
+				// AssetsManager.extractAllAssets(getApplicationContext(),
+				// BuildConfig.DEBUG);
 			} catch (IOException e) {
 				MetaioDebug.printStackTrace(Log.ERROR, e);
 				return false;
@@ -261,7 +269,8 @@ public class NetworkActivity extends Activity {
 
 			return true;
 		}
-		/** when extraction is done, we load the game activity*/
+
+		/** when extraction is done, we load the game activity */
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if (result) {
@@ -284,21 +293,20 @@ public class NetworkActivity extends Activity {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 			mBound = true;
-			
-			//Initialize mNsdHelper with the mNSDHandler 
+
+			// Initialize mNsdHelper with the mNSDHandler
 			if (mService == null) {
 				System.out.println("mService är null");
-			}
-			else {
+			} else {
 
 				mService.initNsdHelper(mNSDHandler);
 
 			}
-			
-			//Registrate the game on the network
+
+			// Register the game on the network
 			mService.mNsdHelper.registerService(mService.mConnection
 					.getLocalPort());
-			//Start discovery to look for other peers
+			// Start discovery to look for other peers
 			mService.mNsdHelper.discoverServices();
 
 		}

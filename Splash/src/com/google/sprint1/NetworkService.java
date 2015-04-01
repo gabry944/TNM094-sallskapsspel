@@ -30,24 +30,18 @@ public class NetworkService extends Service {
 	}
 
 	@Override
-	public void onCreate() {		
-		
-		//Creates new handler and a MobileConnection
+	public void onCreate() {
+
+		// Creates new handler and a MobileConnection
 		mUpdateHandler = new Handler();
 		mConnection = new MobileConnection(mUpdateHandler);
 
-		// mUpdateHandler = new Handler() {
-		// @Override
-		// public void handleMessage(Message msg) {
-		//
-		// }
-		// };
 	}
 
 	@Override
 	public void onDestroy() {
-		
-		//Tearing MobileConnection down when user exits app
+
+		// Tearing MobileConnection down when user exits app
 		mConnection.tearDown();
 
 		super.onDestroy();
@@ -60,7 +54,7 @@ public class NetworkService extends Service {
 	}
 
 	public void initNsdHelper(Handler handler) {
-		//Initialize new mNsdHandler with "handler"
+		// Initialize new mNsdHandler with "handler"
 		mNsdHelper = new NsdHelper(this, handler);
 		mNsdHelper.initializeNsd();
 
