@@ -295,6 +295,7 @@ public class NetworkActivity extends Activity {
 			mBound = true;
 
 			// Initialize mNsdHelper with the mNSDHandler
+			
 			if (mService == null) {
 				System.out.println("mService är null");
 			} else {
