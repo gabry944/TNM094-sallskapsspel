@@ -294,8 +294,8 @@ public class NetworkActivity extends Activity {
 			mService = binder.getService();
 			mBound = true;
 
+			//use try catch?
 			// Initialize mNsdHelper with the mNSDHandler
-			
 			if (mService == null) {
 				System.out.println("mService är null");
 			} else {
