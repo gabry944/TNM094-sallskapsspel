@@ -3,8 +3,13 @@ package com.google.sprint1;
 import java.io.File;
 import java.util.ArrayList;
 
-import android.gesture.GestureOverlayView;
+
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.google.sprint1.NetworkService.LocalBinder;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.sdk.jni.IGeometry;
@@ -24,14 +30,11 @@ import com.metaio.tools.io.AssetsManager;
 
 /**
  * GameActivity to handle the game
- *
+ * 
  */
+
 public class GameActivity extends ARViewActivity //implements OnGesturePerformedListener
 {
-
-	private static final String TAG = "myLog";
-	
-
 	/*Variables for objects in the game*/
 	private IGeometry antGeometry1;
 	private IGeometry antGeometry2;
@@ -83,13 +86,48 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	float temp;
 	float scaleStart;
 	
-	
+
+	/* Variabler för objekten i spelet */
+	private IGeometry antGeometry;
+	private IGeometry sphereGeometry;
+	private int mGestureMask;
+	private IGeometry flowerGeometry;
+
+	// Variables for Service handling
+	private NetworkService mService;
+	boolean mBound = false;
+
+	/* delkaration av variabler som används i renderingsloopen */
+	float SphereMoveX = 2f;
+
+	public static final String TAG = "GameActivity";
+
+
+	protected void onDestroy() {
+
+		// Unbind from service
+		if (mBound) {
+			unbindService(mServiceConnection);
+			mBound = false;
+		}
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		// Bind to NetworkService
+		Intent intent = new Intent(this, NetworkService.class);
+		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+	}
+
 	/** Attaching layout to the activity */
 	@Override
-	public int getGUILayout()
-	{
+	public int getGUILayout() {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		return R.layout.activity_game;
 	}
 	
@@ -125,15 +163,23 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 
 	/** Called when the user clicks the Exit button (krysset) */
 	public void onExitButtonClick(View v) {
+		stopService(new Intent(this, NetworkService.class));
 		finish();
 	}
-	
-	/** Create a geometry, the string input gives the filepach (relative from the asset folder) to the geometry 
-	 * First check if model is found ->Load and create 3D geometry ->check if model was loaded successfully
-	 * Returns the loaded model if success, otherwise null*/
+
+	public void onClickSendData(View v) {
+		TestClass test = new TestClass(5, "hej");
+		mService.mConnection.sendData(test);
+	}
+
+	/**
+	 * Create a geometry, the string input gives the filepach (relative from the
+	 * asset folder) to the geometry First check if model is found ->Load and
+	 * create 3D geometry ->check if model was loaded successfully Returns the
+	 * loaded model if success, otherwise null
+	 */
 	private IGeometry Load3Dmodel(String filePath)
 	{
-
 		//Getting the full file path for a 3D geometry
 		final File modelPath = AssetsManager.getAssetPathAsFile(getApplicationContext(), filePath);
 		//First check if model is found
@@ -141,14 +187,14 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		{
 			//Load and create 3D geometry
 			IGeometry model = metaioSDK.createGeometry(modelPath);
-			
-			//check if model was loaded successfully
+
+			// check if model was loaded successfully
 			if (model != null)
 				return model;
 			else
-				MetaioDebug.log(Log.ERROR, "Error loading geometry: " + modelPath);
-		}
-		else
+				MetaioDebug.log(Log.ERROR, "Error loading geometry: "
+						+ modelPath);
+		} else
 			MetaioDebug.log(Log.ERROR, "Could not find 3D model");
 
 		return null;
@@ -185,10 +231,8 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	
 	/** Loads the marker and the 3D-models to the game */
 	@Override
-	protected void loadContents()
-	{
-		try 
-		{
+	protected void loadContents() {
+		try {
 			/** Load Marker */
 			// Getting a file path for tracking configuration XML file
 			File trackingConfigFile = AssetsManager.getAssetPathAsFile(
@@ -283,16 +327,15 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		geometry.setTranslation(translationVec, true);
 		geometry.setRotation(rotation, true);
 	}
-	
+
 	/** Render Loop */
 	@Override
-	public void onDrawFrame()
+	public void onDrawFrame() 
 	{
 		super.onDrawFrame();
 
 		// If content not loaded yet, do nothing
-
-		if ( wallGeometry4 == null || towerGeometry4== null || exsisting_paint_balls.isEmpty())
+		if(wallGeometry4 == null || towerGeometry4== null || exsisting_paint_balls.isEmpty())
 			return;
 		
 		//Log.d(TAG, "touchVec = "+ touchVec);
@@ -506,13 +549,31 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		//creates a fade between scenes
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 	}
+
 	
 	/** Not used at the moment*/
 	@Override
-	protected IMetaioSDKCallback getMetaioSDKCallbackHandler()
-	{
-		// No callbacks needed 
+	protected IMetaioSDKCallback getMetaioSDKCallbackHandler() {
+		// No callbacks needed
 		return null;
 	}
 
+
+	/** Defines callbacks for service binding, passed to bindService() */
+	private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceConnected(ComponentName className, IBinder service) {
+			// We've bound to LocalService, cast the IBinder and get
+			// LocalService instance
+			LocalBinder binder = (LocalBinder) service;
+			mService = binder.getService();
+			mBound = true;
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName arg0) {
+			mBound = false;
+		}
+	};
 }

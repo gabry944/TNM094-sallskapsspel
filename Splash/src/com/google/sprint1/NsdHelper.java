@@ -1,32 +1,20 @@
 package com.google.sprint1;
 
-/*
- * Copyright (C) 2012 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
 import android.net.nsd.NsdManager;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 public class NsdHelper {
 
 	Context mContext;
+	Handler mUpdateHandler;
 
 	NsdManager mNsdManager;
 	NsdManager.ResolveListener mResolveListener;
@@ -34,18 +22,17 @@ public class NsdHelper {
 	NsdManager.RegistrationListener mRegistrationListener;
 
 	public static final String SERVICE_TYPE = "_http._tcp.";
-
 	public static final String TAG = "NsdHelper";
-	public String mServiceName = "";
-	public static String SERVICE_NAME = "ARGame";
+	public static final String SERVICE_NAME = "ARGame";
 
-	public boolean haveActiveService = false;
+	public String mServiceName = "";
+
 	public boolean serviceResolved = false;
 	NsdServiceInfo mService;
-	List<NsdServiceInfo> mFoundServices = new ArrayList<NsdServiceInfo>();
 
-	public NsdHelper(Context context) {
+	public NsdHelper(Context context, Handler handler) {
 		mContext = context;
+		mUpdateHandler = handler;
 		mNsdManager = (NsdManager) context
 				.getSystemService(Context.NSD_SERVICE);
 	}
@@ -56,13 +43,6 @@ public class NsdHelper {
 		initializeRegistrationListener();
 
 		// mNsdManager.init(mContext.getMainLooper(), this);
-
-	}
-
-	public void initDiscoveryListener() {
-		initializeDiscoveryListener();
-		initializeRegistrationListener();
-		discoverServices();
 
 	}
 
@@ -87,11 +67,13 @@ public class NsdHelper {
 							"Unknown Service Type: " + service.getServiceType());
 				} else if (service.getServiceName().equals(mServiceName)) {
 					Log.d(TAG, "Same machine: " + mServiceName);
-					haveActiveService = true;
 				} else if (service.getServiceName().contains(SERVICE_NAME)) {
-					Log.d(TAG, "Service added to List.");
-					mFoundServices.add(service);
-					// mNsdManager.resolveService(service, mResolveListener);
+
+					Bundle bundle = new Bundle();
+					bundle.putParcelable("found", service);
+					Message msg = new Message();
+					msg.setData(bundle);
+					mUpdateHandler.sendMessage(msg);
 
 				}
 			}
@@ -99,16 +81,19 @@ public class NsdHelper {
 			@Override
 			public void onServiceLost(NsdServiceInfo service) {
 				Log.e(TAG, "service lost: " + service.getServiceName());
-				mFoundServices.remove(service);
-				if (mService == service) {
-					mService = null;
-					haveActiveService = false;
-				}
+
+				Bundle bundle = new Bundle();
+				bundle.putParcelable("lost", service);
+				Message msg = new Message();
+				msg.setData(bundle);
+				mUpdateHandler.sendMessage(msg);
+
 			}
 
 			@Override
 			public void onDiscoveryStopped(String serviceType) {
 				Log.i(TAG, "Discovery stopped: " + serviceType);
+				mUpdateHandler.sendEmptyMessage(1);
 			}
 
 			@Override
@@ -148,7 +133,6 @@ public class NsdHelper {
 
 				mService = serviceInfo;
 				serviceResolved = true;
-				// mFoundServices.add(serviceInfo);
 			}
 		};
 	}
@@ -187,23 +171,16 @@ public class NsdHelper {
 	}
 
 	public void registerService(int port) {
-
-		if (!haveActiveService) {
-			NsdServiceInfo serviceInfo = new NsdServiceInfo();
-			serviceInfo.setPort(port);
-			serviceInfo.setServiceName(SERVICE_NAME);
-			serviceInfo.setServiceType(SERVICE_TYPE);
-			mNsdManager.registerService(serviceInfo,
-					NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
-		} else {
-			Log.d(TAG, "Service already registered");
-		}
+		NsdServiceInfo serviceInfo = new NsdServiceInfo();
+		serviceInfo.setPort(port);
+		serviceInfo.setServiceName(SERVICE_NAME);
+		serviceInfo.setServiceType(SERVICE_TYPE);
+		mNsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD,
+				mRegistrationListener);
 
 	}
 
 	public void discoverServices() {
-
-		mFoundServices.clear();
 		mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD,
 				mDiscoveryListener);
 	}
@@ -223,10 +200,6 @@ public class NsdHelper {
 
 	public NsdServiceInfo getChosenServiceInfo() {
 		return mService;
-	}
-
-	public List<NsdServiceInfo> getFoundServices() {
-		return mFoundServices;
 	}
 
 	public void tearDown() {
