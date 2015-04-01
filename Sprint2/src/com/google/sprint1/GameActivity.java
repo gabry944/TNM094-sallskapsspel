@@ -3,15 +3,12 @@ package com.google.sprint1;
 import java.io.File;
 import java.util.ArrayList;
 
-import android.gesture.GestureOverlayView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import com.metaio.sdk.ARViewActivity;
@@ -35,10 +32,10 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	/*Variables for objects in the game*/
 	private IGeometry antGeometry1;
 	private IGeometry antGeometry2;
-	private IGeometry wallGeometry1;
-	private IGeometry wallGeometry2;
-	private IGeometry wallGeometry3;
-	private IGeometry wallGeometry4;
+//	private IGeometry wallGeometry1;
+//	private IGeometry wallGeometry2;
+//	private IGeometry wallGeometry3;
+//	private IGeometry wallGeometry4;
 	private IGeometry towerGeometry1;
 	private IGeometry canonGeometry1;
 	private IGeometry towerGeometry2;
@@ -50,6 +47,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	private IGeometry crosshair;
 	private IGeometry arrowAim;
 	private IGeometry aimPowerUp;
+
 
 	PaintBall paint_ball_object;
 	private ArrayList<PaintBall> exsisting_paint_balls;
@@ -66,7 +64,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
    // protected FrameLayout frameLayout;
 
 	Player player;
-	private ArrayList<Player> players;
+	//private ArrayList<Player> players;
 	
 	// point count
     protected int point; 
@@ -209,32 +207,32 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			geometryProperties(antGeometry2, 10f, new Vector3d(100.0f, -100.0f, 0.0f), new Rotation(0f, 0f, 0f) );
 			
 			//creates the walls around the game area
-			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
-			geometryProperties(wallGeometry1, 20f, new Vector3d(850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
-			wallGeometry2 = Load3Dmodel("wall/wall.mfbx");
-			geometryProperties(wallGeometry2, 20f, new Vector3d(-850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
-			wallGeometry3 = Load3Dmodel("wall/wall.mfbx");
-			geometryProperties(wallGeometry3, 20f, new Vector3d(0f, 720f, 0f), new Rotation(0f, 0f, 0f));
-			wallGeometry4 = Load3Dmodel("wall/wall.mfbx");
-			geometryProperties(wallGeometry4, 20f, new Vector3d(0f, -720f, 0f), new Rotation(0f, 0f, 0f));	
+//			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
+//			geometryProperties(wallGeometry1, 20f, new Vector3d(850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
+//			wallGeometry2 = Load3Dmodel("wall/wall.mfbx");
+//			geometryProperties(wallGeometry2, 20f, new Vector3d(-850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
+//			wallGeometry3 = Load3Dmodel("wall/wall.mfbx");
+//			geometryProperties(wallGeometry3, 20f, new Vector3d(0f, 720f, 0f), new Rotation(0f, 0f, 0f));
+//			wallGeometry4 = Load3Dmodel("wall/wall.mfbx");
+//			geometryProperties(wallGeometry4, 20f, new Vector3d(0f, -720f, 0f), new Rotation(0f, 0f, 0f));	
 
 			//creates the tower
 			towerGeometry1 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry1, 4f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
+			geometryProperties(towerGeometry1, 2f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
 			canonGeometry1 = Load3Dmodel("tower/canon.mfbx");
-			geometryProperties(canonGeometry1, 4f, new Vector3d(-650f, -520f, 330f), new Rotation(0f, 0f, 0f));
+			geometryProperties(canonGeometry1, 2f, new Vector3d(-650f, -520f, 165f), new Rotation(0f, 0f, 0f));
 			towerGeometry2 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry2, 4f, new Vector3d(650f, 520f, 0f), new Rotation(0f, 0f, 0f));
+			geometryProperties(towerGeometry2, 2f, new Vector3d(650f, 520f, 0f), new Rotation(0f, 0f, 0f));
 			canonGeometry2 = Load3Dmodel("tower/canon.mfbx");
-			geometryProperties(canonGeometry2, 4f, new Vector3d(650f, 520f, 330f), new Rotation(0f, 0f, 0f));
+			geometryProperties(canonGeometry2, 2f, new Vector3d(650f, 520f, 165f), new Rotation(0f, 0f, 0f));
 			towerGeometry3 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry3, 4f, new Vector3d(-650f, 520f, 0f), new Rotation(0f, 0f, 0f));
+			geometryProperties(towerGeometry3, 2f, new Vector3d(-650f, 520f, 0f), new Rotation(0f, 0f, 0f));
 			canonGeometry3 = Load3Dmodel("tower/canon.mfbx");
-			geometryProperties(canonGeometry3, 4f, new Vector3d(-650f, 520f, 330f), new Rotation(0f, 0f, 0f));
+			geometryProperties(canonGeometry3, 2f, new Vector3d(-650f, 520f, 165f), new Rotation(0f, 0f, 0f));
 			towerGeometry4 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry4, 4f, new Vector3d(650f, -520f, 0f), new Rotation(0f, 0f, 0f));
+			geometryProperties(towerGeometry4, 2f, new Vector3d(650f, -520f, 0f), new Rotation(0f, 0f, 0f));
 			canonGeometry4 = Load3Dmodel("tower/canon.mfbx");
-			geometryProperties(canonGeometry4, 4f, new Vector3d(650f, -520f, 330f), new Rotation(0f, 0f, 0f));
+			geometryProperties(canonGeometry4, 2f, new Vector3d(650f, -520f, 165f), new Rotation(0f, 0f, 0f));
 			
 			//Load crosshair
 			crosshair = Load3Dmodel("crosshair/crosshair.mfbx");
@@ -242,7 +240,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			crosshair.setVisible(false);
 			
 			arrowAim = Load3Dmodel("crosshair/arrow.obj");
-			geometryProperties(arrowAim, 2f, new Vector3d(-550, -450, 380f), new Rotation((float) (3*Math.PI/2), 0f, 0f));
+			geometryProperties(arrowAim, 2f, new Vector3d(-550, -450, 200f), new Rotation((float) (3*Math.PI/2), 0f, 0f));
 			arrowAim.setVisible(false);
 			
 			//Load powerUps
@@ -260,11 +258,14 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 				// add properties to the paint ball
 				paint_ball_object.geometry = Load3Dmodel("tower/paintball.obj");
 				paint_ball_object.splashGeometry = Load3Dmodel("tower/splash.mfbx");
+				paint_ball_object.paintballShadow = Load3Dmodel("tower/paintballShadow.mfbx");
 				paint_ball_object.velocity = new Vector3d(0f, 0f, 0f);
 				geometryProperties(paint_ball_object.geometry, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
 				geometryProperties(paint_ball_object.splashGeometry, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+				geometryProperties(paint_ball_object.paintballShadow, 0.7f, new Vector3d(0f, 0f, 0f), new Rotation((float) (3*Math.PI/2), 0f, 0f));
 				paint_ball_object.geometry.setVisible(false);	
 				paint_ball_object.splashGeometry.setVisible(false);
+				paint_ball_object.paintballShadow.setVisible(false);
 				
 				// add paint ball to list of paint balls
 				exsisting_paint_balls.add(paint_ball_object);
@@ -292,7 +293,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 
 		// If content not loaded yet, do nothing
 
-		if ( wallGeometry4 == null || towerGeometry4== null || exsisting_paint_balls.isEmpty())
+		if ( towerGeometry4== null || exsisting_paint_balls.isEmpty())
 			return;
 		
 		//Log.d(TAG, "touchVec = "+ touchVec);
@@ -308,6 +309,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		
 		antGeometry1.setTranslation(new Vector3d(temp, temp, 0.0f), true);
 		antGeometry2.setTranslation(new Vector3d(-temp, -temp, 0.0f), true);
+		
 
 		if (!exsisting_paint_balls.isEmpty())
 		{
@@ -317,6 +319,11 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 				{
 					// move object one frame
 					physicPositionCalibration(obj);
+					
+        			paint_ball_object.paintballShadow.setTranslation(new Vector3d(paint_ball_object.geometry.getTranslation().getX(),
+        																		  paint_ball_object.geometry.getTranslation().getY(),
+        																		  0f));
+        			
 					//Log.d(TAG, "Zvalue =" + obj.geometry.getTranslation().getZ());
 					
 						
@@ -354,6 +361,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 						obj.splashGeometry.setVisible(true);
 						obj.velocity = new Vector3d(0f, 0f, 0f);
 						obj.geometry.setVisible(false);
+						obj.paintballShadow.setVisible(false);
 						
 						Log.d(TAG, "before display =");
 						displayPoints.setText("Test"); //måste laga detta fungerar ej (TODO)
@@ -408,7 +416,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             	//screen coordinates for first touch
                 startTouch = new Vector3d((event.getX()), event.getY(), 0f);
 
-                Log.d(TAG, "startTouch ="+ startTouch);
+                //Log.d(TAG, "startTouch ="+ startTouch);
                 
                 if(player.superPower == true)
                 	{
@@ -430,8 +438,8 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             	
             	if(player.superPower == true)
             	{
-                	crosshair.setTranslation(new Vector3d( player.position.getX()+8.4f*currentTouch.getX(),
-							   player.position.getY()+8.4f*currentTouch.getY(),
+                	crosshair.setTranslation(new Vector3d( player.position.getX()+4.2f*currentTouch.getX(),
+							   player.position.getY()+4.2f*currentTouch.getY(),
 							   0f));
 
             	}
@@ -442,7 +450,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
                 	setArrowRotation(currentTouch);
             	}
             	
-            	Log.d(TAG, "currentTouch = " + currentTouch);
+            	//Log.d(TAG, "currentTouch = " + currentTouch);
             
                 break;
             case MotionEvent.ACTION_UP:
@@ -457,11 +465,13 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             	//Log.d(TAG, "touchVec = " + touchVec);
         		if(!paint_ball_object.geometry.isVisible())
         		{
+
             		paint_ball_object.geometry.setTranslation(player.position);
-        			paint_ball_object.velocity = touchVec;
+        			paint_ball_object.velocity = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
                 	//Log.d(TAG, "vel = " + paint_ball_object.velocity);
         			
         			paint_ball_object.geometry.setVisible(true);
+        			paint_ball_object.paintballShadow.setVisible(true);
             	break;
         		}
         }

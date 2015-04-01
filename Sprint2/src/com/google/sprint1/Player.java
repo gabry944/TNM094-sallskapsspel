@@ -1,6 +1,5 @@
 package com.google.sprint1;
 
-import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.Vector3d;
 
 public class Player {
@@ -8,10 +7,10 @@ public class Player {
 	public int id;
 	public Vector3d position;
 	public boolean superPower; 
-	private Vector3d startPosPlayer1 = new Vector3d(-600f, -450f, 370f);
-	private Vector3d startPosPlayer2 = new Vector3d(-600f, 450f, 370f);
-	private Vector3d startPosPlayer3 = new Vector3d(600f, -450f, 370f);
-	private Vector3d startPosPlayer4 = new Vector3d(600f, 450f, 370f);
+	private Vector3d startPosPlayer1 = new Vector3d(-600f, -450f, 165f);
+	private Vector3d startPosPlayer2 = new Vector3d(-600f, 450f, 165f);
+	private Vector3d startPosPlayer3 = new Vector3d(600f, -450f, 165f);
+	private Vector3d startPosPlayer4 = new Vector3d(600f, 450f, 165f);
 	
 	
 	public Player()

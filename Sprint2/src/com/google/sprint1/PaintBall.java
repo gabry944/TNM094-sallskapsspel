@@ -10,6 +10,7 @@ public class PaintBall
 		public Vector3d direction;
 		public IGeometry geometry; 
 		public IGeometry splashGeometry;
+		public IGeometry paintballShadow;
 		
 		public PaintBall() {
 			geometry = null;
