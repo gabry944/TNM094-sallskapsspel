@@ -13,12 +13,11 @@
         android:onClick="onExitButtonClick"
         android:src="@drawable/cancel" />
 
-     <TextView
+     <EditText
          android:id="@+id/myPoints"
          android:layout_width="150dp"
          android:layout_height="66dp"
          android:background="@null"
-         android:editable="true"
          android:ems="10"
          android:text="points:"
          android:textColor="#19D119"
