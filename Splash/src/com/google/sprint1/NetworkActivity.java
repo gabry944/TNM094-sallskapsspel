@@ -293,15 +293,11 @@ public class NetworkActivity extends Activity {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 			mBound = true;
-
-			//use try catch?
-			// Initialize mNsdHelper with the mNSDHandler
-			if (mService == null) {
-				System.out.println("mService är null");
-			} else {
-
+		
+			try{
 				mService.initNsdHelper(mNSDHandler);
-
+			} catch(NullPointerException e){
+				Log.e(TAG, "NullPointerException: ");
 			}
 
 			// Register the game on the network
