@@ -293,17 +293,7 @@ public class NetworkActivity extends Activity {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 			mBound = true;
-
-			//use try catch?
-			// Initialize mNsdHelper with the mNSDHandler
-//			if (mService == null) {
-//				System.out.println("mService är null");
-//			} else {
-//
-//				mService.initNsdHelper(mNSDHandler);
-//
-//			}
-//			
+		
 			try{
 				mService.initNsdHelper(mNSDHandler);
 			} catch(NullPointerException e){
