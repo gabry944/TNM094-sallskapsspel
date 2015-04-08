@@ -2,12 +2,15 @@ package com.google.sprint1;
 
 import java.io.File;
 import java.util.ArrayList;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,7 +52,6 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	private IGeometry crosshair;
 	private IGeometry arrowAim;
 	private IGeometry aimPowerUp;
-
 
 	PaintBall paint_ball_object;
 	private ArrayList<PaintBall> exsisting_paint_balls;
@@ -96,6 +98,15 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 
 	/* delkaration av variabler som används i renderingsloopen */
 	float SphereMoveX = 2f;
+	
+    //How many frames were in last FPS update
+    int frameCounter = 0;
+    
+    long delay;
+    
+    double lastTime;
+    
+    private Handler handler = new Handler(Looper.getMainLooper());
 
 	public static final String TAG = "GameActivity";
 
@@ -156,6 +167,11 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		point = 0;
 		
 		scaleStart = 0f;
+		
+		delay = System.currentTimeMillis();
+		
+		//mFpsCounter = new FPSCounter();
+				
 	}
 
 	/** Called when the user clicks the Exit button (krysset) */
@@ -425,6 +441,26 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			}
 		}
 		//onTouchEvent(null);
+        
+        frameCounter++;
+            
+        double currentTime = System.currentTimeMillis() - lastTime;
+        final int fps = (int) (((double)frameCounter / currentTime)*1000);
+        
+        if (currentTime > 1.0) {
+            lastTime = System.currentTimeMillis();
+            frameCounter = 0;
+                    
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                	TextView displayPoints = (TextView) findViewById(R.id.myPoints);;
+                	
+                    displayPoints.setText("FPS: " + fps);
+                }
+            });
+        }
 	}
 	
 	public boolean checkCollision(PaintBall obj, IGeometry obj2)
@@ -567,7 +603,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		//creates a fade between scenes
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 	}
-
+	
 	
 	/** Not used at the moment*/
 	@Override
