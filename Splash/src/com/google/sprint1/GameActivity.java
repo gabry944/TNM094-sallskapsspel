@@ -508,7 +508,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 
             	}
 
-            	else if(player.superPower == false)
+            	else if(player.superPower == false && !paint_ball_object.geometry.isVisible())
             	{
             		drawBallPath(currentTouch);
 
@@ -537,7 +537,9 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
         		{
 
             		paint_ball_object.geometry.setTranslation(player.position);
-        			paint_ball_object.velocity = new Vector3d(touchVec.getX()/4, touchVec.getY()/4, (Math.abs(touchVec.getX() + touchVec.getY())/4));
+        			paint_ball_object.velocity = new Vector3d(touchVec.getX()/4f,
+        													  touchVec.getY()/4f,
+        													 (Math.abs(touchVec.getX() + touchVec.getY())/(4f*(float)Math.sqrt(2))));
                 	//Log.d(TAG, "vel = " + paint_ball_object.velocity);
         			
         			paint_ball_object.geometry.setVisible(true);
@@ -550,13 +552,29 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
     
     private void drawBallPath(Vector3d currentTouch)
     {
+    	float velocity = (Math.abs(currentTouch.getX()) + Math.abs(currentTouch.getY()))/(4f*(float)Math.sqrt(2));
+    	float timeToLanding =  (float) (velocity/(2*(float)Math.sqrt(2)*9.8f) + Math.sqrt(Math.pow(velocity/(2*Math.sqrt(2)*9.8), 2) + 165/9.8));
+    	Log.d(TAG, "time to landing : " + timeToLanding);
+    	
 		for(int i = 0; i < 10; i++)
 		{
-			ballPath.get(i).setTranslation(new Vector3d(player.position.getX() + (float)((double)(i) / 10) * currentTouch.getX(),
-														player.position.getY() + (float)((double)(i) / 10) * currentTouch.getY(),
-														player.position.getZ() + (float)((double)(i) / 10) * currentTouch.getY()));
+			ballPath.get(i).setTranslation(new Vector3d(player.position.getX() + (float)((double)(i)/ 5) * currentTouch.getX(),
+														player.position.getY() + (float)((double)(i)/ 5) * currentTouch.getY(),
+														getPathZPos(velocity, (i * timeToLanding/10))));
 		}
+			
+
     }
+
+	private float getPathZPos(float velocity, float time)
+	{
+		float pos = 0;
+		
+		pos = (float) (165 - 9.8*Math.pow(time, 2) + velocity*time/Math.sqrt(2));
+		//Log.d(TAG, "pos " + pos);
+		
+		return pos;
+	}
 
     /** Function to set the rotation of the arrow aim */
     private void setArrowRotation(Vector3d deltaTouch) 
