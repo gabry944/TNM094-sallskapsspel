@@ -172,6 +172,7 @@ public class NetworkActivity extends Activity {
 		mService.mConnection.sendData(test);
 	}
 
+	/**Called when user minimize the window or clicks home button*/
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -185,7 +186,10 @@ public class NetworkActivity extends Activity {
 		}
 
 	}
-
+	
+	/**Called when when a new instance of NetworkActivity is started, for example when
+	 * starting the game for the first time or when entering from another activity
+	 */
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -196,7 +200,10 @@ public class NetworkActivity extends Activity {
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 
 	}
-
+	
+	/**Called when after onStart() when a new instance of NetworkActivity is started 
+	 * and when ever the user enters the activity from a paused state
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -225,7 +232,10 @@ public class NetworkActivity extends Activity {
 		}
 
 	}
-
+	
+	/**Called when user exits the Activity or pausing and then destroy the app by 
+	 * brute force 
+	 */
 	protected void onDestroy() {
 
 		// Check if mNsdHelper is not null(will throw NullPointerException
@@ -293,7 +303,9 @@ public class NetworkActivity extends Activity {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 			mBound = true;
-		
+			
+			//Initializes the NsdHelper when NetworkAcitivty is started
+			//(try/catch only precaution to prevent app from crashing)
 			try{
 				mService.initNsdHelper(mNSDHandler);
 			} catch(NullPointerException e){

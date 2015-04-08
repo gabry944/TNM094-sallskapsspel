@@ -29,21 +29,20 @@ public class NsdHelper {
 
 	public boolean serviceResolved = false;
 	NsdServiceInfo mService;
-
+	
+	/**Constructor */
 	public NsdHelper(Context context, Handler handler) {
 		mContext = context;
 		mUpdateHandler = handler;
 		mNsdManager = (NsdManager) context
 				.getSystemService(Context.NSD_SERVICE);
 	}
-
+	
+	/**Initialize various listeners for the NsdHelper */
 	public void initializeNsd() {
 		initializeResolveListener();
 		initializeDiscoveryListener();
 		initializeRegistrationListener();
-
-		// mNsdManager.init(mContext.getMainLooper(), this);
-
 	}
 
 	public void initializeDiscoveryListener() {
@@ -169,7 +168,8 @@ public class NsdHelper {
 
 		};
 	}
-
+	
+	/**Registers service on the network */
 	public void registerService(int port) {
 		NsdServiceInfo serviceInfo = new NsdServiceInfo();
 		serviceInfo.setPort(port);
@@ -179,12 +179,14 @@ public class NsdHelper {
 				mRegistrationListener);
 
 	}
-
+	
+	/**Starts the service discovery */
 	public void discoverServices() {
 		mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD,
 				mDiscoveryListener);
 	}
-
+	
+	/**Stops the service discovery	 */
 	public void stopDiscovery() {
 		mNsdManager.stopServiceDiscovery(mDiscoveryListener);
 	}
@@ -202,6 +204,10 @@ public class NsdHelper {
 		return mService;
 	}
 
+	/**
+	 * Used to unregister service from network and stop the service discovery 
+	 * at the same time.
+	 */
 	public void tearDown() {
 		Log.d(TAG, "tearing down");
 		mNsdManager.unregisterService(mRegistrationListener);
