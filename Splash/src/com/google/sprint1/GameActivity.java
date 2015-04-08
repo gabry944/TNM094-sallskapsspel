@@ -296,19 +296,9 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			for(int i = 0; i < 20; i++)
 			{
 				// create new paint ball
-				paint_ball_object = new PaintBall();
-				
-				// add properties to the paint ball
-				paint_ball_object.geometry = Load3Dmodel("tower/paintball.obj");
-				paint_ball_object.splashGeometry = Load3Dmodel("tower/splash.mfbx");
-				paint_ball_object.paintballShadow = Load3Dmodel("tower/paintballShadow.mfbx");
-				paint_ball_object.velocity = new Vector3d(0f, 0f, 0f);
-				geometryProperties(paint_ball_object.geometry, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
-				geometryProperties(paint_ball_object.splashGeometry, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
-				geometryProperties(paint_ball_object.paintballShadow, 0.7f, new Vector3d(0f, 0f, 0f), new Rotation((float) (3*Math.PI/2), 0f, 0f));
-				paint_ball_object.geometry.setVisible(false);	
-				paint_ball_object.splashGeometry.setVisible(false);
-				paint_ball_object.paintballShadow.setVisible(false);
+				paint_ball_object = new PaintBall(this, Load3Dmodel("tower/paintball.obj"),
+														Load3Dmodel("tower/splash.mbfx"),
+														Load3Dmodel("tower/paintballShadow.mbfx"));
 				
 				// add paint ball to list of paint balls
 				exsisting_paint_balls.add(paint_ball_object);
@@ -514,15 +504,15 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             	arrowAim.setVisible(false);
             	//Log.d(TAG, "endTouch ="+ endTouch);
             	//Log.d(TAG, "touchVec = " + touchVec);
-        		if(!paint_ball_object.geometry.isVisible())
+            	PaintBall ball = getAvailableBall(1);
+        		if(ball != null)
         		{
-
-            		paint_ball_object.geometry.setTranslation(player.position);
-        			paint_ball_object.velocity = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
+            		ball.geometry.setTranslation(player.position);
+        			ball.velocity = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
                 	//Log.d(TAG, "vel = " + paint_ball_object.velocity);
         			
-        			paint_ball_object.geometry.setVisible(true);
-        			paint_ball_object.paintballShadow.setVisible(true);
+        			ball.geometry.setVisible(true);
+        			ball.paintballShadow.setVisible(true);
             	break;
         		}
         }
@@ -540,6 +530,16 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		
 	}
     
+    private PaintBall getAvailableBall(int id)
+    {
+    	for(PaintBall obj : exsisting_paint_balls)
+    	{
+    		if (!(obj.geometry.isVisible()))
+    			return obj;
+    	}
+    	
+    	return null;
+    }
     private void powerUpAnimation(IGeometry powerUp)
     {
     	//powerUp.setRotation(new Rotation(powerUp.getRotation().getEulerAngleRadians().getX() + 0.1f,
