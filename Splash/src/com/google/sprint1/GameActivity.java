@@ -95,17 +95,11 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	/* delkaration av variabler som används i renderingsloopen */
 	float SphereMoveX = 2f;
 	
-    //How many frames were in last FPS update
+    //FPS specific variables
     int frameCounter = 0;
-    
-    long delay;
-    
     double lastTime;
-    
-    private Handler handler = new Handler(Looper.getMainLooper());
 
 	public static final String TAG = "GameActivity";
-
 
 	protected void onDestroy() {
 
@@ -164,10 +158,6 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		point = 0;
 		
 		scaleStart = 0f;
-		
-		delay = System.currentTimeMillis();
-		
-		//mFpsCounter = new FPSCounter();
 				
 	}
 
@@ -450,6 +440,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		}
 		//onTouchEvent(null);
         
+		//FPS stuff
         frameCounter++;
             
         double currentTime = System.currentTimeMillis() - lastTime;
