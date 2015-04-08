@@ -54,10 +54,14 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	private IGeometry aimPowerUp;
 
 	private IGeometry ball;
+	private IGeometry ballShadow;
+	private ArrayList<IGeometry> ballPath;  //lista med bollar som visar parabeln för den flygande färgbollen
+	private ArrayList<IGeometry> ballPathShadow;  // skuggor till parabelsiktet
+	
 	PaintBall paint_ball_object;
 	private ArrayList<PaintBall> exsisting_paint_balls;
 	
-	private ArrayList<IGeometry> ballPath;  //lista med bollar som visar parabeln för den flygande färgbollen
+
 	
 	private Vector3d startTouch;
 	private Vector3d currentTouch;
@@ -136,8 +140,9 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		
 		exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		ballPath = new ArrayList<IGeometry>(10);
+		ballPathShadow = new ArrayList<IGeometry>(10);
 
-		displayPoints = (TextView) findViewById(R.id.myPoints);
+		//displayPoints = (TextView) findViewById(R.id.myPoints);
 		
 		//velocity and direction of outgoing paintball
 		acceleration =  new Vector3d(0f, 0f, 0f);
@@ -200,34 +205,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		return null;
 	}	
 
-	/** move an object depending on physics calculated with Euler model*/
-	private void physicPositionCalibration(PaintBall object)
-	{
-		// right now we only have gravity as force
-		totalForce.setX(gravity.getX() * mass);
-		totalForce.setY(gravity.getY() * mass);
-		totalForce.setZ(gravity.getZ() * mass);
-		
-		// Newtons second law says that: F=ma => a= F/m
-		acceleration.setX(totalForce.getX() / mass);
-		acceleration.setY(totalForce.getY() / mass);
-		acceleration.setZ(totalForce.getZ() / mass);
-		
-		// Euler method gives that Vnew=V+A*dt;
-		object.velocity.setX(object.velocity.getX()+timeStep*acceleration.getX());
-		object.velocity.setY(object.velocity.getY()+timeStep*acceleration.getY());
-		object.velocity.setZ(object.velocity.getZ()+timeStep*acceleration.getZ());
-		
-		// Euler method gives that PositionNew=Position+V*dt;
-		Vector3d position = object.geometry.getTranslation();
-		position.setX(position.getX()+timeStep*object.velocity.getX());
-		position.setY(position.getY()+timeStep*object.velocity.getY());
-		position.setZ(position.getZ()+timeStep*object.velocity.getZ());
-		
-		// move object to the new position
-		object.geometry.setTranslation(position);
-		//object.setTranslation(object.getTranslation().add(velocity*timeStep));
-	}
+	
 	
 	/** Loads the marker and the 3D-models to the game */
 	@Override
@@ -299,9 +277,13 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 				// create new paint ball
 				
 				ball = Load3Dmodel("tower/paintball.obj");
+				ballShadow = Load3Dmodel("tower/paintballShadow.mfbx");
 				geometryProperties(ball, 0.5f, new Vector3d(-550, -450, 200f), new Rotation(0f, 0f, 0f));
-				ball.setVisible(false);
+				geometryProperties(ballShadow, 0.2f, new Vector3d(-550, -450, 0), new Rotation(0f, 0f, 0f));
 				ballPath.add(ball);
+				ballPathShadow.add(ballShadow);
+				ball.setVisible(false);
+				ballShadow.setVisible(false);
 				
 				
 			}
@@ -310,19 +292,9 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			for(int i = 0; i < 20; i++)
 			{
 				// create new paint ball
-				paint_ball_object = new PaintBall();
-				
-				// add properties to the paint ball
-				paint_ball_object.geometry = Load3Dmodel("tower/paintball.obj");
-				paint_ball_object.splashGeometry = Load3Dmodel("tower/splash.mfbx");
-				paint_ball_object.paintballShadow = Load3Dmodel("tower/paintballShadow.mfbx");
-				paint_ball_object.velocity = new Vector3d(0f, 0f, 0f);
-				geometryProperties(paint_ball_object.geometry, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
-				geometryProperties(paint_ball_object.splashGeometry, 2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
-				geometryProperties(paint_ball_object.paintballShadow, 0.7f, new Vector3d(0f, 0f, 0f), new Rotation((float) (3*Math.PI/2), 0f, 0f));
-				paint_ball_object.geometry.setVisible(false);	
-				paint_ball_object.splashGeometry.setVisible(false);
-				paint_ball_object.paintballShadow.setVisible(false);
+				paint_ball_object = new PaintBall(Load3Dmodel("tower/paintball.obj"),
+												  Load3Dmodel("tower/splash.mfbx"),
+												  Load3Dmodel("tower/paintballShadow.mfbx"));
 				
 				// add paint ball to list of paint balls
 				exsisting_paint_balls.add(paint_ball_object);
@@ -347,11 +319,12 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	public void onDrawFrame() 
 	{
 		super.onDrawFrame();
-
+		
 		// If content not loaded yet, do nothing
 
 		if ( towerGeometry4== null || exsisting_paint_balls.isEmpty())
 			return;
+		
 		
 		//Log.d(TAG, "touchVec = "+ touchVec);
 		//antGeometry.setTranslation(touchVec, true);
@@ -372,18 +345,10 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		{
 			for(PaintBall obj : exsisting_paint_balls)
 			{
-				if(obj.geometry.isVisible()) 
+				if(obj.isActive()) 
 				{
-					// move object one frame
-					physicPositionCalibration(obj);
+					obj.update();
 					
-        			paint_ball_object.paintballShadow.setTranslation(new Vector3d(paint_ball_object.geometry.getTranslation().getX(),
-        																		  paint_ball_object.geometry.getTranslation().getY(),
-        																		  0f));
-        			
-					//Log.d(TAG, "Zvalue =" + obj.geometry.getTranslation().getZ());
-					
-						
 					if(checkCollision( obj, antGeometry1))
 					{
 						antGeometry1.setRotation(new Rotation((float) (3*Math.PI/4), 0f, 0f),true);
@@ -411,25 +376,6 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 						point++;		
 					}
 					
-
-					// checks for collision with ground 	
-					if(obj.geometry.getTranslation().getZ() <= 0f)
-					{	
-						obj.splashGeometry.setTranslation(obj.geometry.getTranslation());
-						obj.velocity = new Vector3d(0.0f, 0.0f, 0.0f);
-						obj.geometry.setTranslation(new Vector3d(0f,0f,0f));
-						obj.splashGeometry.setVisible(true);
-						obj.velocity = new Vector3d(0f, 0f, 0f);
-						obj.geometry.setVisible(false);
-						obj.paintballShadow.setVisible(false);
-						
-						Log.d(TAG, "before display =");
-						displayPoints.setText("Test"); //måste laga detta fungerar ej (TODO)
-						Log.d(TAG, "after display =");
-
-						//TextView newtext = (TextView) findViewById(R.id.editText1);
-					}
-					
 					if(checkCollision(obj, aimPowerUp))
 					{
 						player.superPower = true;
@@ -440,26 +386,26 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		}
 		//onTouchEvent(null);
         
-		//FPS stuff
-        frameCounter++;
-            
-        double currentTime = System.currentTimeMillis() - lastTime;
-        final int fps = (int) (((double)frameCounter / currentTime)*1000);
-        
-        if (currentTime > 1.0) {
-            lastTime = System.currentTimeMillis();
-            frameCounter = 0;
-                    
-            runOnUiThread(new Runnable() {
 
-                @Override
-                public void run() {
-                	TextView displayPoints = (TextView) findViewById(R.id.myPoints);;
-                	
-                    displayPoints.setText("FPS: " + fps);
-                }
-            });
-        }
+//        frameCounter++;
+//            
+//        double currentTime = System.currentTimeMillis() - lastTime;
+//        final int fps = (int) (((double)frameCounter / currentTime)*1000);
+//        
+//        if (currentTime > 1.0) {
+//            lastTime = System.currentTimeMillis();
+//            frameCounter = 0;
+//                    
+//            runOnUiThread(new Runnable() {
+//
+//                @Override
+//                public void run() {
+//                	TextView displayPoints = (TextView) findViewById(R.id.myPoints);;
+//                	
+//                    displayPoints.setText("FPS: " + fps);
+//                }
+//            });
+//        }
 	}
 	
 	public boolean checkCollision(PaintBall obj, IGeometry obj2)
@@ -517,6 +463,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
                     for(int i = 0; i < 10; i++)
                     {
                     	ballPath.get(i).setVisible(true);
+                    	ballPathShadow.get(i).setVisible(true);
                     }   
                     
                 }
@@ -530,8 +477,8 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             	
             	if(player.superPower == true)
             	{
-                	crosshair.setTranslation(new Vector3d( player.position.getX()+4.2f*currentTouch.getX(),
-							   player.position.getY()+4.2f*currentTouch.getY(),
+                	crosshair.setTranslation(new Vector3d( player.position.getX()+2.2f*currentTouch.getX(),
+							   player.position.getY()+2.2f*currentTouch.getY(),
 							   0f));
 
             	}
@@ -558,33 +505,54 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
         		for(int i = 0; i < 10; i++)
         		{
         			ballPath.get(i).setVisible(false);
+        			ballPathShadow.get(i).setVisible(false);
         		}
             	//Log.d(TAG, "endTouch ="+ endTouch);
             	//Log.d(TAG, "touchVec = " + touchVec);
-        		if(!paint_ball_object.geometry.isVisible())
+            	PaintBall ball = getAvailableBall(1);
+        		if(ball != null)
         		{
 
-            		paint_ball_object.geometry.setTranslation(player.position);
-        			paint_ball_object.velocity = new Vector3d(touchVec.getX()/4, touchVec.getY()/4, (Math.abs(touchVec.getX() + touchVec.getY())/4));
+            		ball.geometry.setTranslation(player.position);
+        			ball.velocity = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
                 	//Log.d(TAG, "vel = " + paint_ball_object.velocity);
-        			
-        			paint_ball_object.geometry.setVisible(true);
-        			paint_ball_object.paintballShadow.setVisible(true);
+        			ball.activate();
             	break;
         		}
         }
         return true;
     }
     
+    /** Function to draw the path of the ball (aim) */
     private void drawBallPath(Vector3d currentTouch)
     {
+    	float velocity = (Math.abs(currentTouch.getX()) + Math.abs(currentTouch.getY()))/(4f*(float)Math.sqrt(2));
+    	float timeToLanding =  (float) (velocity/(2*(float)Math.sqrt(2)*9.8f) + Math.sqrt(Math.pow(velocity/(2*Math.sqrt(2)*9.8), 2) + 165/9.8));
+    	//Log.d(TAG, "time to landing : " + timeToLanding);
+    	
 		for(int i = 0; i < 10; i++)
 		{
-			ballPath.get(i).setTranslation(new Vector3d(player.position.getX() + (float)((double)(i) / 10) * currentTouch.getX(),
-														player.position.getY() + (float)((double)(i) / 10) * currentTouch.getY(),
-														player.position.getZ() + (float)((double)(i) / 10) * currentTouch.getY()));
+			ballPath.get(i).setTranslation(new Vector3d(player.position.getX() + (float)((double)(i)/ 5) * currentTouch.getX(),
+														player.position.getY() + (float)((double)(i)/ 5) * currentTouch.getY(),
+														getPathZPos(velocity, (i * timeToLanding/10))));
+			
+			ballPathShadow.get(i).setTranslation(new Vector3d(player.position.getX() + (float)((double)(i)/ 5) * currentTouch.getX(),
+														player.position.getY() + (float)((double)(i)/ 5) * currentTouch.getY(),
+														0f));
 		}
+			
+
     }
+
+	private float getPathZPos(float velocity, float time)
+	{
+		float pos = 0;
+		
+		pos = (float) (165 - 9.8*Math.pow(time, 2) + velocity*time/Math.sqrt(2));
+		//Log.d(TAG, "pos " + pos);
+		
+		return pos;
+	}
 
     /** Function to set the rotation of the arrow aim */
     private void setArrowRotation(Vector3d deltaTouch) 
@@ -598,6 +566,18 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	}
     
     /** Function for animation on the powerup */
+
+    private PaintBall getAvailableBall(int id)
+    {
+    	for(PaintBall obj : exsisting_paint_balls)
+    	{
+    		if (!(obj.geometry.isVisible()))
+    			return obj;
+    	}
+    	
+    	return null;
+    }
+    
     private void powerUpAnimation(IGeometry powerUp)
     {
     	//powerUp.setRotation(new Rotation(powerUp.getRotation().getEulerAngleRadians().getX() + 0.1f,
