@@ -60,7 +60,7 @@
 							threshold can lead to failure. The value range for
 							the threshold is between 0 and 255.
 							-->
-                    <ThresholdOffset>150</ThresholdOffset>
+                    <ThresholdOffset>110</ThresholdOffset>
 
                     <!--    Number of search iterations which controls the 
                             number of attempts to find a marker with a new 
@@ -71,7 +71,7 @@
                             With a high number, the marker tracker is more 
                             likely to detect a marker, but it also needs more 
                             computational time, i.e. is slower. -->
-                    <NumberOfSearchIterations>3</NumberOfSearchIterations>
+                    <NumberOfSearchIterations>5</NumberOfSearchIterations> <!--  3  -->
 
                 </MarkerTrackingParameters>
             </Parameters>
@@ -103,7 +103,7 @@
                                 correctly relate the marker pixel size to world 
                                 coordinates. The size is specified in 
                                 millimeters. -->
-                        <Size>120</Size>
+                        <Size>1000</Size> <!--  60 -->
 
                         <!--    Matrix ID to identify the marker. The ID is
                                 associated with the pattern on the marker and 
@@ -128,7 +128,7 @@
 					<AlphaRotation>0.5</AlphaRotation> 
 					<AlphaTranslation>0.8</AlphaTranslation>
 					<!-- if we lose tracking, keep the old pose for several frames -->
-					<KeepPoseForNumberOfFrames>3</KeepPoseForNumberOfFrames> 
+					<KeepPoseForNumberOfFrames>5</KeepPoseForNumberOfFrames> <!-- 3 -->
 				</Parameters>
 			</Fuser>
 			<SensorSource trigger="1">

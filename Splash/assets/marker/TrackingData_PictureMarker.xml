@@ -67,7 +67,7 @@
                             With a high number, the marker tracker is more 
                             likely to detect a marker, but it also needs more 
                             computational time, i.e. is slower. -->
-                    <NumberOfSearchIterations>3</NumberOfSearchIterations>
+                    <NumberOfSearchIterations>9</NumberOfSearchIterations> <!-- 3 -->
 
                 </MarkerTrackingParameters>
             </Parameters>
