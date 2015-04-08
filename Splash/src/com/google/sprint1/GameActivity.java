@@ -484,11 +484,13 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
                 else if(player.superPower == false)
                 {
                     //arrowAim.setVisible(true);
+                	//arrowAim.setScale(new Vector3d( 0f, 2f, 2f));
+                	
                     for(int i = 0; i < 10; i++)
                     {
                     	ballPath.get(i).setVisible(true);
-                    }
-                    //arrowAim.setScale(new Vector3d( 0f, 2f, 2f));
+                    }   
+                    
                 }
 
                 break;
@@ -508,8 +510,10 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 
             	else if(player.superPower == false)
             	{
-                	arrowAim.setScale(new Vector3d( Math.abs(currentTouch.getX()+currentTouch.getY())*0.01f, 2f, 2f));
-                	setArrowRotation(currentTouch);
+            		drawBallPath(currentTouch);
+
+                	//arrowAim.setScale(new Vector3d( Math.abs(currentTouch.getX()+currentTouch.getY())*0.01f, 2f, 2f));
+                	//setArrowRotation(currentTouch);
             	}
             	
             	//Log.d(TAG, "currentTouch = " + currentTouch);
@@ -523,6 +527,10 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             							  0f);
             	crosshair.setVisible(false);
             	arrowAim.setVisible(false);
+        		for(int i = 0; i < 10; i++)
+        		{
+        			ballPath.get(i).setVisible(false);
+        		}
             	//Log.d(TAG, "endTouch ="+ endTouch);
             	//Log.d(TAG, "touchVec = " + touchVec);
         		if(!paint_ball_object.geometry.isVisible())
@@ -531,7 +539,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             		paint_ball_object.geometry.setTranslation(player.position);
         			paint_ball_object.velocity = new Vector3d(touchVec.getX()/4, touchVec.getY()/4, (Math.abs(touchVec.getX() + touchVec.getY())/4));
                 	//Log.d(TAG, "vel = " + paint_ball_object.velocity);
-        			drawBallPath(touchVec);
+        			
         			paint_ball_object.geometry.setVisible(true);
         			paint_ball_object.paintballShadow.setVisible(true);
             	break;
@@ -540,9 +548,14 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
         return true;
     }
     
-    private void drawBallPath(Vector3d touchVec)
+    private void drawBallPath(Vector3d currentTouch)
     {
-    	
+		for(int i = 0; i < 10; i++)
+		{
+			ballPath.get(i).setTranslation(new Vector3d(player.position.getX() + (float)((double)(i) / 10) * currentTouch.getX(),
+														player.position.getY() + (float)((double)(i) / 10) * currentTouch.getY(),
+														player.position.getZ() + (float)((double)(i) / 10) * currentTouch.getY()));
+		}
     }
 
     /** Function to set the rotation of the arrow aim */
