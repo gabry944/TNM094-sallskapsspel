@@ -49,10 +49,12 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	private IGeometry crosshair;
 	private IGeometry arrowAim;
 	private IGeometry aimPowerUp;
-
-
+	private IGeometry ball;
+	
 	PaintBall paint_ball_object;
 	private ArrayList<PaintBall> exsisting_paint_balls;
+	
+	private ArrayList<IGeometry> ballPath;  //lista med bollar som visar parabeln för den flygande färgbollen
 	
 	private Vector3d startTouch;
 	private Vector3d currentTouch;
@@ -81,14 +83,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	float mass;
 	
 	float temp;
-	float scaleStart;
-	
-
-	/* Variabler för objekten i spelet */
-	private IGeometry antGeometry;
-	private IGeometry sphereGeometry;
-	private int mGestureMask;
-	private IGeometry flowerGeometry;
+	float scaleStart;  //skalning av pilen för siktet
 
 	// Variables for Service handling
 	private NetworkService mService;
@@ -134,6 +129,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		super.onCreate(savedInstanceState);		
 		
 		exsisting_paint_balls = new ArrayList<PaintBall>(20);
+		ballPath = new ArrayList<IGeometry>(10);
 
 		displayPoints = (TextView) findViewById(R.id.myPoints);
 		
@@ -290,7 +286,18 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			aimPowerUp = Load3Dmodel("powerUps/aimPowerUp.mfbx");
 			geometryProperties(aimPowerUp, 2.1f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
 			
-			
+			//creates the aim path
+			for(int i = 0; i < 10; i++)
+			{
+				// create new paint ball
+				
+				ball = Load3Dmodel("tower/paintball.obj");
+				geometryProperties(ball, 0.5f, new Vector3d(-550, -450, 200f), new Rotation(0f, 0f, 0f));
+				ball.setVisible(false);
+				ballPath.add(ball);
+				
+				
+			}
 			
 			//creates a list of paint balls
 			for(int i = 0; i < 20; i++)
@@ -353,7 +360,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		antGeometry1.setTranslation(new Vector3d(temp, temp, 0.0f), true);
 		antGeometry2.setTranslation(new Vector3d(-temp, -temp, 0.0f), true);
 		
-		//onGeometryTouched(canonGeometry1);
+		
 		if (!exsisting_paint_balls.isEmpty())
 		{
 			for(PaintBall obj : exsisting_paint_balls)
@@ -476,8 +483,12 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
                 	}
                 else if(player.superPower == false)
                 {
-                    arrowAim.setVisible(true);
-                    arrowAim.setScale(new Vector3d( 0f, 2f, 2f));
+                    //arrowAim.setVisible(true);
+                    for(int i = 0; i < 10; i++)
+                    {
+                    	ballPath.get(i).setVisible(true);
+                    }
+                    //arrowAim.setScale(new Vector3d( 0f, 2f, 2f));
                 }
 
                 break;
@@ -518,15 +529,20 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
         		{
 
             		paint_ball_object.geometry.setTranslation(player.position);
-        			paint_ball_object.velocity = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
+        			paint_ball_object.velocity = new Vector3d(touchVec.getX()/4, touchVec.getY()/4, (Math.abs(touchVec.getX() + touchVec.getY())/4));
                 	//Log.d(TAG, "vel = " + paint_ball_object.velocity);
-        			
+        			drawBallPath(touchVec);
         			paint_ball_object.geometry.setVisible(true);
         			paint_ball_object.paintballShadow.setVisible(true);
             	break;
         		}
         }
         return true;
+    }
+    
+    private void drawBallPath(Vector3d touchVec)
+    {
+    	
     }
 
     /** Function to set the rotation of the arrow aim */
@@ -540,6 +556,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		
 	}
     
+    /** Function for animation on the powerup */
     private void powerUpAnimation(IGeometry powerUp)
     {
     	//powerUp.setRotation(new Rotation(powerUp.getRotation().getEulerAngleRadians().getX() + 0.1f,
