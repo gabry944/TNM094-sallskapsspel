@@ -1,8 +1,5 @@
 package com.google.sprint1;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
 import android.net.nsd.NsdManager;

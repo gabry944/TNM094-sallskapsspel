@@ -15,11 +15,8 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.nsd.NsdServiceInfo;
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.IBinder;
@@ -309,7 +306,7 @@ public class NetworkActivity extends Activity {
 			try{
 				mService.initNsdHelper(mNSDHandler);
 			} catch(NullPointerException e){
-				Log.e(TAG, "NullPointerException: ");
+				Log.e(TAG, "NullPointerException: " + e);
 			}
 
 			// Register the game on the network
