@@ -167,7 +167,7 @@ public class GameActivity extends ARViewActivity // implements
 
 	/** Called when the user clicks the Exit button (krysset) */
 	public void onExitButtonClick(View v) {
-		stopService(new Intent(this, NetworkService.class));
+		//stopService(new Intent(this, NetworkService.class));
 		finish();
 	}
 
