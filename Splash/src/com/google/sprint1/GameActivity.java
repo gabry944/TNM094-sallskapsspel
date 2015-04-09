@@ -190,7 +190,7 @@ public class GameActivity extends ARViewActivity // implements
 		scaleStart = 0f;
 		
 		//Gesture handler
-		mGestureMask = GestureHandler.GESTURE_ALL;
+		mGestureMask = GestureHandler.GESTURE_DRAG;
 		mCallbackHandler = new MetaioSDKCallbackHandler();
 		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);		
 
@@ -235,7 +235,8 @@ public class GameActivity extends ARViewActivity // implements
 
 	/** Loads the marker and the 3D-models to the game */
 	@Override
-	protected void loadContents() {
+	protected void loadContents() 
+	{
 		try {
 			/** Load Marker */
 			// Getting a file path for tracking configuration XML file
@@ -264,10 +265,11 @@ public class GameActivity extends ARViewActivity // implements
 			//creates the tower
 			towerGeometry1 = Load3Dmodel("tower/tower.mfbx");
 			geometryProperties(towerGeometry1, 2f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
-			mGestureHandler.addObject(towerGeometry1, 1);
+			//mGestureHandler.addObject(towerGeometry1, 1);
 			canonGeometry1 = Load3Dmodel("tower/canon.mfbx");
 			geometryProperties(canonGeometry1, 2f, new Vector3d(-650f, -520f, 165f), new Rotation(0f, 0f, 0f));
-			mGestureHandler.addObject(canonGeometry1, 1);
+			mGestureHandler.addObject(canonGeometry1, 1);			
+			
 			towerGeometry2 = Load3Dmodel("tower/tower.mfbx");
 			geometryProperties(towerGeometry2, 2f,
 					new Vector3d(650f, 520f, 0f), new Rotation(0f, 0f, 0f));
@@ -625,6 +627,40 @@ public class GameActivity extends ARViewActivity // implements
 
 		mGestureHandler.onTouch(v, event);
 
+    	//coordinates between tower and "slangbella"
+		touchVec = new Vector3d(-(canonGeometry1.getTranslation().getX()-towerGeometry1.getTranslation().getX()),
+									-(canonGeometry1.getTranslation().getY()-towerGeometry1.getTranslation().getY()),
+									canonGeometry1.getTranslation().getZ()-towerGeometry1.getTranslation().getZ());
+		
+        for(int i = 0; i < 10; i++)
+        {
+        	ballPath.get(i).setVisible(true);
+        	ballPathShadow.get(i).setVisible(true);
+        }  
+		
+        drawBallPath(touchVec);
+        
+        if ( event.getActionMasked() == MotionEvent.ACTION_UP)
+        {
+        	// move "slangbella" to original position
+    		canonGeometry1.setTranslation(towerGeometry1.getTranslation());
+    		canonGeometry1.setTranslation(new Vector3d(0f, 0f, 165f), true);
+        	
+    		for(int i = 0; i < 10; i++)
+    		{
+    			ballPath.get(i).setVisible(false);
+    			ballPathShadow.get(i).setVisible(false);
+    		}
+        	PaintBall ball = getAvailableBall(1);
+    		if(ball != null)
+    		{
+        		ball.geometry.setTranslation(player.position);
+    			ball.velocity = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
+            	//Log.d(TAG, "vel = " + paint_ball_object.velocity);
+    			ball.activate();
+    		}
+        }
+		
 		return true;
 	}
 	

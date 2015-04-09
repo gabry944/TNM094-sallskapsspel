@@ -103,7 +103,7 @@
                                 correctly relate the marker pixel size to world 
                                 coordinates. The size is specified in 
                                 millimeters. -->
-                        <Size>1000</Size> <!--  60 -->
+                        <Size>700</Size> <!--  60 -->
 
                         <!--    Matrix ID to identify the marker. The ID is
                                 associated with the pattern on the marker and 
