@@ -14,7 +14,7 @@ import com.metaio.sdk.MetaioDebug;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
 import com.metaio.tools.io.AssetsManager;
 
-public class PaintBall extends Drawable implements Serializable
+public class PaintBall extends Drawable 
 {
 	public static final String TAG = "PaintBall";
 	

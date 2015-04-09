@@ -664,10 +664,11 @@ ants = new ArrayList<Ant>(10);
         	PaintBall ball = getAvailableBall(1);
     		if(ball != null)
     		{
-        		ball.geometry.setTranslation(player.position);
-    			ball.velocity = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
-            	//Log.d(TAG, "vel = " + paint_ball_object.velocity);
-    			ball.activate();
+    			Vector3d pos = player.position;
+    			Vector3d vel = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
+    			DataPackage data = new DataPackage(ball.id, vel, pos);
+    			mService.mConnection.sendData(data);
+    			ball.fire(vel, pos);
     		}
         }
 		
