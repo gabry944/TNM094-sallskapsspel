@@ -625,7 +625,7 @@ public class GameActivity extends ARViewActivity // implements
 		}
 	};
 
-	public void updateFps() {
+	private void updateFps() {
 
 		frameCounter++;
 
