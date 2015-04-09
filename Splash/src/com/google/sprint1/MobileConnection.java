@@ -84,6 +84,7 @@ public class MobileConnection {
 		Vector3d pos = new Vector3d(data.positionX,data.positionY,data.positionZ);
 		
 		GameState.getState().exsisting_paint_balls.get(data.id).fire(vel, pos);
+		//TODO: Send data back to activity using mUpdateHandler.
 		
 	}
 
@@ -144,12 +145,15 @@ public class MobileConnection {
 
 		private Thread mSendThread;
 		private Thread mRecThread;
+		
+		ObjectOutputStream outStream;
 
 		public GameClient(InetAddress address, int port) {
 			Log.d(CLIENT_TAG, "Creating GameClient");
 			this.mAddress = address;
 			this.PORT = port;
 
+			
 			mSendThread = new Thread(new SendingThread());
 			mSendThread.start();
 		}
@@ -166,7 +170,7 @@ public class MobileConnection {
 					if (getSocket() == null) {
 						setSocket(new Socket(mAddress, PORT));
 						Log.d(CLIENT_TAG, "Client-side socket initialized.");
-
+						outStream = new ObjectOutputStream(getSocket().getOutputStream());
 					} else {
 						Log.d(CLIENT_TAG,
 								"Socket already initialized. skipping!");
@@ -234,8 +238,6 @@ public class MobileConnection {
 					Log.d(CLIENT_TAG, "Socket output stream is null, wtf?");
 				}
 
-				ObjectOutputStream outStream = null;
-				outStream = new ObjectOutputStream(socket.getOutputStream());
 				outStream.writeObject(obj);
 				
 			} catch (UnknownHostException e) {
