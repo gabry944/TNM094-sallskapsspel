@@ -1,28 +1,43 @@
 package com.google.sprint1;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.media.MediaScannerConnection;
+import android.media.MediaScannerConnection.OnScanCompletedListener;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.sprint1.NetworkService.LocalBinder;
+//import com.metaio.Example.TutorialInteractiveFurniture.MetaioSDKCallbackHandler;
 import com.metaio.sdk.ARViewActivity;
+import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
+import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
+import com.metaio.sdk.jni.ImageStruct;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
 import com.metaio.tools.io.AssetsManager;
@@ -61,7 +76,10 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	PaintBall paint_ball_object;
 	private ArrayList<PaintBall> exsisting_paint_balls;
 	
-
+	//Gesture handler
+	private GestureHandlerAndroid mGestureHandler;
+	private MetaioSDKCallbackHandler mCallbackHandler;
+	private int mGestureMask;
 	
 	private Vector3d startTouch;
 	private Vector3d currentTouch;
@@ -113,6 +131,10 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			mBound = false;
 		}
 		super.onDestroy();
+		
+		//Gesture handler
+		mCallbackHandler.delete();
+		mCallbackHandler = null;
 	}
 
 	@Override
@@ -163,7 +185,11 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		point = 0;
 		
 		scaleStart = 0f;
-				
+		
+		//Gesture handler
+		mGestureMask = GestureHandler.GESTURE_ALL;
+		mCallbackHandler = new MetaioSDKCallbackHandler();
+		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);		
 	}
 
 	/** Called when the user clicks the Exit button (krysset) */
@@ -240,11 +266,14 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 //			wallGeometry4 = Load3Dmodel("wall/wall.mfbx");
 //			geometryProperties(wallGeometry4, 20f, new Vector3d(0f, -720f, 0f), new Rotation(0f, 0f, 0f));	
 
+			//Gesture handler
 			//creates the tower
 			towerGeometry1 = Load3Dmodel("tower/tower.mfbx");
 			geometryProperties(towerGeometry1, 2f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
+			mGestureHandler.addObject(towerGeometry1, 1);
 			canonGeometry1 = Load3Dmodel("tower/canon.mfbx");
 			geometryProperties(canonGeometry1, 2f, new Vector3d(-650f, -520f, 165f), new Rotation(0f, 0f, 0f));
+			mGestureHandler.addObject(canonGeometry1, 1);
 			towerGeometry2 = Load3Dmodel("tower/tower.mfbx");
 			geometryProperties(towerGeometry2, 2f, new Vector3d(650f, 520f, 0f), new Rotation(0f, 0f, 0f));
 			canonGeometry2 = Load3Dmodel("tower/canon.mfbx");
@@ -437,8 +466,8 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		
 	}
 
-    @Override
-    /** Function to handle touch input */
+   /* @Override
+    /** Function to handle touch input *
     public boolean dispatchTouchEvent(MotionEvent event)
     {
         int action = event.getActionMasked();      
@@ -521,7 +550,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
         		}
         }
         return true;
-    }
+    }*/
     
     /** Function to draw the path of the ball (aim) */
     private void drawBallPath(Vector3d currentTouch)
@@ -606,12 +635,40 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 	}
 	
-	
-	/** Not used at the moment*/
+	//Gesture handler
 	@Override
-	protected IMetaioSDKCallback getMetaioSDKCallbackHandler() {
-		// No callbacks needed
-		return null;
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		super.onTouch(v, event);
+
+		mGestureHandler.onTouch(v, event);
+
+		return true;
+	}
+	
+	//Gesture handler
+	@Override
+	protected IMetaioSDKCallback getMetaioSDKCallbackHandler() 
+	{
+		return mCallbackHandler;
+	}
+	
+	//Gesture handler
+	final class MetaioSDKCallbackHandler extends IMetaioSDKCallback
+	{/*
+		@Override
+		public void onSDKReady()
+		{
+			// show GUI
+			runOnUiThread(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					mGUIView.setVisibility(View.VISIBLE);
+				}
+			});
+		}*/		
 	}
 
 
