@@ -1,6 +1,5 @@
 package com.google.sprint1;
 
-
 import java.io.Serializable;
 
 import android.app.Activity;
@@ -133,25 +132,18 @@ public class PaintBall extends Drawable
 		Vector3d min = obj.getBoundingBox(true).getMin();
 		Vector3d max = obj.getBoundingBox(true).getMax();
 
-		if (geometry.getTranslation().getX()
-				+ geometry.getBoundingBox().getMax().getX() > obj
-				.getTranslation().getX() + 2 * min.getX() - 100
-				&& geometry.getTranslation().getX()
-						+ geometry.getBoundingBox().getMin().getX() < obj
-						.getTranslation().getX() + 2 * max.getX() + 100
-				&& geometry.getTranslation().getY()
-						+ geometry.getBoundingBox().getMax().getY() > obj
-						.getTranslation().getY() + 2 * min.getY() - 100
-				&& geometry.getTranslation().getY()
-						+ geometry.getBoundingBox().getMin().getY() < obj
-						.getTranslation().getY() + 2 * max.getY() + 100
-				&& geometry.getTranslation().getZ()
-						+ geometry.getBoundingBox().getMax().getZ() > obj
-						.getTranslation().getZ() + 2 * min.getZ() - 100
-				&& geometry.getTranslation().getZ()
-						+ geometry.getBoundingBox().getMin().getZ() < obj
-						.getTranslation().getZ() + 2 * max.getZ() + 100)
-
+		if (geometry.getTranslation().getX() + geometry.getBoundingBox().getMax().getX() >
+		obj.getTranslation().getX() - min.getX() - 15
+		&& geometry.getTranslation().getX()	+ geometry.getBoundingBox().getMin().getX() <
+		obj.getTranslation().getX() + max.getX() + 15
+		&& geometry.getTranslation().getY() + geometry.getBoundingBox().getMax().getY() > 
+		obj.getTranslation().getY() - min.getY() - 15
+		&& geometry.getTranslation().getY()	+ geometry.getBoundingBox().getMin().getY() < 
+		obj.getTranslation().getY() + max.getY() + 15
+		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMax().getZ() > 
+		obj.getTranslation().getZ() - min.getZ() - 15
+		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMin().getZ() < 
+		obj.getTranslation().getZ() + max.getZ() + 15)
 			return true;
 		else
 			return false;

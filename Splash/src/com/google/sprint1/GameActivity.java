@@ -57,7 +57,6 @@ public class GameActivity extends ARViewActivity // implements
 	
 	//Gesture handler
 	private GestureHandlerAndroid mGestureHandler;
-	//private MetaioSDKCallbackHandler mCallbackHandler;
 	private int mGestureMask;
 
 	Ant ant;
@@ -84,9 +83,6 @@ public class GameActivity extends ARViewActivity // implements
 	// Variables for Service handling
 	private NetworkService mService;
 	boolean mBound = false;
-
-	/* delkaration av variabler som används i renderingsloopen */
-	float SphereMoveX = 2f;
 
 	// FPS specific variables
 	private int frameCounter = 0;
@@ -299,7 +295,8 @@ public class GameActivity extends ARViewActivity // implements
 
 	// function to set the properties for the geometry
 	public void geometryProperties(IGeometry geometry, float scale,
-			Vector3d translationVec, Rotation rotation) {
+				Vector3d translationVec, Rotation rotation) 
+	{
 		geometry.setScale(scale);
 		geometry.setTranslation(translationVec, true);
 		geometry.setRotation(rotation, true);
@@ -379,46 +376,46 @@ public class GameActivity extends ARViewActivity // implements
 			}
 		}
 		// onTouchEvent(null);
-
 		updateFps();
-
 	}
 
 	/** function that activates when an object is being touched */
 	@Override
 	protected void onGeometryTouched(IGeometry geometry) {
 		// Only implemented because its required by the parent class
-		if (geometry == canonGeometry1) {
-			Log.d(TAG, "hej");
-		}
-
 	}
     
 	/** Function to draw the path of the ball (aim) */
-	private void drawBallPath(Vector3d currentTouch) {
-		float velocity = (Math.abs(currentTouch.getX()) + Math.abs(currentTouch.getY())) / (4f * (float) Math.sqrt(2));
+	private void drawBallPath(Vector3d touchVec) {
+		float velocity =(float)(Math.abs(touchVec.getX()/4)* Math.sin(Math.PI/4)+ Math.abs(touchVec.getY()/4)*Math.sin(Math.PI/4));//(Math.abs(currentTouch.getX()) + Math.abs(currentTouch.getY())) / (4f * (float) Math.sqrt(2));
 		float timeToLanding = (float) (velocity / (2 * (float) Math.sqrt(2) * 9.8f) + Math.sqrt(Math.pow( velocity / (2 * Math.sqrt(2) * 9.8), 2) + 165 / 9.8));
 		// Log.d(TAG, "time to landing : " + timeToLanding);
 
 		for (int i = 0; i < 10; i++) {
-			ballPath.get(i).setTranslation( new Vector3d(player.position.getX() + (float) ((double) (i) / 5) * currentTouch.getX(),
-														 player.position.getY() + (float) ((double) (i) / 5) * currentTouch.getY(),
+			ballPath.get(i).setTranslation( new Vector3d(player.position.getX() + (float) ((double) (i) / 5) * touchVec.getX(),
+														 player.position.getY() + (float) ((double) (i) / 5) * touchVec.getY(),
 														 getPathZPos( velocity, (i * timeToLanding / 10))));
 
-			ballPathShadow.get(i).setTranslation( new Vector3d(player.position.getX() + (float) ((double) (i) / 5) * currentTouch.getX(),
-															   player.position.getY() + (float) ((double) (i) / 5) * currentTouch.getY(),
+			ballPathShadow.get(i).setTranslation( new Vector3d(player.position.getX() + (float) ((double) (i) / 5) * touchVec.getX(),
+															   player.position.getY() + (float) ((double) (i) / 5) * touchVec.getY(),
 															   0f));
 		}
-
+	/*	float Zpos = 165f;
+		float Zvel = 0f;
+		float timeStep = 0.2f;		
+		while (Zpos!=0)
+		{
+			Zvel = Zvel + timeStep*9.82f;
+			Zpos = Zpos + timeStep*Zvel; 
+			stepcount ++;
+		} */
 	}
 
 	/** Function to get ballpath position in Z */
 	private float getPathZPos(float velocity, float time) 
 	{
 		float pos = 0;
-
-		pos = (float) (165 - 9.8 * Math.pow(time, 2) + velocity * time / Math.sqrt(2));
-		// Log.d(TAG, "pos " + pos);
+		pos = (float) (165 - 9.82 * Math.pow(time, 2) + velocity * time / Math.sqrt(2));
 
 		return pos;
 	}
@@ -469,19 +466,9 @@ public class GameActivity extends ARViewActivity // implements
     	//coordinates between tower and "slangbella"
 		touchVec = new Vector3d(-(canonGeometry1.getTranslation().getX()-towerGeometry1.getTranslation().getX()),
 									-(canonGeometry1.getTranslation().getY()-towerGeometry1.getTranslation().getY()),
-									canonGeometry1.getTranslation().getZ()-towerGeometry1.getTranslation().getZ());
-		
-        for(int i = 0; i < 10; i++)
-        {
-        	ballPath.get(i).setVisible(true);
-        	ballPathShadow.get(i).setVisible(true);
-        }  
-		
-        drawBallPath(touchVec);
-		
-        int action = event.getActionMasked();      
+									0f);   
 
-        switch(action) {
+        switch(event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:                
                 if(player.superPower == true)
                 	{
@@ -524,7 +511,8 @@ public class GameActivity extends ARViewActivity // implements
         		if(ball != null)
         		{
             		Vector3d pos = player.position;
-        			Vector3d vel = new Vector3d(touchVec.getX()/4, touchVec.getY()/4, (Math.abs(touchVec.getX() + touchVec.getY())/4));
+            		// delat på sqrt(2) == gånger sin(45 grader)
+        			Vector3d vel = new Vector3d(touchVec.getX()/4, touchVec.getY()/4, (float)(Math.abs(touchVec.getX()/4)* Math.sin(Math.PI/4)+ Math.abs(touchVec.getY()/4)*Math.sin(Math.PI/4)));
         			DataPackage data = new DataPackage(ball.id, vel, pos);
         			mService.mConnection.sendData(data);
         			ball.fire(vel, pos);            	
