@@ -1,28 +1,43 @@
 package com.google.sprint1;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.media.MediaScannerConnection;
+import android.media.MediaScannerConnection.OnScanCompletedListener;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.sprint1.NetworkService.LocalBinder;
+//import com.metaio.Example.TutorialInteractiveFurniture.MetaioSDKCallbackHandler;
 import com.metaio.sdk.ARViewActivity;
+import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
+import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
+import com.metaio.sdk.jni.ImageStruct;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
 import com.metaio.tools.io.AssetsManager;
@@ -61,9 +76,14 @@ public class GameActivity extends ARViewActivity // implements
 	PaintBall paint_ball_object;
 	private ArrayList<PaintBall> exsisting_paint_balls;
 	
+	//Gesture handler
+	private GestureHandlerAndroid mGestureHandler;
+	private MetaioSDKCallbackHandler mCallbackHandler;
+	private int mGestureMask;
+
 	Ant ant;
 	private ArrayList<Ant> ants;
-
+	
 	private Vector3d startTouch;
 	private Vector3d currentTouch;
 	private Vector3d endTouch;
@@ -113,6 +133,10 @@ public class GameActivity extends ARViewActivity // implements
 			mBound = false;
 		}
 		super.onDestroy();
+		
+		//Gesture handler
+		mCallbackHandler.delete();
+		mCallbackHandler = null;
 	}
 
 	@Override
@@ -164,6 +188,11 @@ public class GameActivity extends ARViewActivity // implements
 		point = 0;
 
 		scaleStart = 0f;
+		
+		//Gesture handler
+		mGestureMask = GestureHandler.GESTURE_ALL;
+		mCallbackHandler = new MetaioSDKCallbackHandler();
+		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);		
 
 	}
 
@@ -221,27 +250,24 @@ public class GameActivity extends ARViewActivity // implements
 
 			/** Load Object */
 
-			// creates the walls around the game area
-			// wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
-			// geometryProperties(wallGeometry1, 20f, new Vector3d(850f, 0f,
-			// 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
-			// wallGeometry2 = Load3Dmodel("wall/wall.mfbx");
-			// geometryProperties(wallGeometry2, 20f, new Vector3d(-850f, 0f,
-			// 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
-			// wallGeometry3 = Load3Dmodel("wall/wall.mfbx");
-			// geometryProperties(wallGeometry3, 20f, new Vector3d(0f, 720f,
-			// 0f), new Rotation(0f, 0f, 0f));
-			// wallGeometry4 = Load3Dmodel("wall/wall.mfbx");
-			// geometryProperties(wallGeometry4, 20f, new Vector3d(0f, -720f,
-			// 0f), new Rotation(0f, 0f, 0f));
+			//creates the walls around the game area
+//			wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
+//			geometryProperties(wallGeometry1, 20f, new Vector3d(850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
+//			wallGeometry2 = Load3Dmodel("wall/wall.mfbx");
+//			geometryProperties(wallGeometry2, 20f, new Vector3d(-850f, 0f, 0f), new Rotation(0f, 0f, (float) (3*Math.PI/2)));
+//			wallGeometry3 = Load3Dmodel("wall/wall.mfbx");
+//			geometryProperties(wallGeometry3, 20f, new Vector3d(0f, 720f, 0f), new Rotation(0f, 0f, 0f));
+//			wallGeometry4 = Load3Dmodel("wall/wall.mfbx");
+//			geometryProperties(wallGeometry4, 20f, new Vector3d(0f, -720f, 0f), new Rotation(0f, 0f, 0f));	
 
-			// creates the tower
+			//Gesture handler
+			//creates the tower
 			towerGeometry1 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry1, 2f, new Vector3d(-650f, -520f,
-					0f), new Rotation(0f, 0f, 0f));
+			geometryProperties(towerGeometry1, 2f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
+			mGestureHandler.addObject(towerGeometry1, 1);
 			canonGeometry1 = Load3Dmodel("tower/canon.mfbx");
-			geometryProperties(canonGeometry1, 2f, new Vector3d(-650f, -520f,
-					165f), new Rotation(0f, 0f, 0f));
+			geometryProperties(canonGeometry1, 2f, new Vector3d(-650f, -520f, 165f), new Rotation(0f, 0f, 0f));
+			mGestureHandler.addObject(canonGeometry1, 1);
 			towerGeometry2 = Load3Dmodel("tower/tower.mfbx");
 			geometryProperties(towerGeometry2, 2f,
 					new Vector3d(650f, 520f, 0f), new Rotation(0f, 0f, 0f));
@@ -433,86 +459,92 @@ public class GameActivity extends ARViewActivity // implements
 
 	}
 
-	@Override
-	/** Function to handle touch input */
-	public boolean dispatchTouchEvent(MotionEvent event) {
-		int action = event.getActionMasked();
+   /* @Override
+    /** Function to handle touch input *
+    public boolean dispatchTouchEvent(MotionEvent event)
+    {
+        int action = event.getActionMasked();      
 
-		switch (action) {
-		case MotionEvent.ACTION_DOWN:
-			// screen coordinates for first touch
-			startTouch = new Vector3d((event.getX()), event.getY(), 0f);
+        switch(action) {
+            case MotionEvent.ACTION_DOWN:
+            	//screen coordinates for first touch
+                startTouch = new Vector3d((event.getX()), event.getY(), 0f);
 
-			// Log.d(TAG, "startTouch ="+ startTouch);
+                //Log.d(TAG, "startTouch ="+ startTouch);
+                
+                if(player.superPower == true)
+                	{
+                		crosshair.setVisible(true);
+                		
+                	}
+                else if(player.superPower == false)
+                {
+                    //arrowAim.setVisible(true);
+                	//arrowAim.setScale(new Vector3d( 0f, 2f, 2f));
+                	
+                    for(int i = 0; i < 10; i++)
+                    {
+                    	ballPath.get(i).setVisible(true);
+                    	ballPathShadow.get(i).setVisible(true);
+                    }   
+                    
+                }
 
-			if (player.superPower == true) {
-				crosshair.setVisible(true);
+                break;
+            case MotionEvent.ACTION_MOVE:
+            	//gives the coordinates of your finger touch all the time to be able to calculate a crosshair 
+            	currentTouch = new Vector3d(-(event.getX()-startTouch.getX()),
+						  event.getY() -startTouch.getY(),
+						  0f);
+            	
+            	if(player.superPower == true)
+            	{
+                	crosshair.setTranslation(new Vector3d( player.position.getX()+2.2f*currentTouch.getX(),
+							   player.position.getY()+2.2f*currentTouch.getY(),
+							   0f));
 
-			} else if (player.superPower == false) {
-				// arrowAim.setVisible(true);
-				// arrowAim.setScale(new Vector3d( 0f, 2f, 2f));
+            	}
 
-				for (int i = 0; i < 10; i++) {
-					ballPath.get(i).setVisible(true);
-					ballPathShadow.get(i).setVisible(true);
-				}
+            	else if(player.superPower == false)
+            	{
+            		drawBallPath(currentTouch);
 
-			}
+                	//arrowAim.setScale(new Vector3d( Math.abs(currentTouch.getX()+currentTouch.getY())*0.01f, 2f, 2f));
+                	//setArrowRotation(currentTouch);
+            	}
+            	
+            	//Log.d(TAG, "currentTouch = " + currentTouch);
+            
+                break;
+            case MotionEvent.ACTION_UP:
+            	//coordinates for the last touch
+            	endTouch = new Vector3d((event.getX()), event.getY(), 0f);
+            	touchVec = new Vector3d(-(endTouch.getX()-startTouch.getX()),
+            							  endTouch.getY() -startTouch.getY(),
+            							  0f);
+            	crosshair.setVisible(false);
+            	arrowAim.setVisible(false);
+        		for(int i = 0; i < 10; i++)
+        		{
+        			ballPath.get(i).setVisible(false);
+        			ballPathShadow.get(i).setVisible(false);
+        		}
+            	//Log.d(TAG, "endTouch ="+ endTouch);
+            	//Log.d(TAG, "touchVec = " + touchVec);
+            	PaintBall ball = getAvailableBall(1);
+        		if(ball != null)
+        		{
 
-			break;
-		case MotionEvent.ACTION_MOVE:
-			// gives the coordinates of your finger touch all the time to be
-			// able to calculate a crosshair
-			currentTouch = new Vector3d(-(event.getX() - startTouch.getX()),
-					event.getY() - startTouch.getY(), 0f);
-
-			if (player.superPower == true) {
-				crosshair.setTranslation(new Vector3d(player.position.getX()
-						+ 2.2f * currentTouch.getX(), player.position.getY()
-						+ 2.2f * currentTouch.getY(), 0f));
-
-			}
-
-			else if (player.superPower == false) {
-				drawBallPath(currentTouch);
-
-				// arrowAim.setScale(new Vector3d(
-				// Math.abs(currentTouch.getX()+currentTouch.getY())*0.01f, 2f,
-				// 2f));
-				// setArrowRotation(currentTouch);
-			}
-
-			// Log.d(TAG, "currentTouch = " + currentTouch);
-
-			break;
-		case MotionEvent.ACTION_UP:
-			// coordinates for the last touch
-			endTouch = new Vector3d((event.getX()), event.getY(), 0f);
-			touchVec = new Vector3d(-(endTouch.getX() - startTouch.getX()),
-					endTouch.getY() - startTouch.getY(), 0f);
-			crosshair.setVisible(false);
-			arrowAim.setVisible(false);
-			for (int i = 0; i < 10; i++) {
-				ballPath.get(i).setVisible(false);
-				ballPathShadow.get(i).setVisible(false);
-			}
-			// Log.d(TAG, "endTouch ="+ endTouch);
-			// Log.d(TAG, "touchVec = " + touchVec);
-			PaintBall ball = getAvailableBall(1);
-			if (ball != null) {
-
-				ball.geometry.setTranslation(player.position);
-				ball.velocity = new Vector3d(touchVec.getX() / 2,
-						touchVec.getY() / 2, (Math.abs(touchVec.getX()
-								+ touchVec.getY()) / 2));
-				// Log.d(TAG, "vel = " + paint_ball_object.velocity);
-				ball.activate();
-				break;
-			}
-		}
-		return true;
-	}
-
+            		ball.geometry.setTranslation(player.position);
+        			ball.velocity = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
+                	//Log.d(TAG, "vel = " + paint_ball_object.velocity);
+        			ball.activate();
+            	break;
+        		}
+        }
+        return true;
+    }*/
+    
 	/** Function to draw the path of the ball (aim) */
 	private void drawBallPath(Vector3d currentTouch) {
 		float velocity = (Math.abs(currentTouch.getX()) + Math.abs(currentTouch.getY())) / (4f * (float) Math.sqrt(2));
@@ -585,12 +617,41 @@ public class GameActivity extends ARViewActivity // implements
 		// creates a fade between scenes
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 	}
-
-	/** Not used at the moment */
+	
+	//Gesture handler
 	@Override
-	protected IMetaioSDKCallback getMetaioSDKCallbackHandler() {
-		// No callbacks needed
-		return null;
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		super.onTouch(v, event);
+
+		mGestureHandler.onTouch(v, event);
+
+		return true;
+	}
+	
+	//Gesture handler
+	@Override
+	protected IMetaioSDKCallback getMetaioSDKCallbackHandler() 
+	{
+		return mCallbackHandler;
+	}
+	
+	//Gesture handler
+	final class MetaioSDKCallbackHandler extends IMetaioSDKCallback
+	{/*
+		@Override
+		public void onSDKReady()
+		{
+			// show GUI
+			runOnUiThread(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					mGUIView.setVisibility(View.VISIBLE);
+				}
+			});
+		}*/		
 	}
 
 	/** Defines callbacks for service binding, passed to bindService() */
