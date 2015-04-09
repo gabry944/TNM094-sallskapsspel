@@ -74,7 +74,7 @@ public class GameActivity extends ARViewActivity // implements
 	private ArrayList<IGeometry> ballPathShadow; // skuggor till parabelsiktet
 
 	PaintBall paint_ball_object;
-	private ArrayList<PaintBall> exsisting_paint_balls;
+	GameState gameState;
 	
 	//Gesture handler
 	private GestureHandlerAndroid mGestureHandler;
@@ -95,7 +95,6 @@ public class GameActivity extends ARViewActivity // implements
 	// protected FrameLayout frameLayout;
 
 	Player player;
-	// private ArrayList<Player> players;
 
 	// point count
 	protected int point;
@@ -120,8 +119,8 @@ public class GameActivity extends ARViewActivity // implements
 	float SphereMoveX = 2f;
 
 	// FPS specific variables
-	int frameCounter = 0;
-	double lastTime;
+	private int frameCounter = 0;
+	private double lastTime;
 
 	public static final String TAG = "GameActivity";
 
@@ -158,12 +157,15 @@ public class GameActivity extends ARViewActivity // implements
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 
-		//arraylists
-		exsisting_paint_balls = new ArrayList<PaintBall>(20);
-		ants = new ArrayList<Ant>(10);
+		
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);		
+		
+		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
+		
+ants = new ArrayList<Ant>(10);
 		ballPath = new ArrayList<IGeometry>(10);
 		ballPathShadow = new ArrayList<IGeometry>(10);
 
@@ -179,11 +181,14 @@ public class GameActivity extends ARViewActivity // implements
 
 		touchVec = new Vector3d(0f, 0f, 0f);
 		currentTouch = new Vector3d(0f, 0f, 0f);
-		startTouch = new Vector3d(0f, 0f, 0f);
-		endTouch = new Vector3d(0f, 0f, 0f);
-
-		player = new Player(1);
-
+	startTouch =  new Vector3d(0f, 0f, 0f);
+		endTouch =  new Vector3d(0f, 0f, 0f);
+		
+		
+		
+		
+		player = GameState.getState().players.get(1);
+		
 		temp = 20f;
 		point = 0;
 
@@ -333,17 +338,18 @@ public class GameActivity extends ARViewActivity // implements
 			// creates a list of paint balls
 			for (int i = 0; i < 20; i++) {
 				// create new paint ball
-				paint_ball_object = new PaintBall(
-						Load3Dmodel("tower/paintball.obj"),
-						Load3Dmodel("tower/splash.mfbx"),
-						Load3Dmodel("tower/paintballShadow.mfbx"));
-
+				paint_ball_object = new PaintBall(i,Load3Dmodel("tower/paintball.obj"),
+												  Load3Dmodel("tower/splash.mfbx"),
+												  Load3Dmodel("tower/paintballShadow.mfbx"));
+				
 				// add paint ball to list of paint balls
-				exsisting_paint_balls.add(paint_ball_object);
+				GameState.getState().exsisting_paint_balls.add(paint_ball_object);
 			}
 		} catch (Exception e) {
 			MetaioDebug.printStackTrace(Log.ERROR, e);
 		}
+		
+		
 	}
 
 	// function to set the properties for the geometry
@@ -360,9 +366,9 @@ public class GameActivity extends ARViewActivity // implements
 		super.onDrawFrame();
 
 		// If content not loaded yet, do nothing
-
-		if (towerGeometry4 == null || exsisting_paint_balls.isEmpty())
+		if ( towerGeometry4== null || GameState.getState().exsisting_paint_balls.isEmpty())
 			return;
+		
 
 		// Log.d(TAG, "touchVec = "+ touchVec);
 		// antGeometry.setTranslation(touchVec, true);
@@ -371,8 +377,10 @@ public class GameActivity extends ARViewActivity // implements
 		for ( int i = 0; i < 10 ; i++)
 		{
 			if(!ants.get(i).isActive())
+
 			{
 				// if not already spawned, spawn at random 
+				ants.get(i).spawnAnt();
 			}
 			
 			//move ants
@@ -381,8 +389,8 @@ public class GameActivity extends ARViewActivity // implements
 
 		powerUpAnimation(aimPowerUp);
 
-		if (!exsisting_paint_balls.isEmpty()) {
-			for (PaintBall obj : exsisting_paint_balls) {
+		if (!GameState.getState().exsisting_paint_balls.isEmpty()) {
+			for (PaintBall obj : GameState.getState().exsisting_paint_balls) {
 				if (obj.isActive()) {
 					obj.update();
 					
@@ -423,6 +431,7 @@ public class GameActivity extends ARViewActivity // implements
 	}
 
 	public boolean checkCollision(PaintBall obj, IGeometry obj2) {
+
 		Vector3d min = obj2.getBoundingBox(true).getMin();
 		Vector3d max = obj2.getBoundingBox(true).getMax();
 
@@ -535,11 +544,11 @@ public class GameActivity extends ARViewActivity // implements
             	PaintBall ball = getAvailableBall(1);
         		if(ball != null)
         		{
-
-            		ball.geometry.setTranslation(player.position);
-        			ball.velocity = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
-                	//Log.d(TAG, "vel = " + paint_ball_object.velocity);
-        			ball.activate();
+            		Vector3d pos = player.position;
+        			Vector3d vel = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
+        			DataPackage data = new DataPackage(ball.id, vel, pos);
+        			mService.mConnection.sendData(data);
+        			ball.fire(vel, pos);
             	break;
         		}
         }
@@ -585,17 +594,6 @@ public class GameActivity extends ARViewActivity // implements
 
 	}
 
-
-
-	private PaintBall getAvailableBall(int id) {
-		for (PaintBall obj : exsisting_paint_balls) {
-			if (!(obj.geometry.isVisible()))
-				return obj;
-		}
-
-		return null;
-	}
-
 	/** Function for animation on the powerup */
 	private void powerUpAnimation(IGeometry powerUp)
 	{
@@ -610,6 +608,18 @@ public class GameActivity extends ARViewActivity // implements
 		// Log.d(TAG, "scale = " + powerUp.getScale());
 
 	}
+
+    private PaintBall getAvailableBall(int id)
+    {
+    	for(PaintBall obj : GameState.getState().exsisting_paint_balls)
+    	{
+    		if (!(obj.geometry.isVisible()))
+    			return obj;
+    	}
+    	
+    	return null;
+    }
+    
 
 	/** Pause function, makes you return to the main menu when pressing "back" */
 	@Override

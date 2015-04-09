@@ -76,7 +76,7 @@ public class NsdHelper {
 
 			@Override
 			public void onServiceLost(NsdServiceInfo service) {
-				Log.e(TAG, "service lost: " + service.getServiceName());
+				Log.e(TAG, "service lost(service discoovery): " + service.getServiceName());
 
 				Bundle bundle = new Bundle();
 				bundle.putParcelable("lost", service);
