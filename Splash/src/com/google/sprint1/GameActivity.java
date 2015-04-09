@@ -345,6 +345,7 @@ public class GameActivity extends ARViewActivity // implements
 			if(!ants.get(i).isActive())
 			{
 				// if not already spawned, spawn at random 
+				ants.get(i).spawnAnt();
 			}
 			
 			//move ants
