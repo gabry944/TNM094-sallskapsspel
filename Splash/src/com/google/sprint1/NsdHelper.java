@@ -21,14 +21,16 @@ public class NsdHelper {
 	public static final String SERVICE_TYPE = "_http._tcp.";
 	public static final String TAG = "NsdHelper";
 	public static final String SERVICE_NAME = "ARGame";
-
+	
 	public String mServiceName = "";
 
 	public boolean serviceResolved = false;
+	public boolean discoveryReady;
 	NsdServiceInfo mService;
 	
 	/**Constructor */
 	public NsdHelper(Context context, Handler handler) {
+		discoveryReady = false;
 		mContext = context;
 		mUpdateHandler = handler;
 		mNsdManager = (NsdManager) context
@@ -72,6 +74,7 @@ public class NsdHelper {
 					mUpdateHandler.sendMessage(msg);
 
 				}
+				discoveryReady = true;
 			}
 
 			@Override
@@ -185,6 +188,8 @@ public class NsdHelper {
 	
 	/**Stops the service discovery	 */
 	public void stopDiscovery() {
+		Log.d(TAG, "NsdHelper: stop discovery");
+
 		mNsdManager.stopServiceDiscovery(mDiscoveryListener);
 	}
 
@@ -210,5 +215,11 @@ public class NsdHelper {
 		mNsdManager.unregisterService(mRegistrationListener);
 		mNsdManager.stopServiceDiscovery(mDiscoveryListener);
 
+	}
+	
+	public void unregisterService(){
+		Log.d(TAG, "NsdHelper: unregister service");
+
+		mNsdManager.unregisterService(mRegistrationListener);
 	}
 }
