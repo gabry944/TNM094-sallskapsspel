@@ -15,6 +15,8 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import com.metaio.sdk.jni.Vector3d;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -77,8 +79,11 @@ public class MobileConnection {
 			Log.d(TAG, "Not connected to any server. Cannot send message");
 	}
 	
-	public synchronized void updateData(String msg, boolean local) {
+	public synchronized void updateData(DataPackage data, boolean local) {
+		Vector3d vel = new Vector3d(data.velocityX,data.velocityY,data.velocityZ);
+		Vector3d pos = new Vector3d(data.positionX,data.positionY,data.positionZ);
 		
+		GameState.getState().exsisting_paint_balls.get(data.id).fire(vel, pos);
 		//TODO: Send data back to activity using mUpdateHandler.
 		
 	}
@@ -140,12 +145,15 @@ public class MobileConnection {
 
 		private Thread mSendThread;
 		private Thread mRecThread;
+		
+		ObjectOutputStream outStream;
 
 		public GameClient(InetAddress address, int port) {
 			Log.d(CLIENT_TAG, "Creating GameClient");
 			this.mAddress = address;
 			this.PORT = port;
 
+			
 			mSendThread = new Thread(new SendingThread());
 			mSendThread.start();
 		}
@@ -162,7 +170,7 @@ public class MobileConnection {
 					if (getSocket() == null) {
 						setSocket(new Socket(mAddress, PORT));
 						Log.d(CLIENT_TAG, "Client-side socket initialized.");
-
+						outStream = new ObjectOutputStream(getSocket().getOutputStream());
 					} else {
 						Log.d(CLIENT_TAG,
 								"Socket already initialized. skipping!");
@@ -196,12 +204,12 @@ public class MobileConnection {
 					while (!Thread.currentThread().isInterrupted()) {
 						//Loop that reads data from the stream. Currently just converts object to String and sends them along. 
 						
-						String messageStr = null;
-						messageStr = input.readObject().toString();
-						
-						if (messageStr != null) {
-							Log.d(CLIENT_TAG, "Read from the stream: " + messageStr);
-							updateData(messageStr, false);
+						Object readData = null;
+						readData = input.readObject();
+						if (readData instanceof DataPackage) {
+							Log.d(CLIENT_TAG, "Read from the stream: " + readData);
+							DataPackage data = (DataPackage)readData;
+							updateData(data, false);
 						} else {
 							break;
 						}
@@ -230,8 +238,6 @@ public class MobileConnection {
 					Log.d(CLIENT_TAG, "Socket output stream is null, wtf?");
 				}
 
-				ObjectOutputStream outStream = null;
-				outStream = new ObjectOutputStream(socket.getOutputStream());
 				outStream.writeObject(obj);
 				
 			} catch (UnknownHostException e) {

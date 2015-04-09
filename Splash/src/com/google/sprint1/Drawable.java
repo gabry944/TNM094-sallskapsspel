@@ -20,6 +20,7 @@ public class Drawable {
 	public Vector3d velocity;
 	
 	public Drawable(){
+		
 	}
 	
 	//function to set the properties for the geometry
