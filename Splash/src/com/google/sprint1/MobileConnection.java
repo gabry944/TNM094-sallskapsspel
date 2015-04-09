@@ -147,6 +147,7 @@ public class MobileConnection {
 		private Thread mRecThread;
 		
 		ObjectOutputStream outStream;
+		ObjectInputStream inStream;
 
 		public GameClient(InetAddress address, int port) {
 			Log.d(CLIENT_TAG, "Creating GameClient");
@@ -171,6 +172,7 @@ public class MobileConnection {
 						setSocket(new Socket(mAddress, PORT));
 						Log.d(CLIENT_TAG, "Client-side socket initialized.");
 						outStream = new ObjectOutputStream(getSocket().getOutputStream());
+						inStream = new ObjectInputStream(getSocket().getInputStream());
 					} else {
 						Log.d(CLIENT_TAG,
 								"Socket already initialized. skipping!");
@@ -199,13 +201,11 @@ public class MobileConnection {
 				ObjectInputStream input;
 				try {
 					
-					input = new ObjectInputStream(getSocket().getInputStream());
-					
 					while (!Thread.currentThread().isInterrupted()) {
 						//Loop that reads data from the stream. Currently just converts object to String and sends them along. 
 						
 						Object readData = null;
-						readData = input.readObject();
+						readData = inStream.readObject();
 						if (readData instanceof DataPackage) {
 							Log.d(CLIENT_TAG, "Read from the stream: " + readData);
 							DataPackage data = (DataPackage)readData;
@@ -214,7 +214,7 @@ public class MobileConnection {
 							break;
 						}
 					}
-					input.close();
+					inStream.close();
 
 				} catch (IOException e) {
 					Log.e(CLIENT_TAG, "Server loop error: ", e);

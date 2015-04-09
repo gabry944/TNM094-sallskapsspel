@@ -54,7 +54,6 @@ public class GameActivity extends ARViewActivity // implements
 	private ArrayList<IGeometry> ballPath; // lista med bollar som visar parabeln för den flygande färgbollen
 	private ArrayList<IGeometry> ballPathShadow; // skuggor till parabelsiktet
 
-	PaintBall paint_ball_object;
 	GameState gameState;
 	
 	//Gesture handler
@@ -63,7 +62,6 @@ public class GameActivity extends ARViewActivity // implements
 	private int mGestureMask;
 
 	Ant ant;
-	private ArrayList<Ant> ants;
 	
 	private Vector3d touchVec; // endTouch-startTouch
 
@@ -72,14 +70,6 @@ public class GameActivity extends ARViewActivity // implements
 	// point count
 	protected int point;
 	TextView displayPoints;
-
-	// Variables for physics calibration
-	Vector3d acceleration;
-	Vector3d velocity;
-	Vector3d totalForce;
-	Vector3d gravity;
-	float timeStep;
-	float mass;
 
 	float temp;
 	float scaleStart; // skalning av pilen för siktet
@@ -132,22 +122,15 @@ public class GameActivity extends ARViewActivity // implements
 		super.onCreate(savedInstanceState);		
 		
 		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
+		GameState.getState().ants = new ArrayList<Ant>(10);
 		
-		ants = new ArrayList<Ant>(10);
 		ballPath = new ArrayList<IGeometry>(10);
 		ballPathShadow = new ArrayList<IGeometry>(10);
 
 		// displayPoints = (TextView) findViewById(R.id.myPoints);
 
-		// velocity and direction of outgoing paintball
-		acceleration = new Vector3d(0f, 0f, 0f);
-		velocity = new Vector3d(0f, 0f, 0f);
-		totalForce = new Vector3d(0f, 0f, 0f);
-		gravity = new Vector3d(0f, 0f, -9.82f);
-		timeStep = 0.2f; // 0.1s
-		mass = 0.1f; // 0.1kg
+		touchVec = new Vector3d(0f, 0f, 0f);
 
-		touchVec = new Vector3d(0f, 0f, 0f);		
 		
 		player = GameState.getState().players.get(1);
 		
@@ -282,18 +265,16 @@ public class GameActivity extends ARViewActivity // implements
 			{
 				// create ant geometry
 				ant = new Ant(Load3Dmodel("ant/formicaRufa.mfbx"));
-				ants.add(ant);
+				GameState.getState().ants.add(ant);
 			}
 			
 			// creates a list of paint balls
 			for (int i = 0; i < 20; i++) {
-				// create new paint ball
-				paint_ball_object = new PaintBall(i,Load3Dmodel("tower/paintball.obj"),
-												  Load3Dmodel("tower/splash.mfbx"),
-												  Load3Dmodel("tower/paintballShadow.mfbx"));
-				
 				// add paint ball to list of paint balls
-				GameState.getState().exsisting_paint_balls.add(paint_ball_object);
+				GameState.getState().exsisting_paint_balls.add(
+						new PaintBall(i,Load3Dmodel("tower/paintball.obj"),
+									  Load3Dmodel("tower/splash.mfbx"),
+									  Load3Dmodel("tower/paintballShadow.mfbx")));
 			}
 		} catch (Exception e) {
 			MetaioDebug.printStackTrace(Log.ERROR, e);
@@ -326,15 +307,15 @@ public class GameActivity extends ARViewActivity // implements
 		//spawn ant at random and move ants
 		for ( int i = 0; i < 10 ; i++)
 		{
-			if(!ants.get(i).isActive())
+			if(!GameState.getState().ants.get(i).isActive())
 
 			{
 				// if not already spawned, spawn at random 
-				ants.get(i).spawnAnt();
+				GameState.getState().ants.get(i).spawnAnt();
 			}
 			
 			//move ants
-			ants.get(i).movement();
+			GameState.getState().ants.get(i).movement();
 		}
 
 		powerUpAnimation(aimPowerUp);
@@ -346,8 +327,8 @@ public class GameActivity extends ARViewActivity // implements
 					
 					for(int i = 0; i < 10 ; i++)
 					{
-						if (checkCollision(obj, ants.get(i).ant)) {
-							 ants.get(i).ant.setRotation(new Rotation(
+						if (checkCollision(obj, GameState.getState().ants.get(i).ant)) {
+							 GameState.getState().ants.get(i).ant.setRotation(new Rotation(
 									(float) (3 * Math.PI / 4), 0f, 0f), true);
 							obj.splashGeometry.setTranslation(obj.geometry
 									.getTranslation());
