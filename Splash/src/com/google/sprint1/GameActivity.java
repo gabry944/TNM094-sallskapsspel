@@ -325,33 +325,12 @@ public class GameActivity extends ARViewActivity // implements
 				if (obj.isActive()) {
 					obj.update();
 					
-					for(int i = 0; i < 10 ; i++)
-					{
-						if (checkCollision(obj, GameState.getState().ants.get(i).ant)) {
-							 GameState.getState().ants.get(i).ant.setRotation(new Rotation(
-									(float) (3 * Math.PI / 4), 0f, 0f), true);
-							obj.splashGeometry.setTranslation(obj.geometry
-									.getTranslation());
-							obj.splashGeometry.setVisible(true);
-							obj.velocity = new Vector3d(0f, 0f, 0f);
-							obj.geometry.setVisible(false);
-							obj.paintballShadow.setVisible(false);
-							point++;
-							
-							// displayPoints =
-							// (TextView)findViewById(R.id.myPoints);
-							// displayPoints.setText("Ponts:" + point);
-							// displayPoints =
-							// (TextView)findViewById(R.id.editText1);
-							// (TextView)findViewById(R.id.editText1).setText("Ponts:"
-							// + point);
-						}
-					}
-
+					
+					/*
 					if (checkCollision(obj, aimPowerUp)) {
 						player.superPower = true;
 						aimPowerUp.setVisible(false);
-					}
+					}*/
 				}
 			}
 		}
@@ -359,35 +338,6 @@ public class GameActivity extends ARViewActivity // implements
 
 		updateFps();
 
-	}
-
-	public boolean checkCollision(PaintBall obj, IGeometry obj2) {
-
-		Vector3d min = obj2.getBoundingBox(true).getMin();
-		Vector3d max = obj2.getBoundingBox(true).getMax();
-
-		if (obj.geometry.getTranslation().getX()
-				+ obj.geometry.getBoundingBox().getMax().getX() > obj2
-				.getTranslation().getX() + 2 * min.getX() - 100
-				&& obj.geometry.getTranslation().getX()
-						+ obj.geometry.getBoundingBox().getMin().getX() < obj2
-						.getTranslation().getX() + 2 * max.getX() + 100
-				&& obj.geometry.getTranslation().getY()
-						+ obj.geometry.getBoundingBox().getMax().getY() > obj2
-						.getTranslation().getY() + 2 * min.getY() - 100
-				&& obj.geometry.getTranslation().getY()
-						+ obj.geometry.getBoundingBox().getMin().getY() < obj2
-						.getTranslation().getY() + 2 * max.getY() + 100
-				&& obj.geometry.getTranslation().getZ()
-						+ obj.geometry.getBoundingBox().getMax().getZ() > obj2
-						.getTranslation().getZ() + 2 * min.getZ() - 100
-				&& obj.geometry.getTranslation().getZ()
-						+ obj.geometry.getBoundingBox().getMin().getZ() < obj2
-						.getTranslation().getZ() + 2 * max.getZ() + 100)
-
-			return true;
-		else
-			return false;
 	}
 
 	/** function that activates when an object is being touched */

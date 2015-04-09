@@ -1,18 +1,8 @@
 package com.google.sprint1;
 
-import java.io.File;
-
-import android.app.Activity;
-import android.util.Log;
-
-import com.metaio.sdk.ARViewActivity;
-import com.metaio.sdk.MetaioDebug;
 import com.metaio.sdk.jni.IGeometry;
-import com.metaio.sdk.jni.IMetaioSDK;
-import com.metaio.sdk.jni.IMetaioSDKCallback;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
-import com.metaio.tools.io.AssetsManager;
 
 
 public class Drawable {

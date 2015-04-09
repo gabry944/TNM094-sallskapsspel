@@ -1,18 +1,8 @@
 package com.google.sprint1;
 
-
-import java.io.Serializable;
-
-import android.app.Activity;
-import android.util.Log;
-
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
-import com.metaio.sdk.ARViewActivity;
-import com.metaio.sdk.MetaioDebug;
-import com.metaio.sdk.jni.IMetaioSDKCallback;
-import com.metaio.tools.io.AssetsManager;
 
 public class PaintBall extends Drawable 
 {
@@ -53,13 +43,17 @@ public class PaintBall extends Drawable
 		// checks for collision with ground 	
 		if(geometry.getTranslation().getZ() <= 0f)
 		{	
-			splashGeometry.setTranslation(geometry.getTranslation());
-			velocity = new Vector3d(0.0f, 0.0f, 0.0f);
-			geometry.setTranslation(new Vector3d(0f,0f,0f));
-			splashGeometry.setVisible(true);
-			velocity = new Vector3d(0f, 0f, 0f);
 			disable();
-			
+		}
+		
+		//Check for collision with ants
+		for(int i = 0; i < 10 ; i++)
+		{
+			if (checkCollision(GameState.getState().ants.get(i).ant)) { 
+				GameState.getState().ants.get(i).ant.setRotation(new Rotation(
+						(float) (3 * Math.PI / 4), 0f, 0f), true);
+				disable();
+			}
 		}
 	}
 	
@@ -80,6 +74,10 @@ public class PaintBall extends Drawable
 	
 	/** Disable the ball */
 	public void disable(){
+		splashGeometry.setTranslation(geometry.getTranslation());
+		velocity = new Vector3d(0.0f, 0.0f, 0.0f);
+		geometry.setTranslation(new Vector3d(0f,0f,0f));
+		splashGeometry.setVisible(true);
 		geometry.setVisible(false);
 		paintballShadow.setVisible(false);
 		isActive = false;
@@ -118,6 +116,35 @@ public class PaintBall extends Drawable
 		// move object to the new position
 		geometry.setTranslation(position);
 		//object.setTranslation(object.getTranslation().add(velocity*timeStep));
+	}
+	
+	private boolean checkCollision(IGeometry obj) {
+
+		Vector3d min = obj.getBoundingBox(true).getMin();
+		Vector3d max = obj.getBoundingBox(true).getMax();
+
+		if (geometry.getTranslation().getX()
+				+ geometry.getBoundingBox().getMax().getX() > obj
+				.getTranslation().getX() + 2 * min.getX() - 100
+				&& geometry.getTranslation().getX()
+						+ geometry.getBoundingBox().getMin().getX() < obj
+						.getTranslation().getX() + 2 * max.getX() + 100
+				&& geometry.getTranslation().getY()
+						+ geometry.getBoundingBox().getMax().getY() > obj
+						.getTranslation().getY() + 2 * min.getY() - 100
+				&& geometry.getTranslation().getY()
+						+ geometry.getBoundingBox().getMin().getY() < obj
+						.getTranslation().getY() + 2 * max.getY() + 100
+				&& geometry.getTranslation().getZ()
+						+ geometry.getBoundingBox().getMax().getZ() > obj
+						.getTranslation().getZ() + 2 * min.getZ() - 100
+				&& geometry.getTranslation().getZ()
+						+ geometry.getBoundingBox().getMin().getZ() < obj
+						.getTranslation().getZ() + 2 * max.getZ() + 100)
+
+			return true;
+		else
+			return false;
 	}
 	
 	public String toString(){

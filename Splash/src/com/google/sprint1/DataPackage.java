@@ -5,13 +5,16 @@ import java.io.Serializable;
 import com.metaio.sdk.jni.Vector3d;
 
 enum DataType {
-	PAINTBALL,
-	
+	BALL_FIRED,
+	ANT_HIT,
 };
 
 public class DataPackage implements Serializable{
 	
-	//DataType type = DataType.PAINTBALL;
+	public static final char BALL_FIRED = 'A';
+	public static final char ANT_HIT = 'B';
+	
+	char message;
 	int id;
 	float velocityX;
 	float velocityY;
