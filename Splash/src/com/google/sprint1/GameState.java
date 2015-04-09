@@ -9,6 +9,7 @@ public class GameState {
 	
 	public ArrayList<PaintBall> exsisting_paint_balls;
 	public ArrayList<Player> players;
+	public ArrayList<Ant> ants;
 	
 	protected GameState() {
 		
@@ -22,6 +23,7 @@ public class GameState {
 		return instance;
 	}
 	
+	/** Initialize the Game State, currently called the first time getState is called*/
 	private void init(){
 		players = new ArrayList<Player>();
 		players.add(new Player(1));
