@@ -10,20 +10,25 @@ public class Ant extends Drawable
 {
 	public static final String ANT = "AntActivity";
 	public IGeometry ant;
+	public boolean isHit;
 	float angDiffLimit = 3f;
 	float speed = 10f;
+	public Vector3d diffVec;
 	
-	
-	public Ant(IGeometry geo) {
+	/** constructor ant */
+	public Ant(IGeometry geo, boolean hit) {
 		super();
 		ant = geo;
+		isHit = hit;
 		setGeometryProperties(ant, 4f, new Vector3d(0f, 0f, 0f), new Rotation((float)(Math.PI*3/2), 0f, 0f)); 
 		ant.setVisible(false);
+		diffVec = new Vector3d(0f, 0f, 0f);
 	}
 	
+	/** function to spawn the ants at random time and random position */
 	public void spawnAnt()
 	{
-		if(randBetween(1, 500) == 10)
+		if(randBetween(1, 100) == 10)
 		{
 			//spawn ant at random
 			ant.setVisible(true);
@@ -32,7 +37,8 @@ public class Ant extends Drawable
 		
 	}
 	
-	public float movement()
+	/** Function to generate movement to the ants */
+	public void movement()
 	{
 
 		// new angle in radians 
@@ -48,9 +54,20 @@ public class Ant extends Drawable
 		//random movement of the ant until being hit 
 		ant.setTranslation(movement);
 		ant.setRotation(new Rotation((float)(Math.PI*3/2), angle * (float)(Math.PI/180), 0f));
-		return angle;
+
 	}
 	
+	/** Makes the ant go to the tower owned by the player who hit the ant */
+	public void movementToTower(Vector3d pos)
+	{
+		diffVec = pos.subtract(ant.getTranslation());
+		ant.setTranslation(ant.getTranslation().add(diffVec.getNormalized()).multiply(speed));
+		
+//		ant.setTranslation(new Vector3d(0f, 0f, 0f)); //test
+	}
+	
+	
+	/** function to see if ant is active = visible */
 	public boolean isActive()
 	{
 		//is the ant already spawned
@@ -60,6 +77,8 @@ public class Ant extends Drawable
 			return false;
 	}
 	
+	
+	/** calculate a random number between arg start and arg end */
 	public static float randBetween(float start, float end)
 	{
 		return (float)(start + (int)Math.round(Math.random()* (end - start)));

@@ -1,13 +1,13 @@
 package com.google.sprint1;
 
-<<<<<<< Updated upstream
-=======
+
 import java.io.Serializable;
 
 import android.app.Activity;
 import android.util.Log;
 
->>>>>>> Stashed changes
+
+
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
@@ -54,12 +54,14 @@ public class PaintBall extends Drawable
 			disable();
 		}
 		
+		
 		//Check for collision with ants
 		for(int i = 0; i < 10 ; i++)
 		{
 			if (checkCollision(GameState.getState().ants.get(i).ant)) { 
-				GameState.getState().ants.get(i).ant.setRotation(new Rotation(
-						(float) (3 * Math.PI / 4), 0f, 0f), true);
+				GameState.getState().ants.get(i).ant.setRotation(new Rotation( (float) (3 * Math.PI / 4), 0f, 0f), true);
+				
+				GameState.getState().ants.get(i).isHit = true;
 				disable();
 			}
 		}

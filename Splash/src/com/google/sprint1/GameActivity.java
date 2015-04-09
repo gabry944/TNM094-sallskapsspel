@@ -17,7 +17,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.google.sprint1.NetworkService.LocalBinder;
-
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
@@ -279,7 +278,7 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < 10; i++)
 			{
 				// create ant geometry
-				ant = new Ant(Load3Dmodel("ant/formicaRufa.mfbx"));
+				ant = new Ant(Load3Dmodel("ant/formicaRufa.mfbx"), false);
 				GameState.getState().ants.add(ant);
 			}
 			
@@ -314,7 +313,6 @@ public class GameActivity extends ARViewActivity // implements
 		// If content not loaded yet, do nothing
 		if ( towerGeometry4== null || GameState.getState().exsisting_paint_balls.isEmpty())
 			return;
-		
 
 		//spawn ant at random and move ants
 		for ( int i = 0; i < 10 ; i++)
@@ -326,11 +324,17 @@ public class GameActivity extends ARViewActivity // implements
 				GameState.getState().ants.get(i).spawnAnt();
 			}
 			
-			//move ants
-			GameState.getState().ants.get(i).movement();			
+			
+			//if ant is hit move to tower else move at random 
+			if(GameState.getState().ants.get(i).isHit == true)
+			{
+				GameState.getState().ants.get(i).movementToTower(new Vector3d(300f, 0f, 0f)); // TODO insert the player tower position
+			}
+			else
+				GameState.getState().ants.get(i).movement();			
 
 		}
-
+		
 		powerUpAnimation(aimPowerUp);
 
 		if (!GameState.getState().exsisting_paint_balls.isEmpty()) {
@@ -338,7 +342,6 @@ public class GameActivity extends ARViewActivity // implements
 				if (obj.isActive()) {
 					obj.update();
 					
-
 					
 					/*
 
