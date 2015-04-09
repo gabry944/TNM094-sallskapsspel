@@ -36,8 +36,7 @@ public class GameActivity extends ARViewActivity // implements
 													// OnGesturePerformedListener
 {
 	/* Variables for objects in the game */
-	private IGeometry antGeometry1;
-	private IGeometry antGeometry2;
+
 	// private IGeometry wallGeometry1;
 	// private IGeometry wallGeometry2;
 	// private IGeometry wallGeometry3;
@@ -56,13 +55,14 @@ public class GameActivity extends ARViewActivity // implements
 
 	private IGeometry ball;
 	private IGeometry ballShadow;
-	private ArrayList<IGeometry> ballPath; // lista med bollar som visar
-											// parabeln för den flygande
-											// färgbollen
+	private ArrayList<IGeometry> ballPath; // lista med bollar som visar parabeln för den flygande färgbollen
 	private ArrayList<IGeometry> ballPathShadow; // skuggor till parabelsiktet
 
 	PaintBall paint_ball_object;
 	private ArrayList<PaintBall> exsisting_paint_balls;
+	
+	Ant ant;
+	private ArrayList<Ant> ants;
 
 	private Vector3d startTouch;
 	private Vector3d currentTouch;
@@ -137,7 +137,9 @@ public class GameActivity extends ARViewActivity // implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		//arraylists
 		exsisting_paint_balls = new ArrayList<PaintBall>(20);
+		ants = new ArrayList<Ant>(10);
 		ballPath = new ArrayList<IGeometry>(10);
 		ballPathShadow = new ArrayList<IGeometry>(10);
 
@@ -220,14 +222,6 @@ public class GameActivity extends ARViewActivity // implements
 
 			/** Load Object */
 
-			// create ant geometry
-			antGeometry1 = Load3Dmodel("ant/formicaRufa.mfbx");
-			geometryProperties(antGeometry1, 10f, new Vector3d(-100.0f, 100.0f,
-					0.0f), new Rotation(0f, 0f, 0f));
-			antGeometry2 = Load3Dmodel("ant/formicaRufa.mfbx");
-			geometryProperties(antGeometry2, 10f, new Vector3d(100.0f, -100.0f,
-					0.0f), new Rotation(0f, 0f, 0f));
-
 			// creates the walls around the game area
 			// wallGeometry1 = Load3Dmodel("wall/wall.mfbx");
 			// geometryProperties(wallGeometry1, 20f, new Vector3d(850f, 0f,
@@ -300,7 +294,15 @@ public class GameActivity extends ARViewActivity // implements
 				ballShadow.setVisible(false);
 
 			}
-
+			
+			// creates a list of ants 
+			for(int i = 0; i < 10; i++)
+			{
+				// create ant geometry
+				ant = new Ant(Load3Dmodel("ant/formicaRufa.mfbx"));
+				ants.add(ant);
+			}
+			
 			// creates a list of paint balls
 			for (int i = 0; i < 20; i++) {
 				// create new paint ball
@@ -338,52 +340,46 @@ public class GameActivity extends ARViewActivity // implements
 		// Log.d(TAG, "touchVec = "+ touchVec);
 		// antGeometry.setTranslation(touchVec, true);
 
-		// move ant
-		if (antGeometry1.getTranslation().getX() < -350f)
-			temp = 2f;
-		else if (antGeometry1.getTranslation().getX() > 350f)
-			temp = -2f;
+		//spawn ant at random and move ants
+		for ( int i = 0; i < 10 ; i++)
+		{
+			if(!ants.get(i).isActive())
+			{
+				// if not already spawned, spawn at random 
+			}
+			
+			//move ants
+			ants.get(i).movement();
+		}
 
 		powerUpAnimation(aimPowerUp);
-
-		antGeometry1.setTranslation(new Vector3d(temp, temp, 0.0f), true);
-		antGeometry2.setTranslation(new Vector3d(-temp, -temp, 0.0f), true);
 
 		if (!exsisting_paint_balls.isEmpty()) {
 			for (PaintBall obj : exsisting_paint_balls) {
 				if (obj.isActive()) {
 					obj.update();
-
-					if (checkCollision(obj, antGeometry1)) {
-						antGeometry1.setRotation(new Rotation(
-								(float) (3 * Math.PI / 4), 0f, 0f), true);
-						obj.splashGeometry.setTranslation(obj.geometry
-								.getTranslation());
-						obj.splashGeometry.setVisible(true);
-						obj.velocity = new Vector3d(0f, 0f, 0f);
-						obj.geometry.setVisible(false);
-						obj.paintballShadow.setVisible(false);
-						point++;
-						// displayPoints =
-						// (TextView)findViewById(R.id.myPoints);
-						// displayPoints.setText("Ponts:" + point);
-						// displayPoints =
-						// (TextView)findViewById(R.id.editText1);
-						// (TextView)findViewById(R.id.editText1).setText("Ponts:"
-						// + point);
-					}
-
-					if (checkCollision(obj, antGeometry2)) {
-						antGeometry2.setRotation(new Rotation(
-								(float) (3 * Math.PI / 4), 0f, 0f), true);
-						obj.splashGeometry.setTranslation(obj.geometry
-								.getTranslation());
-						obj.splashGeometry.setVisible(true);
-						obj.velocity = new Vector3d(0f, 0f, 0f);
-						obj.geometry.setVisible(false);
-						obj.paintballShadow.setVisible(false);
-
-						point++;
+					
+					for(int i = 0; i < 10 ; i++)
+					{
+						if (checkCollision(obj, ants.get(i).ant)) {
+							 ants.get(i).ant.setRotation(new Rotation(
+									(float) (3 * Math.PI / 4), 0f, 0f), true);
+							obj.splashGeometry.setTranslation(obj.geometry
+									.getTranslation());
+							obj.splashGeometry.setVisible(true);
+							obj.velocity = new Vector3d(0f, 0f, 0f);
+							obj.geometry.setVisible(false);
+							obj.paintballShadow.setVisible(false);
+							point++;
+							
+							// displayPoints =
+							// (TextView)findViewById(R.id.myPoints);
+							// displayPoints.setText("Ponts:" + point);
+							// displayPoints =
+							// (TextView)findViewById(R.id.editText1);
+							// (TextView)findViewById(R.id.editText1).setText("Ponts:"
+							// + point);
+						}
 					}
 
 					if (checkCollision(obj, aimPowerUp)) {
@@ -519,35 +515,28 @@ public class GameActivity extends ARViewActivity // implements
 
 	/** Function to draw the path of the ball (aim) */
 	private void drawBallPath(Vector3d currentTouch) {
-		float velocity = (Math.abs(currentTouch.getX()) + Math.abs(currentTouch
-				.getY())) / (4f * (float) Math.sqrt(2));
-		float timeToLanding = (float) (velocity
-				/ (2 * (float) Math.sqrt(2) * 9.8f) + Math.sqrt(Math.pow(
-				velocity / (2 * Math.sqrt(2) * 9.8), 2) + 165 / 9.8));
+		float velocity = (Math.abs(currentTouch.getX()) + Math.abs(currentTouch.getY())) / (4f * (float) Math.sqrt(2));
+		float timeToLanding = (float) (velocity / (2 * (float) Math.sqrt(2) * 9.8f) + Math.sqrt(Math.pow( velocity / (2 * Math.sqrt(2) * 9.8), 2) + 165 / 9.8));
 		// Log.d(TAG, "time to landing : " + timeToLanding);
 
 		for (int i = 0; i < 10; i++) {
-			ballPath.get(i).setTranslation(
-					new Vector3d(player.position.getX()
-							+ (float) ((double) (i) / 5) * currentTouch.getX(),
-							player.position.getY() + (float) ((double) (i) / 5)
-									* currentTouch.getY(), getPathZPos(
-									velocity, (i * timeToLanding / 10))));
+			ballPath.get(i).setTranslation( new Vector3d(player.position.getX() + (float) ((double) (i) / 5) * currentTouch.getX(),
+														 player.position.getY() + (float) ((double) (i) / 5) * currentTouch.getY(),
+														 getPathZPos( velocity, (i * timeToLanding / 10))));
 
-			ballPathShadow.get(i).setTranslation(
-					new Vector3d(player.position.getX()
-							+ (float) ((double) (i) / 5) * currentTouch.getX(),
-							player.position.getY() + (float) ((double) (i) / 5)
-									* currentTouch.getY(), 0f));
+			ballPathShadow.get(i).setTranslation( new Vector3d(player.position.getX() + (float) ((double) (i) / 5) * currentTouch.getX(),
+															   player.position.getY() + (float) ((double) (i) / 5) * currentTouch.getY(),
+															   0f));
 		}
 
 	}
 
-	private float getPathZPos(float velocity, float time) {
+	/** Function to get ballpath position in Z */
+	private float getPathZPos(float velocity, float time) 
+	{
 		float pos = 0;
 
-		pos = (float) (165 - 9.8 * Math.pow(time, 2) + velocity * time
-				/ Math.sqrt(2));
+		pos = (float) (165 - 9.8 * Math.pow(time, 2) + velocity * time / Math.sqrt(2));
 		// Log.d(TAG, "pos " + pos);
 
 		return pos;
@@ -563,7 +552,7 @@ public class GameActivity extends ARViewActivity // implements
 
 	}
 
-	/** Function for animation on the powerup */
+
 
 	private PaintBall getAvailableBall(int id) {
 		for (PaintBall obj : exsisting_paint_balls) {
@@ -574,12 +563,9 @@ public class GameActivity extends ARViewActivity // implements
 		return null;
 	}
 
-	private void powerUpAnimation(IGeometry powerUp) {
-		// powerUp.setRotation(new
-		// Rotation(powerUp.getRotation().getEulerAngleRadians().getX() + 0.1f,
-		// powerUp.getRotation().getEulerAngleRadians().getY() + 0.1f,
-		// powerUp.getRotation().getEulerAngleRadians().getZ() + 0.1f));
-
+	/** Function for animation on the powerup */
+	private void powerUpAnimation(IGeometry powerUp)
+	{
 		if (powerUp.getScale().getX() > 2.0f) {
 			scaleStart = -0.02f;
 		}
