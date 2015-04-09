@@ -21,12 +21,12 @@ public class PaintBall extends Drawable implements Serializable
 	public IGeometry geometry; 
 	public IGeometry splashGeometry;
 	public IGeometry paintballShadow;
-	public int ownerID;
+	public int id;
 	public boolean isActive;
 
 	public PaintBall(int id, IGeometry geo, IGeometry splGeo, IGeometry pbShad) {
 		super();
-		ownerID = id;
+		this.id = id;
 		geometry = geo;
 		splashGeometry = splGeo;
 		paintballShadow = pbShad;
@@ -69,8 +69,10 @@ public class PaintBall extends Drawable implements Serializable
 		return isActive;
 	}
 	
-	/** Activate the ball */
-	public void activate(){
+	/** Fire the ball */
+	public void fire(Vector3d vel, Vector3d pos){
+		geometry.setTranslation(pos);
+		velocity = vel;
 		geometry.setVisible(true);
 		paintballShadow.setVisible(true);
 		isActive = true;
@@ -119,6 +121,6 @@ public class PaintBall extends Drawable implements Serializable
 	}
 	
 	public String toString(){
-		return ("Paintball: Player " + ownerID +". Position: " + geometry.getTranslation());
+		return ("Paintball: Player " + id +". Position: " + geometry.getTranslation());
 	}
 }	

@@ -77,8 +77,9 @@ public class MobileConnection {
 			Log.d(TAG, "Not connected to any server. Cannot send message");
 	}
 	
-	public synchronized void updateData(String msg, boolean local) {
-		
+	public synchronized void updateData(DataPackage data, boolean local) {
+	
+		GameState.getState().exsisting_paint_balls.get(data.id).fire(data.velocity, data.position);
 		//TODO: Send data back to activity using mUpdateHandler.
 		
 	}
@@ -196,12 +197,12 @@ public class MobileConnection {
 					while (!Thread.currentThread().isInterrupted()) {
 						//Loop that reads data from the stream. Currently just converts object to String and sends them along. 
 						
-						String messageStr = null;
-						messageStr = input.readObject().toString();
-						
-						if (messageStr != null) {
-							Log.d(CLIENT_TAG, "Read from the stream: " + messageStr);
-							updateData(messageStr, false);
+						Object readData = null;
+						readData = input.readObject();
+						if (readData instanceof DataPackage) {
+							Log.d(CLIENT_TAG, "Read from the stream: " + readData);
+							DataPackage data = (DataPackage)readData;
+							updateData(data, false);
 						} else {
 							break;
 						}

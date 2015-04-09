@@ -59,7 +59,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	private ArrayList<IGeometry> ballPathShadow;  // skuggor till parabelsiktet
 	
 	PaintBall paint_ball_object;
-	private ArrayList<PaintBall> exsisting_paint_balls;
+	GameState gameState;
 	
 	SendDataThread sendDataThread;
 	
@@ -75,7 +75,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
    // protected FrameLayout frameLayout;
 
 	Player player;
-	//private ArrayList<Player> players;
+	private ArrayList<Player> players;
 	
 	// point count
     protected int point; 
@@ -138,7 +138,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	{
 		super.onCreate(savedInstanceState);		
 		
-		exsisting_paint_balls = new ArrayList<PaintBall>(20);
+		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		ballPath = new ArrayList<IGeometry>(10);
 		ballPathShadow = new ArrayList<IGeometry>(10);
 
@@ -157,7 +157,10 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		startTouch =  new Vector3d(0f, 0f, 0f);
 		endTouch =  new Vector3d(0f, 0f, 0f);
 		
-		player = new Player(1);
+		
+		
+		
+		player = GameState.getState().players.get(1);
 		
 		temp = 20f;
 		point = 0;
@@ -292,12 +295,12 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			for(int i = 0; i < 20; i++)
 			{
 				// create new paint ball
-				paint_ball_object = new PaintBall(1,Load3Dmodel("tower/paintball.obj"),
+				paint_ball_object = new PaintBall(i,Load3Dmodel("tower/paintball.obj"),
 												  Load3Dmodel("tower/splash.mfbx"),
 												  Load3Dmodel("tower/paintballShadow.mfbx"));
 				
 				// add paint ball to list of paint balls
-				exsisting_paint_balls.add(paint_ball_object);
+				GameState.getState().exsisting_paint_balls.add(paint_ball_object);
 			}
 		}
 		catch (Exception e)
@@ -326,11 +329,11 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		
 		// If content not loaded yet, do nothing
 
-		if ( towerGeometry4== null || exsisting_paint_balls.isEmpty())
+		if ( towerGeometry4== null || GameState.getState().exsisting_paint_balls.isEmpty())
 			return;
 		
 		
-		Log.d(TAG, "drawing");
+		//Log.d(TAG, "drawing");
 		//antGeometry.setTranslation(touchVec, true);
 		
 		//move ant
@@ -345,9 +348,9 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		antGeometry2.setTranslation(new Vector3d(-temp, -temp, 0.0f), true);
 		
 		
-		if (!exsisting_paint_balls.isEmpty())
+		if (!GameState.getState().exsisting_paint_balls.isEmpty())
 		{
-			for(PaintBall obj : exsisting_paint_balls)
+			for(PaintBall obj : GameState.getState().exsisting_paint_balls)
 			{
 				if(obj.isActive()) 
 				{
@@ -541,10 +544,11 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             	PaintBall ball = getAvailableBall(1);
         		if(ball != null)
         		{
-            		ball.geometry.setTranslation(player.position);
-        			ball.velocity = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
-        			mService.mConnection.sendData(ball);
-        			ball.activate();
+            		Vector3d pos = player.position;
+        			Vector3d vel = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
+        			DataPackage data = new DataPackage(ball.id, vel, pos);
+        			mService.mConnection.sendData(data);
+        			ball.fire(vel, pos);
             	break;
         		}
         }
@@ -597,7 +601,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 
     private PaintBall getAvailableBall(int id)
     {
-    	for(PaintBall obj : exsisting_paint_balls)
+    	for(PaintBall obj : GameState.getState().exsisting_paint_balls)
     	{
     		if (!(obj.geometry.isVisible()))
     			return obj;
