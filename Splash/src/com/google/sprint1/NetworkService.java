@@ -22,13 +22,14 @@ public class NetworkService extends Service {
 
 	private final IBinder mBinder = new LocalBinder();
 	private final Random mGenerator = new Random();
-
+	
+	/**Called when a class tries to bind to the service*/
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
 		return mBinder;
 	}
-
+	
 	@Override
 	public void onCreate() {
 
@@ -37,7 +38,8 @@ public class NetworkService extends Service {
 		mConnection = new MobileConnection(mUpdateHandler);
 
 	}
-
+	
+	/**Called when the user exits GameActivity and tear down the MobileConnection*/
 	@Override
 	public void onDestroy() {
 
@@ -52,7 +54,8 @@ public class NetworkService extends Service {
 			return NetworkService.this;
 		}
 	}
-
+	
+	/**Initializing the NsdHelper to be active as long as the service is active*/
 	public void initNsdHelper(Handler handler) {
 		// Initialize new mNsdHandler with "handler"
 		mNsdHelper = new NsdHelper(this, handler);
