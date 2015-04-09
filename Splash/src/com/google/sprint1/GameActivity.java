@@ -169,7 +169,6 @@ public class GameActivity extends ARViewActivity // implements
 
 	/** Called when the user clicks the Exit button (krysset) */
 	public void onExitButtonClick(View v) {
-		stopService(new Intent(this, NetworkService.class));
 		finish();
 	}
 
@@ -610,25 +609,29 @@ public class GameActivity extends ARViewActivity // implements
 			mBound = false;
 		}
 	};
-
+	
+	/**Updates Fps each frame and display it to user once every second*/ 
 	private void updateFps() {
-
+		
+		//Adds one each frame
 		frameCounter++;
-
+		
+		//Uses internal clock to calculate the difference between current time and last time
 		double currentTime = System.currentTimeMillis() - lastTime;
+		//calculates the fps (*1000 due to milliseconds)
 		final int fps = (int) (((double) frameCounter / currentTime) * 1000);
-
+		
+		//Only displays if current time is over one second
 		if (currentTime > 1.0) {
 			lastTime = System.currentTimeMillis();
 			frameCounter = 0;
-
+			
+			//Necessary to run on UI thread to be able to edit the TextView
 			runOnUiThread(new Runnable() {
 
 				@Override
 				public void run() {
 					TextView displayPoints = (TextView) findViewById(R.id.myPoints);
-					;
-
 					displayPoints.setText("FPS: " + fps);
 				}
 			});

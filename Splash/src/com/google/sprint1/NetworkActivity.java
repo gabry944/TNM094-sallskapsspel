@@ -44,6 +44,7 @@ public class NetworkActivity extends Activity {
 
 	// Variables for Service handling
 	private NetworkService mService;
+	private NsdHelper mNsdHelper;
 	boolean mBound = false;
 
 	public static final String TAG = "NetworkActivity";
@@ -118,7 +119,7 @@ public class NetworkActivity extends Activity {
 											int which) {
 										NsdServiceInfo service = listAdapter
 												.getItem(pos);
-										service = mService.mNsdHelper
+										service = mNsdHelper
 												.resolveService(service);
 										if (service != null) {
 											Log.d(TAG, "Connecting to: "
@@ -177,9 +178,9 @@ public class NetworkActivity extends Activity {
 		// If mNsdHelper is other than null it will be teared down.
 		// This is done to unregister from the network and stop the
 		// service discovery.
-		if (mService.mNsdHelper != null) {
-			mService.mNsdHelper.tearDown();
-			mService.mNsdHelper = null;
+		if (mNsdHelper != null) {
+			mNsdHelper.tearDown();
+			mNsdHelper = null;
 		}
 
 	}
@@ -208,20 +209,17 @@ public class NetworkActivity extends Activity {
 		try {
 			// If mNsdHelper is null(which always should happen because it is
 			// set to null in onResume()), it will then reinitialize
-			if (mService.mNsdHelper == null) {
-				mService.initNsdHelper(mNSDHandler);
-				// mService.mNsdHelper.initializeNsd();
+			if (mNsdHelper == null) {
+				mNsdHelper = new NsdHelper(this, mNSDHandler);
+				mNsdHelper.initializeNsd();
 			}
 
 			// If not null, mNsdHelper will only register service on the network
-			// and
-			// start service discovery.
-			if (mService.mNsdHelper != null) {
-				Log.d(TAG, "Resumed");
-
-				mService.mNsdHelper.registerService(mService.mConnection
+			// and start service discovery.
+			if (mNsdHelper != null) {
+				mNsdHelper.registerService(mService.mConnection
 						.getLocalPort());
-				mService.mNsdHelper.discoverServices();
+				mNsdHelper.discoverServices();
 
 			}
 		} catch (NullPointerException e) {
@@ -239,8 +237,8 @@ public class NetworkActivity extends Activity {
 		// otherwise).
 		// Tearing mNsdHelper down(unregister from network and stops the
 		// discovery).
-		if (mService.mNsdHelper != null) {
-			mService.mNsdHelper.tearDown();
+		if (mNsdHelper != null) {
+			mNsdHelper.tearDown();
 		}
 
 		// Unbind from service, GameActivity will manage to bind before and
@@ -304,16 +302,18 @@ public class NetworkActivity extends Activity {
 			//Initializes the NsdHelper when NetworkAcitivty is started
 			//(try/catch only precaution to prevent app from crashing)
 			try{
-				mService.initNsdHelper(mNSDHandler);
+				//mService.initNsdHelper(mNSDHandler);
+				mNsdHelper = new NsdHelper(getApplicationContext(), mNSDHandler);
+				mNsdHelper.initializeNsd();
 			} catch(NullPointerException e){
 				Log.e(TAG, "NullPointerException: " + e);
 			}
 
 			// Register the game on the network
-			mService.mNsdHelper.registerService(mService.mConnection
+			mNsdHelper.registerService(mService.mConnection
 					.getLocalPort());
 			// Start discovery to look for other peers
-			mService.mNsdHelper.discoverServices();
+			mNsdHelper.discoverServices();
 
 		}
 
