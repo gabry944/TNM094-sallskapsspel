@@ -1,5 +1,13 @@
 package com.google.sprint1;
 
+<<<<<<< Updated upstream
+=======
+import java.io.Serializable;
+
+import android.app.Activity;
+import android.util.Log;
+
+>>>>>>> Stashed changes
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
