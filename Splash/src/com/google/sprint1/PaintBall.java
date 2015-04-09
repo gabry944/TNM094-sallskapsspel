@@ -1,6 +1,8 @@
 package com.google.sprint1;
 
 
+import java.io.Serializable;
+
 import android.app.Activity;
 import android.util.Log;
 
@@ -12,7 +14,7 @@ import com.metaio.sdk.MetaioDebug;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
 import com.metaio.tools.io.AssetsManager;
 
-public class PaintBall extends Drawable
+public class PaintBall extends Drawable implements Serializable
 {
 	public static final String TAG = "PaintBall";
 	
@@ -22,8 +24,9 @@ public class PaintBall extends Drawable
 	public int ownerID;
 	public boolean isActive;
 
-	public PaintBall(IGeometry geo, IGeometry splGeo, IGeometry pbShad) {
+	public PaintBall(int id, IGeometry geo, IGeometry splGeo, IGeometry pbShad) {
 		super();
+		ownerID = id;
 		geometry = geo;
 		splashGeometry = splGeo;
 		paintballShadow = pbShad;
@@ -113,5 +116,9 @@ public class PaintBall extends Drawable
 		// move object to the new position
 		geometry.setTranslation(position);
 		//object.setTranslation(object.getTranslation().add(velocity*timeStep));
+	}
+	
+	public String toString(){
+		return ("Paintball: Player " + ownerID +". Position: " + geometry.getTranslation());
 	}
 }	

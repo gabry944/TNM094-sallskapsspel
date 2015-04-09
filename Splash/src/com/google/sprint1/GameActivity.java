@@ -61,7 +61,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 	PaintBall paint_ball_object;
 	private ArrayList<PaintBall> exsisting_paint_balls;
 	
-
+	SendDataThread sendDataThread;
 	
 	private Vector3d startTouch;
 	private Vector3d currentTouch;
@@ -163,7 +163,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		point = 0;
 		
 		scaleStart = 0f;
-				
+		
 	}
 
 	/** Called when the user clicks the Exit button (krysset) */
@@ -292,7 +292,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			for(int i = 0; i < 20; i++)
 			{
 				// create new paint ball
-				paint_ball_object = new PaintBall(Load3Dmodel("tower/paintball.obj"),
+				paint_ball_object = new PaintBall(1,Load3Dmodel("tower/paintball.obj"),
 												  Load3Dmodel("tower/splash.mfbx"),
 												  Load3Dmodel("tower/paintballShadow.mfbx"));
 				
@@ -304,6 +304,10 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		{
 			MetaioDebug.printStackTrace(Log.ERROR, e);
 		}
+		
+		
+		sendDataThread = new SendDataThread();
+		sendDataThread.run();
 	}
 	
 	//function to set the properties for the geometry
@@ -326,7 +330,7 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 			return;
 		
 		
-		//Log.d(TAG, "touchVec = "+ touchVec);
+		Log.d(TAG, "drawing");
 		//antGeometry.setTranslation(touchVec, true);
 		
 		//move ant
@@ -407,6 +411,31 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 //            });
 //        }
 	}
+	
+	private class SendDataThread implements Runnable {
+		@Override
+		public void run() {
+			/*
+			try{
+				while (!Thread.currentThread().isInterrupted())
+				{
+					TestClass test = new TestClass(5, "hej");
+					mService.mConnection.sendData(test);
+					
+					Thread.sleep(10);
+				}
+				
+			}catch (NullPointerException e)
+			{
+				
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			*/
+		} 	
+	}
+	
 	
 	public boolean checkCollision(PaintBall obj, IGeometry obj2)
 	{
@@ -512,10 +541,9 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
             	PaintBall ball = getAvailableBall(1);
         		if(ball != null)
         		{
-
             		ball.geometry.setTranslation(player.position);
         			ball.velocity = new Vector3d(touchVec.getX()/2, touchVec.getY()/2, (Math.abs(touchVec.getX() + touchVec.getY())/2));
-                	//Log.d(TAG, "vel = " + paint_ball_object.velocity);
+        			mService.mConnection.sendData(ball);
         			ball.activate();
             	break;
         		}
