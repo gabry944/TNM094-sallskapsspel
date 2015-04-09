@@ -1,13 +1,17 @@
 package com.google.sprint1;
 
+import android.util.Log;
+
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
 
 public class Ant extends Drawable
 {
-	
+	public static final String ANT = "AntActivity";
 	public IGeometry ant;
+	float angDiffLimit = 3f;
+	float speed = 10f;
 	
 	
 	public Ant(IGeometry geo) {
@@ -19,19 +23,32 @@ public class Ant extends Drawable
 	
 	public void spawnAnt()
 	{
-		//spawn ant at random
-		ant.setVisible(true);
-		ant.setTranslation(new Vector3d(randBetween(-600 , 600), randBetween(-600 , 600), 0f));
-		
+		if(randBetween(1, 500) == 10)
+		{
+			//spawn ant at random
+			ant.setVisible(true);
+			ant.setTranslation(new Vector3d(randBetween(-600 , 600), randBetween(-600 , 600), 0f));
+		}
 		
 	}
 	
-	public void movement()
+	public float movement()
 	{
+
+		// new angle in radians 
+		float angle = ant.getRotation().getAxisAngle().getZ() + randBetween( -angDiffLimit, angDiffLimit);
+		
+		float diffX = (float)Math.cos(angle);
+		float diffY = (float)Math.sin(angle);
+		
+		Vector3d movement = new Vector3d(new Vector3d(ant.getTranslation().getX() + speed * diffX,
+													  ant.getTranslation().getY() +  speed * diffY,
+													  0f));
+		
 		//random movement of the ant until being hit 
-		ant.setTranslation(new Vector3d(ant.getTranslation().getX() + randBetween(-3,3),
-										ant.getTranslation().getY() + randBetween(-3,3),
-										0f));
+		ant.setTranslation(movement);
+		ant.setRotation(new Rotation((float)(Math.PI*3/2), angle * (float)(Math.PI/180), 0f));
+		return angle;
 	}
 	
 	public boolean isActive()
@@ -43,9 +60,9 @@ public class Ant extends Drawable
 			return false;
 	}
 	
-	public static int randBetween(int start, int end)
+	public static float randBetween(float start, float end)
 	{
-		return start + (int)Math.round(Math.random()* (end - start));
+		return (float)(start + (int)Math.round(Math.random()* (end - start)));
 	}
 
 }

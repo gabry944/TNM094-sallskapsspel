@@ -1,25 +1,15 @@
 package com.google.sprint1;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
 import com.metaio.sdk.jni.Vector3d;
 
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 public class MobileConnection {
@@ -44,6 +34,7 @@ public class MobileConnection {
 
 	public void tearDown() {
 		mMobileServer.tearDown();
+		mGameClient.tearDown();
 	}
 
 	public int getLocalPort() {
@@ -198,7 +189,6 @@ public class MobileConnection {
 			@Override
 			public void run() {
 
-				ObjectInputStream input;
 				try {
 					
 					while (!Thread.currentThread().isInterrupted()) {

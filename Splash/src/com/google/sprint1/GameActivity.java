@@ -62,6 +62,14 @@ public class GameActivity extends ARViewActivity // implements
 
 	Ant ant;
 	
+
+	private float prevAng;
+	private ArrayList<Float> prevAngle;
+	
+	private Vector3d startTouch;
+	private Vector3d currentTouch;
+	private Vector3d endTouch;
+
 	private Vector3d touchVec; // endTouch-startTouch
 
 	Player player;
@@ -122,10 +130,19 @@ public class GameActivity extends ARViewActivity // implements
 		
 		ballPath = new ArrayList<IGeometry>(10);
 		ballPathShadow = new ArrayList<IGeometry>(10);
+		
+		prevAngle = new ArrayList<Float>(10);
 
 		// displayPoints = (TextView) findViewById(R.id.myPoints);
 
 		touchVec = new Vector3d(0f, 0f, 0f);
+
+		currentTouch = new Vector3d(0f, 0f, 0f);
+		startTouch = new Vector3d(0f, 0f, 0f);
+		endTouch = new Vector3d(0f, 0f, 0f);
+		
+		player = new Player(1);
+
 
 		
 		player = GameState.getState().players.get(1);
@@ -245,10 +262,8 @@ public class GameActivity extends ARViewActivity // implements
 
 				ball = Load3Dmodel("tower/paintball.obj");
 				ballShadow = Load3Dmodel("tower/paintballShadow.mfbx");
-				geometryProperties(ball, 0.5f, new Vector3d(-550, -450, 200f),
-						new Rotation(0f, 0f, 0f));
-				geometryProperties(ballShadow, 0.2f,
-						new Vector3d(-550, -450, 0), new Rotation(0f, 0f, 0f));
+				geometryProperties(ball, 0.5f, new Vector3d(-550, -450, 200f), new Rotation(0f, 0f, 0f));
+				geometryProperties(ballShadow, 0.2f, new Vector3d(-550, -450, 0), new Rotation(0f, 0f, 0f));
 				ballPath.add(ball);
 				ballPathShadow.add(ballShadow);
 				ball.setVisible(false);
@@ -309,7 +324,8 @@ public class GameActivity extends ARViewActivity // implements
 			}
 			
 			//move ants
-			GameState.getState().ants.get(i).movement();
+			GameState.getState().ants.get(i).movement();			
+
 		}
 
 		powerUpAnimation(aimPowerUp);
@@ -319,11 +335,17 @@ public class GameActivity extends ARViewActivity // implements
 				if (obj.isActive()) {
 					obj.update();
 					
+
+					
+					/*
+
 					for(int i = 0; i < 10 ; i++)
 					{
 						if (checkCollision(obj, GameState.getState().ants.get(i).ant)) {
 							 GameState.getState().ants.get(i).ant.setRotation(new Rotation(
 									(float) (3 * Math.PI / 4), 0f, 0f), true);
+							 
+							 GameState.getState().ants.remove(i);
 							obj.splashGeometry.setTranslation(obj.geometry
 									.getTranslation());
 							obj.splashGeometry.setVisible(true);
@@ -342,37 +364,16 @@ public class GameActivity extends ARViewActivity // implements
 						}
 					}
 
+
 					if (checkCollision(obj, aimPowerUp)) {
 						player.superPower = true;
 						aimPowerUp.setVisible(false);
-					}
+					}*/
 				}
 			}
 		}
 		// onTouchEvent(null);
 		updateFps();
-	}
-
-	public boolean checkCollision(PaintBall obj, IGeometry obj2) {
-
-		Vector3d min = obj2.getBoundingBox(true).getMin();
-		Vector3d max = obj2.getBoundingBox(true).getMax();
-
-		if (obj.geometry.getTranslation().getX() + obj.geometry.getBoundingBox().getMax().getX() >
-		obj2.getTranslation().getX() - min.getX() - 15
-		&& obj.geometry.getTranslation().getX()	+ obj.geometry.getBoundingBox().getMin().getX() <
-		obj2.getTranslation().getX() + max.getX() + 15
-		&& obj.geometry.getTranslation().getY() + obj.geometry.getBoundingBox().getMax().getY() > 
-		obj2.getTranslation().getY() - min.getY() - 15
-		&& obj.geometry.getTranslation().getY()	+ obj.geometry.getBoundingBox().getMin().getY() < 
-		obj2.getTranslation().getY() + max.getY() + 15
-		&& obj.geometry.getTranslation().getZ()+ obj.geometry.getBoundingBox().getMax().getZ() > 
-		obj2.getTranslation().getZ() - min.getZ() - 15
-		&& obj.geometry.getTranslation().getZ()+ obj.geometry.getBoundingBox().getMin().getZ() < 
-		obj2.getTranslation().getZ() + max.getZ() + 15)
-			return true;
-		else
-			return false;
 	}
 
 	/** function that activates when an object is being touched */
