@@ -167,7 +167,7 @@ public class NetworkActivity extends Activity {
 			isDiscovering = true;
 			mNsdHelper.discoverServices();
 			
-			while(!mNsdHelper.discoveryReady){
+			while(!mNsdHelper.discoveryStarted){
 				
 			}
 		}
