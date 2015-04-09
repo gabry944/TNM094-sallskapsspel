@@ -120,8 +120,8 @@ public class GameActivity extends ARViewActivity // implements
 	float SphereMoveX = 2f;
 
 	// FPS specific variables
-	int frameCounter = 0;
-	double lastTime;
+	private int frameCounter = 0;
+	private double lastTime;
 
 	public static final String TAG = "GameActivity";
 
