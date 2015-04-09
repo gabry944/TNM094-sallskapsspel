@@ -15,6 +15,8 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import com.metaio.sdk.jni.Vector3d;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -78,9 +80,10 @@ public class MobileConnection {
 	}
 	
 	public synchronized void updateData(DataPackage data, boolean local) {
-	
-		GameState.getState().exsisting_paint_balls.get(data.id).fire(data.velocity, data.position);
-		//TODO: Send data back to activity using mUpdateHandler.
+		Vector3d vel = new Vector3d(data.velocityX,data.velocityY,data.velocityZ);
+		Vector3d pos = new Vector3d(data.positionX,data.positionY,data.positionZ);
+		
+		GameState.getState().exsisting_paint_balls.get(data.id).fire(vel, pos);
 		
 	}
 
