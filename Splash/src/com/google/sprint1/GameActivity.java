@@ -387,25 +387,25 @@ public class GameActivity extends ARViewActivity //implements OnGesturePerformed
 		//onTouchEvent(null);
         
 
-//        frameCounter++;
-//            
-//        double currentTime = System.currentTimeMillis() - lastTime;
-//        final int fps = (int) (((double)frameCounter / currentTime)*1000);
-//        
-//        if (currentTime > 1.0) {
-//            lastTime = System.currentTimeMillis();
-//            frameCounter = 0;
-//                    
-//            runOnUiThread(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                	TextView displayPoints = (TextView) findViewById(R.id.myPoints);;
-//                	
-//                    displayPoints.setText("FPS: " + fps);
-//                }
-//            });
-//        }
+        frameCounter++;
+            
+        double currentTime = System.currentTimeMillis() - lastTime;
+        final int fps = (int) (((double)frameCounter / currentTime)*1000);
+        
+        if (currentTime > 1.0) {
+            lastTime = System.currentTimeMillis();
+            frameCounter = 0;
+                    
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                	TextView displayPoints = (TextView) findViewById(R.id.myPoints);;
+                	
+                    displayPoints.setText("FPS: " + fps);
+                }
+            });
+        }
 	}
 	
 	public boolean checkCollision(PaintBall obj, IGeometry obj2)
