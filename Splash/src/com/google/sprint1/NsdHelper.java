@@ -21,14 +21,21 @@ public class NsdHelper {
 	public static final String SERVICE_TYPE = "_http._tcp.";
 	public static final String TAG = "NsdHelper";
 	public static final String SERVICE_NAME = "ARGame";
-
+	
 	public String mServiceName = "";
 
 	public boolean serviceResolved = false;
+	public boolean discoveryReady;
+	public boolean serviceFound;
+	public boolean discoveryStarted;
+
 	NsdServiceInfo mService;
 	
 	/**Constructor */
 	public NsdHelper(Context context, Handler handler) {
+		discoveryReady = false;
+		serviceFound = false;
+		discoveryStarted = false;
 		mContext = context;
 		mUpdateHandler = handler;
 		mNsdManager = (NsdManager) context
@@ -40,6 +47,8 @@ public class NsdHelper {
 		initializeResolveListener();
 		initializeDiscoveryListener();
 		initializeRegistrationListener();
+		Log.d(TAG, "initializeNSD");
+
 	}
 
 	public void initializeDiscoveryListener() {
@@ -48,12 +57,14 @@ public class NsdHelper {
 			@Override
 			public void onDiscoveryStarted(String regType) {
 				Log.d(TAG, "Service discovery started");
-
+				discoveryStarted = true;
 			}
 
 			@Override
 			public void onServiceFound(NsdServiceInfo service) {
-
+				
+				serviceFound = true;
+				
 				Log.d(TAG,
 						"Service discovery success. Found: "
 								+ service.getServiceName());
@@ -72,11 +83,12 @@ public class NsdHelper {
 					mUpdateHandler.sendMessage(msg);
 
 				}
+				discoveryReady = true;
 			}
 
 			@Override
 			public void onServiceLost(NsdServiceInfo service) {
-				Log.e(TAG, "service lost(service discoovery): " + service.getServiceName());
+				Log.e(TAG, "service lost(service discovery): " + service.getServiceName());
 
 				Bundle bundle = new Bundle();
 				bundle.putParcelable("lost", service);
@@ -185,6 +197,8 @@ public class NsdHelper {
 	
 	/**Stops the service discovery	 */
 	public void stopDiscovery() {
+		Log.d(TAG, "NsdHelper: stop discovery");
+
 		mNsdManager.stopServiceDiscovery(mDiscoveryListener);
 	}
 
@@ -210,5 +224,11 @@ public class NsdHelper {
 		mNsdManager.unregisterService(mRegistrationListener);
 		mNsdManager.stopServiceDiscovery(mDiscoveryListener);
 
+	}
+	
+	public void unregisterService(){
+		Log.d(TAG, "NsdHelper: unregister service");
+
+		mNsdManager.unregisterService(mRegistrationListener);
 	}
 }
