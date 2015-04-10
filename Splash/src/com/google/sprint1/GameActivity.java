@@ -260,8 +260,8 @@ public class GameActivity extends ARViewActivity // implements
 			for (int i = 0; i < 10; i++) {
 				// create new paint ball
 
-				ball = Load3Dmodel("tower/paintball.obj");
-				ballShadow = Load3Dmodel("tower/paintballShadow.mfbx");
+				ball = Load3Dmodel("paintball/paintball/ballBlue.mfbx");
+				ballShadow = Load3Dmodel("paintball/paintballShadow.mfbx");
 				geometryProperties(ball, 0.5f, new Vector3d(-550, -450, 200f), new Rotation(0f, 0f, 0f));
 				geometryProperties(ballShadow, 0.2f, new Vector3d(-550, -450, 0), new Rotation(0f, 0f, 0f));
 				ballPath.add(ball);
@@ -283,9 +283,9 @@ public class GameActivity extends ARViewActivity // implements
 			for (int i = 0; i < 20; i++) {
 				// add paint ball to list of paint balls
 				GameState.getState().exsisting_paint_balls.add(
-						new PaintBall(i,Load3Dmodel("tower/paintball.obj"),
-									  Load3Dmodel("tower/splash.mfbx"),
-									  Load3Dmodel("tower/paintballShadow.mfbx")));
+						new PaintBall(i,Load3Dmodel("paintball/paintball/ballBlue.mfbx"),
+									  Load3Dmodel("paintball/splash/splashYellow.mfbx"),
+									  Load3Dmodel("paintball/paintballShadow.mfbx")));
 			}
 		} catch (Exception e) {
 			MetaioDebug.printStackTrace(Log.ERROR, e);

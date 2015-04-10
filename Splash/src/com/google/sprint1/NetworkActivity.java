@@ -81,8 +81,6 @@ public class NetworkActivity extends Activity {
 				}
 				// If key is "found", add to the adapter
 				else if ((service = (NsdServiceInfo) msg.getData().get("found")) != null) {
-					//Log.d(TAG, "Added");
-
 					listAdapter.add(service);
 				}
 				// If key is "lost", remove from adapter
@@ -90,10 +88,7 @@ public class NetworkActivity extends Activity {
 					listAdapter.remove(service);
 				}
 				// Notify adapter that the list is updated.
-				//Log.d(TAG, "HEEEJ");
 				listAdapter.notifyDataSetChanged();
-				//Log.d(TAG, "Dееее");
-
 
 			}
 		};
@@ -163,7 +158,6 @@ public class NetworkActivity extends Activity {
 		mNsdHelper.initializeNsd();
 		
 		if(!isDiscovering){
-			Log.d(TAG, "Discover 1");
 			isDiscovering = true;
 			mNsdHelper.discoverServices();
 			
@@ -202,7 +196,7 @@ public class NetworkActivity extends Activity {
 		// service discovery.
 		if(isDiscovering){
 			mNsdHelper.stopDiscovery();
-			isDiscovering = false;
+			isDiscovering = false;	
 		}
 		
 		if (mNsdHelper != null && isRegistered ) {
@@ -236,7 +230,7 @@ public class NetworkActivity extends Activity {
 
 		try {
 			// If mNsdHelper is null(which always should happen because it is
-			// set to null in onResume()), it will then reinitialize
+			// set to null in onPause()), it will then reinitialize
 			//Fix this shiiiit
 			if (mNsdHelper == null) {
 				mNsdHelper = new NsdHelper(this, mNSDHandler);
@@ -246,7 +240,6 @@ public class NetworkActivity extends Activity {
 			// If not null, mNsdHelper will only register service on the network
 			// and start service discovery.
 			if(!isDiscovering){
-				Log.d(TAG, "Discover 2");
 				mNsdHelper.discoverServices();
 				isDiscovering = true;
 			}
@@ -271,13 +264,7 @@ public class NetworkActivity extends Activity {
 	protected void onDestroy() {
 
 		// Check if mNsdHelper is not null(will throw NullPointerException
-		// otherwise).
-		// Tearing mNsdHelper down(unregister from network and stops the
-		// discovery).
-//		if (mNsdHelper != null && isRegistered) {
-//			mNsdHelper.tearDown();
-//		}
-		
+		// otherwise). Unregister from network and stops the discovery.		
 		if(mNsdHelper != null && isDiscovering){
 			mNsdHelper.stopDiscovery();
 			isDiscovering = false;
@@ -359,7 +346,6 @@ public class NetworkActivity extends Activity {
 			
 			// Start discovery to look for other peers
 			if(!isDiscovering){
-				Log.d(TAG, "Discover 3");
 				isDiscovering = true;
 				mNsdHelper.discoverServices();
 			}

@@ -34,7 +34,10 @@ public class MobileConnection {
 
 	public void tearDown() {
 		mMobileServer.tearDown();
-		mGameClient.tearDown();
+		
+		if(mGameClient != null){
+			mGameClient.tearDown();
+		}
 	}
 
 	public int getLocalPort() {
@@ -166,10 +169,9 @@ public class MobileConnection {
 						Log.d(CLIENT_TAG,
 								"Socket already initialized. skipping!");
 					}
-						
 					outStream = new ObjectOutputStream(getSocket().getOutputStream());
 					inStream = new ObjectInputStream(getSocket().getInputStream());
-
+					
 					mRecThread = new Thread(new ReceivingThread());
 					mRecThread.start();
 

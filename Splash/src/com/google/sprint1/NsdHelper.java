@@ -47,8 +47,6 @@ public class NsdHelper {
 		initializeResolveListener();
 		initializeDiscoveryListener();
 		initializeRegistrationListener();
-		Log.d(TAG, "initializeNSD");
-
 	}
 
 	public void initializeDiscoveryListener() {
