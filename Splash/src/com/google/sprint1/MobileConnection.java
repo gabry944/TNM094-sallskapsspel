@@ -162,12 +162,13 @@ public class MobileConnection {
 					if (getSocket() == null) {
 						setSocket(new Socket(mAddress, PORT));
 						Log.d(CLIENT_TAG, "Client-side socket initialized.");
-						outStream = new ObjectOutputStream(getSocket().getOutputStream());
-						inStream = new ObjectInputStream(getSocket().getInputStream());
 					} else {
 						Log.d(CLIENT_TAG,
 								"Socket already initialized. skipping!");
 					}
+						
+					outStream = new ObjectOutputStream(getSocket().getOutputStream());
+					inStream = new ObjectInputStream(getSocket().getInputStream());
 
 					mRecThread = new Thread(new ReceivingThread());
 					mRecThread.start();

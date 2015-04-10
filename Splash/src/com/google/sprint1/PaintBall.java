@@ -64,6 +64,16 @@ public class PaintBall extends Drawable
 				disable();
 			}
 		}
+		
+		
+		for (int i = 0; i < GameState.getState().powerUps.size(); i++)
+		{
+			if (checkCollision(GameState.getState().powerUps.get(i).geometry)) {
+				//player.superPower = true;
+				GameState.getState().powerUps.get(i).geometry.setVisible(false);
+			}
+		}
+		
 	}
 	
 	/** Check if paintball is current active */

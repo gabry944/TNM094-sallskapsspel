@@ -1,6 +1,7 @@
 package com.google.sprint1;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 
 import com.metaio.sdk.jni.Vector3d;
 
@@ -13,8 +14,11 @@ public class DataPackage implements Serializable{
 	
 	public static final char BALL_FIRED = 'A';
 	public static final char ANT_HIT = 'B';
+	public static final int MAX_CAPACITY = 64;
 	
-	char message;
+	char operationCode;
+	
+	byte[] data;
 	int id;
 	float velocityX;
 	float velocityY;
@@ -34,6 +38,17 @@ public class DataPackage implements Serializable{
 		positionX = pos.getX();
 		positionY = pos.getY();
 		positionZ = pos.getZ();
+	}
+	
+	ByteBuffer getBuffer(){
+		//Allocate a buffer and add OC and a byte array.
+		ByteBuffer buffer = ByteBuffer.allocate(MAX_CAPACITY);
+		buffer.putChar(operationCode);
+		buffer.put(data);
+		
+		//Switch buffer to read mode and return
+		buffer.flip();
+		return buffer;
 	}
 	
 	public String toString(){

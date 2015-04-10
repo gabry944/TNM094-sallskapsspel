@@ -251,10 +251,11 @@ public class GameActivity extends ARViewActivity // implements
 			arrowAim.setVisible(false);
 
 			// Load powerUps
-			aimPowerUp = Load3Dmodel("powerUps/aimPowerUp.mfbx");
-			geometryProperties(aimPowerUp, 2.1f, new Vector3d(0f, 0f, 0f),
+			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aimPowerUp.mfbx"));
+			power.setGeometryProperties(power.geometry, 2.1f, new Vector3d(0f, 0f, 0f),
 					new Rotation(0f, 0f, 0f));
-
+			GameState.getState().powerUps.add(power);
+			
 			// creates the aim path
 			for (int i = 0; i < 10; i++) {
 				// create new paint ball
@@ -332,50 +333,21 @@ public class GameActivity extends ARViewActivity // implements
 
 		}
 		
-		powerUpAnimation(aimPowerUp);
+		//Update powerup(s)
+		for (int i = 0; i < GameState.getState().powerUps.size(); i++)
+		{
+			GameState.getState().powerUps.get(i).update();
+		}
 
+		//Update Paintballs
 		if (!GameState.getState().exsisting_paint_balls.isEmpty()) {
 			for (PaintBall obj : GameState.getState().exsisting_paint_balls) {
 				if (obj.isActive()) {
 					obj.update();
-					
-					
-					/*
-
-					for(int i = 0; i < 10 ; i++)
-					{
-						if (checkCollision(obj, GameState.getState().ants.get(i).ant)) {
-							 GameState.getState().ants.get(i).ant.setRotation(new Rotation(
-									(float) (3 * Math.PI / 4), 0f, 0f), true);
-							 
-							 GameState.getState().ants.remove(i);
-							obj.splashGeometry.setTranslation(obj.geometry
-									.getTranslation());
-							obj.splashGeometry.setVisible(true);
-							obj.velocity = new Vector3d(0f, 0f, 0f);
-							obj.geometry.setVisible(false);
-							obj.paintballShadow.setVisible(false);
-							point++;
-							
-							// displayPoints =
-							// (TextView)findViewById(R.id.myPoints);
-							// displayPoints.setText("Ponts:" + point);
-							// displayPoints =
-							// (TextView)findViewById(R.id.editText1);
-							// (TextView)findViewById(R.id.editText1).setText("Ponts:"
-							// + point);
-						}
-					}
-
-
-					if (checkCollision(obj, aimPowerUp)) {
-						player.superPower = true;
-						aimPowerUp.setVisible(false);
-					}*/
 				}
 			}
 		}
-		// onTouchEvent(null);
+		
 		updateFps();
 	}
 
@@ -418,21 +390,6 @@ public class GameActivity extends ARViewActivity // implements
 		pos = (float) (165 - 9.82 * Math.pow(time, 2) + velocity * time / Math.sqrt(2));
 
 		return pos;
-	}
-
-	/** Function for animation on the powerup */
-	private void powerUpAnimation(IGeometry powerUp)
-	{
-		if (powerUp.getScale().getX() > 2.0f) {
-			scaleStart = -0.02f;
-		}
-		if (powerUp.getScale().getX() < 1.0f) {
-			scaleStart = 0.02f;
-		}
-		powerUp.setScale(powerUp.getScale().add(
-				new Vector3d(scaleStart, scaleStart, scaleStart)));
-		// Log.d(TAG, "scale = " + powerUp.getScale());
-
 	}
 
     private PaintBall getAvailableBall(int id)
