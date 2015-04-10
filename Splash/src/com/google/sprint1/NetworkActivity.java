@@ -162,7 +162,7 @@ public class NetworkActivity extends Activity {
 			mNsdHelper.discoverServices();
 			
 			while(!mNsdHelper.discoveryStarted){
-				
+				//Log.d(TAG, "Jag dampar fan ur här");
 			}
 		}
 	}
@@ -233,6 +233,7 @@ public class NetworkActivity extends Activity {
 			// set to null in onPause()), it will then reinitialize
 			//Fix this shiiiit
 			if (mNsdHelper == null) {
+				Log.d(TAG, "mNsdHelper == null");
 				mNsdHelper = new NsdHelper(this, mNSDHandler);
 				mNsdHelper.initializeNsd();
 			}
@@ -244,7 +245,7 @@ public class NetworkActivity extends Activity {
 				isDiscovering = true;
 			}
 			
-			if (mNsdHelper != null && !isRegistered && !mNsdHelper.discoveryReady) {
+			if (mNsdHelper != null && !isRegistered && !mNsdHelper.discoveryReady && mBound) {
 				Log.d(TAG, "In onResume");
 				Log.d(TAG, "Registered in onresume");
 				mNsdHelper.registerService(mService.mConnection

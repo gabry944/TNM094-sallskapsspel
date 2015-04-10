@@ -17,12 +17,12 @@ public class MobileConnection {
 	private Handler mUpdateHandler;
 	private MobileServer mMobileServer;
 	private GameClient mGameClient;
-
+	
 	private static final String TAG = "MobileConnection";
 
 	private Socket mSocket;
 	private int mPort = -1;
-
+	
 	public MobileConnection(Handler handler) {
 		mUpdateHandler = handler;
 		mMobileServer = new MobileServer(handler);

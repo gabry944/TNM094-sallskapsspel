@@ -47,6 +47,8 @@ public class NsdHelper {
 		initializeResolveListener();
 		initializeDiscoveryListener();
 		initializeRegistrationListener();
+		Log.d(TAG, "sist i initNsd()");
+
 	}
 
 	public void initializeDiscoveryListener() {
@@ -114,6 +116,7 @@ public class NsdHelper {
 				mNsdManager.stopServiceDiscovery(this);
 			}
 		};
+		
 	}
 
 	public void initializeResolveListener() {
@@ -141,6 +144,7 @@ public class NsdHelper {
 				serviceResolved = true;
 			}
 		};
+		
 	}
 
 	public void initializeRegistrationListener() {
@@ -174,17 +178,19 @@ public class NsdHelper {
 			}
 
 		};
+		
 	}
 	
 	/**Registers service on the network */
 	public void registerService(int port) {
+		Log.d(TAG, "i RegisterService()");
+
 		NsdServiceInfo serviceInfo = new NsdServiceInfo();
 		serviceInfo.setPort(port);
 		serviceInfo.setServiceName(SERVICE_NAME);
 		serviceInfo.setServiceType(SERVICE_TYPE);
 		mNsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD,
 				mRegistrationListener);
-
 	}
 	
 	/**Starts the service discovery */
@@ -225,8 +231,7 @@ public class NsdHelper {
 	}
 	
 	public void unregisterService(){
-		Log.d(TAG, "NsdHelper: unregister service");
-
 		mNsdManager.unregisterService(mRegistrationListener);
+		Log.d(TAG, "NsdHelper: unregister service");
 	}
 }
