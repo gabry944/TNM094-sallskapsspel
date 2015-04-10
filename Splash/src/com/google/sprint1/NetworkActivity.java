@@ -43,8 +43,8 @@ public class NetworkActivity extends Activity {
 	Handler mNSDHandler;
 
 	// Variables for Network Service handling
-	private NetworkService mService;
-	private NsdHelper mNsdHelper;
+	public NetworkService mService;
+	public NsdHelper mNsdHelper;
 	private boolean mBound = false;
 	private boolean isRegistered = false;
 	private boolean isDiscovering = false;
@@ -159,7 +159,7 @@ public class NetworkActivity extends Activity {
 
 		});
 		
-		mNsdHelper = new NsdHelper(getApplicationContext(), mNSDHandler);
+		mNsdHelper = new NsdHelper(this, mNSDHandler);
 		mNsdHelper.initializeNsd();
 		
 		if(!isDiscovering){
@@ -238,25 +238,25 @@ public class NetworkActivity extends Activity {
 			// If mNsdHelper is null(which always should happen because it is
 			// set to null in onResume()), it will then reinitialize
 			//Fix this shiiiit
-//			if (mNsdHelper == null) {
-//				mNsdHelper = new NsdHelper(this, mNSDHandler);
-//				mNsdHelper.initializeNsd();
-//			}
+			if (mNsdHelper == null) {
+				mNsdHelper = new NsdHelper(this, mNSDHandler);
+				mNsdHelper.initializeNsd();
+			}
 
 			// If not null, mNsdHelper will only register service on the network
 			// and start service discovery.
 			if(!isDiscovering){
 				Log.d(TAG, "Discover 2");
-				isDiscovering = true;
 				mNsdHelper.discoverServices();
+				isDiscovering = true;
 			}
 			
 			if (mNsdHelper != null && !isRegistered && !mNsdHelper.discoveryReady) {
 				Log.d(TAG, "In onResume");
 				Log.d(TAG, "Registered in onresume");
-				isRegistered = true;
 				mNsdHelper.registerService(mService.mConnection
 						.getLocalPort());
+				isRegistered = true;
 									
 			}
 		} catch (NullPointerException e) {
