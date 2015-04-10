@@ -196,7 +196,7 @@ public class NetworkActivity extends Activity {
 		// service discovery.
 		if(isDiscovering){
 			mNsdHelper.stopDiscovery();
-			isDiscovering = false;
+			isDiscovering = false;	
 		}
 		
 		if (mNsdHelper != null && isRegistered ) {
@@ -230,7 +230,7 @@ public class NetworkActivity extends Activity {
 
 		try {
 			// If mNsdHelper is null(which always should happen because it is
-			// set to null in onResume()), it will then reinitialize
+			// set to null in onPause()), it will then reinitialize
 			//Fix this shiiiit
 			if (mNsdHelper == null) {
 				mNsdHelper = new NsdHelper(this, mNSDHandler);

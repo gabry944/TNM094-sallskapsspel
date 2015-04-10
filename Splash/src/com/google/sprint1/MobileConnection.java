@@ -34,7 +34,10 @@ public class MobileConnection {
 
 	public void tearDown() {
 		mMobileServer.tearDown();
-		mGameClient.tearDown();
+		
+		if(mGameClient != null){
+			mGameClient.tearDown();
+		}
 	}
 
 	public int getLocalPort() {
