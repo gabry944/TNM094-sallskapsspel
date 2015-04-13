@@ -83,15 +83,17 @@ public class Ant extends Drawable
 	/** Makes the ant go to the tower owned by the player who hit the ant */
 	public void movementToTower(Vector3d pos)
 	{
+		pos.setZ(0f);
+		
 		diffVec = pos.subtract(ant.getTranslation());
-		Log.d(TAG, "diffVec = " + diffVec);
+		Log.d(TAG, "pos = " + pos);
 		ant.setTranslation(ant.getTranslation().add((diffVec.getNormalized()).multiply(speed)));
 		ant.setRotation( new Rotation( (float)(Math.PI*3/2),
 										0f,
 										(float)(Math.tanh(diffVec.getY()/diffVec.getX()))));
 		
 		//when ant reached tower
-		if(diffVec.getX() < 2f && diffVec.getY() < 2f)
+		if(diffVec.getX() < 2f && diffVec.getX() > -2f  && diffVec.getY() < 2f && diffVec.getY() > -2f)
 		{
 			ant.setVisible(false);
 			setIsHit(false);
