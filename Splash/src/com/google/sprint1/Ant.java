@@ -8,12 +8,13 @@ import com.metaio.sdk.jni.Vector3d;
 
 public class Ant extends Drawable
 {
-	public static final String ANT = "AntActivity";
-	public IGeometry ant;
-	public boolean isHit;
+
+	private IGeometry ant;
+	private boolean isHit;
+	private Vector3d diffVec;
+	
 	float angDiffLimit = 3f;
 	float speed = 10f;
-	public Vector3d diffVec;
 	
 	/** constructor ant */
 	public Ant(IGeometry geo, boolean hit) {
@@ -23,6 +24,27 @@ public class Ant extends Drawable
 		setGeometryProperties(ant, 4f, new Vector3d(0f, 0f, 0f), new Rotation((float)(Math.PI*3/2), 0f, 0f)); 
 		ant.setVisible(false);
 		diffVec = new Vector3d(0f, 0f, 0f);
+	}
+	
+	public IGeometry getGeometry()
+	{
+		return ant;
+	}
+	
+	public boolean getIsHit()
+	{
+		if(isHit == true)
+			return true;
+		else
+			return false;
+	}
+	
+	public void setIsHit(boolean hit)
+	{
+		if(hit == true)
+			isHit = true;
+		else
+			isHit =  false;
 	}
 	
 	/** function to spawn the ants at random time and random position */
