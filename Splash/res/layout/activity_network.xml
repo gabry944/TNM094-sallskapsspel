@@ -44,12 +44,6 @@
         </LinearLayout> -->
 
 
-	<ListView
-	android:id="@+id/serviceView"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content" >
-	</ListView>
-
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
@@ -105,5 +99,35 @@
         android:text="Tower 1" />
 -->
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="114dp"
+        android:layout_toLeftOf="@+id/button1"
+        android:text="TextView" />
+
+    <ListView
+        android:id="@+id/serviceListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_alignLeft="@+id/button2"
+        android:layout_alignRight="@+id/button1"
+        android:layout_below="@+id/textView1" >
+
+    </ListView>
+
+    <ListView
+        android:id="@+id/playerListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1"
+        android:layout_alignLeft="@+id/button2"
+        android:layout_alignRight="@+id/button1"
+        android:layout_below="@+id/textView2" >
+
+    </ListView>
 
 </RelativeLayout>
