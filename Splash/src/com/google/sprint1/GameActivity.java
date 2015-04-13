@@ -141,7 +141,7 @@ public class GameActivity extends ARViewActivity // implements
 		startTouch = new Vector3d(0f, 0f, 0f);
 		endTouch = new Vector3d(0f, 0f, 0f);
 		
-		player = new Player(4);
+		//player = new Player(4);
 		
 		angleForCanon = Math.PI/6;
 

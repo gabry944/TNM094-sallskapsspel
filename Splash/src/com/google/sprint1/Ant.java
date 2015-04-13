@@ -13,9 +13,10 @@ public class Ant extends Drawable
 	private boolean isHit;
 	private Vector3d diffVec;
 	
-	float angDiffLimit = 3f;
-	float speed = 5f;
-	float rotationSpeed = 10f;
+	double angDiffLimit = (20*Math.PI/180);
+	float speed = 3f;
+	//float rotationSpeed = 10f;
+	float angle = 0;
 	
 	/** constructor ant */
 	public Ant(IGeometry geo, boolean hit) {
@@ -65,8 +66,10 @@ public class Ant extends Drawable
 	{
 
 		// new angle in radians 
-		float angle = ant.getRotation().getAxisAngle().getZ() + randBetween( -angDiffLimit, angDiffLimit);
+		float angle = ant.getRotation().getEulerAngleRadians().getZ() + randBetween( -angDiffLimit, angDiffLimit);
+		Log.d(TAG, "angle = " + angle);
 		
+		//TODO special cases 
 		float diffX = (float)Math.cos(angle);
 		float diffY = (float)Math.sin(angle);
 		
@@ -76,21 +79,26 @@ public class Ant extends Drawable
 		
 		//random movement of the ant until being hit 
 		ant.setTranslation(movement);
-		ant.setRotation(new Rotation((float)(Math.PI*3/2), 0f, angle * (float)(Math.PI/180) * rotationSpeed));  
+		ant.setRotation(new Rotation((float)(Math.PI*3/2), 0f, angle));  
 
 	}
 	
 	/** Makes the ant go to the tower owned by the player who hit the ant */
 	public void movementToTower(Vector3d pos)
 	{
-		pos.setZ(0f);
+		pos.setZ(0f);	
 		
 		diffVec = pos.subtract(ant.getTranslation());
-		Log.d(TAG, "pos = " + pos);
+		//Log.d(TAG, "pos = " + pos);
+		
+		// check since atan(y/x) == atan(-y/-x)
+		if(diffVec.getX() < 0f)
+			angle = (float)(Math.atan(diffVec.getY()/diffVec.getX() + Math.PI));
+		else
+			angle = (float)(Math.atan(diffVec.getY()/diffVec.getX()));
+		
+		ant.setRotation( new Rotation( (float)(Math.PI*3/2), 0f, angle));
 		ant.setTranslation(ant.getTranslation().add((diffVec.getNormalized()).multiply(speed)));
-		ant.setRotation( new Rotation( (float)(Math.PI*3/2),
-										0f,
-										(float)(Math.tanh(diffVec.getY()/diffVec.getX()))));
 		
 		//when ant reached tower
 		if(diffVec.getX() < 2f && diffVec.getX() > -2f  && diffVec.getY() < 2f && diffVec.getY() > -2f)
@@ -115,7 +123,7 @@ public class Ant extends Drawable
 	
 	
 	/** calculate a random number between arg start and arg end */
-	public static float randBetween(float start, float end)
+	public static float randBetween(double start, double end)
 	{
 		return (float)(start + (int)Math.round(Math.random()* (end - start)));
 	}
