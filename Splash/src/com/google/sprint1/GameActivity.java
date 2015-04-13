@@ -38,6 +38,7 @@ public class GameActivity extends ARViewActivity // implements
 	/* Variables for objects in the game */
 	private IGeometry towerGeometry1;
 	private IGeometry canonGeometry1;
+	private IGeometry ballGeometry1;
 	private IGeometry towerGeometry2;
 	private IGeometry canonGeometry2;
 	private IGeometry towerGeometry3;
@@ -217,10 +218,12 @@ public class GameActivity extends ARViewActivity // implements
 			//Gesture handler
 			//creates the tower
 			towerGeometry1 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry1, 2f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
-			canonGeometry1 = Load3Dmodel("tower/canon.mfbx");
-			geometryProperties(canonGeometry1, 2f, new Vector3d(-650f, -520f, 165f), new Rotation(0f, 0f, 0f));
-			mGestureHandler.addObject(canonGeometry1, 1);			
+			geometryProperties(towerGeometry1, 3f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
+			canonGeometry1 = Load3Dmodel("tower/slingshotRed.mfbx");
+			geometryProperties(canonGeometry1, 2f, new Vector3d(-685f, -485f, 250f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
+			ballGeometry1 = Load3Dmodel("paintball/paintball/ballRed.mfbx");
+			geometryProperties(ballGeometry1, 2f, new Vector3d(-650f, -520f, 350f), new Rotation(0f, 0f, 0f));
+			mGestureHandler.addObject(ballGeometry1, 1);			
 			
 			towerGeometry2 = Load3Dmodel("tower/tower.mfbx");
 			geometryProperties(towerGeometry2, 2f,
@@ -366,23 +369,48 @@ public class GameActivity extends ARViewActivity // implements
 		// Log.d(TAG, "time to landing : " + timeToLanding);
 
 		for (int i = 0; i < 10; i++) {
-			ballPath.get(i).setTranslation( new Vector3d(player.position.getX() + (float) ((double) (i) / 5) * touchVec.getX(),
-														 player.position.getY() + (float) ((double) (i) / 5) * touchVec.getY(),
+			ballPath.get(i).setTranslation( new Vector3d(player.position.getX() + ((float) (i) / 5) * touchVec.getX(),
+														 player.position.getY() + ((float) (i) / 5) * touchVec.getY(),
 														 getPathZPos( velocity, (i * timeToLanding / 10))));
 
 			ballPathShadow.get(i).setTranslation( new Vector3d(player.position.getX() + (float) ((double) (i) / 5) * touchVec.getX(),
 															   player.position.getY() + (float) ((double) (i) / 5) * touchVec.getY(),
 															   0f));
 		}
-	/*	float Zpos = 165f;
-		float Zvel = 0f;
-		float timeStep = 0.2f;		
-		while (Zpos!=0)
+		/*float Zpos = 165f;
+		float Zvel = (float)(Math.abs(touchVec.getX()/4)* Math.sin(Math.PI/4)+ Math.abs(touchVec.getY()/4)*Math.sin(Math.PI/4));
+		float timeStep = 0.2f;	
+		int stepcount =0;
+		Vector3d velocity = new Vector3d(touchVec.getX()/4, touchVec.getY()/4, (float)(Math.abs(touchVec.getX()/4)* Math.sin(Math.PI/4)+ Math.abs(touchVec.getY()/4)*Math.sin(Math.PI/4)));
+		while (Zpos>0)
 		{
-			Zvel = Zvel + timeStep*9.82f;
+			Zvel = Zvel - timeStep*9.82f;
 			Zpos = Zpos + timeStep*Zvel; 
 			stepcount ++;
-		} */
+		} 
+		for (int i = 0; i < 10; i++) 
+		{
+			ballPath.get(i).setTranslation( new Vector3d(player.position.getX(),
+														 player.position.getY(),
+														 player.position.getZ()));
+			Vector3d position = ballPath.get(i).getTranslation();
+			for(int j = 0; j<stepcount*i/20; j++)
+			{				
+				velocity.setZ(velocity.getZ()-timeStep*9.82f);
+				
+				// Euler method gives that PositionNew=Position+V*dt;
+				position.setX(position.getX()+timeStep*velocity.getX());
+				position.setY(position.getY()+timeStep*velocity.getY());
+				position.setZ(position.getZ()+timeStep*velocity.getZ());
+				
+				// move object to the new position
+				ballPath.get(i).setTranslation(position);
+			}
+
+			ballPathShadow.get(i).setTranslation( new Vector3d(ballPath.get(i).getTranslation().getX(),
+															   ballPath.get(i).getTranslation().getY(),
+															   0f));
+		}*/
 	}
 
 	/** Function to get ballpath position in Z */
@@ -423,8 +451,8 @@ public class GameActivity extends ARViewActivity // implements
 		mGestureHandler.onTouch(v, event);
 
     	//coordinates between tower and "slangbella"
-		touchVec = new Vector3d(-(canonGeometry1.getTranslation().getX()-towerGeometry1.getTranslation().getX()),
-									-(canonGeometry1.getTranslation().getY()-towerGeometry1.getTranslation().getY()),
+		touchVec = new Vector3d(-(ballGeometry1.getTranslation().getX()-towerGeometry1.getTranslation().getX()),
+									-(ballGeometry1.getTranslation().getY()-towerGeometry1.getTranslation().getY()),
 									0f);   
 
         switch(event.getActionMasked()) {
@@ -463,8 +491,8 @@ public class GameActivity extends ARViewActivity // implements
         			ballPathShadow.get(i).setVisible(false);
         		}
             	// move "slangbella" to original position
-        		canonGeometry1.setTranslation(towerGeometry1.getTranslation());
-        		canonGeometry1.setTranslation(new Vector3d(0f, 0f, 165f), true);
+        		ballGeometry1.setTranslation(towerGeometry1.getTranslation());
+        		ballGeometry1.setTranslation(new Vector3d(0f, 0f, 350f), true);
         		
             	PaintBall ball = getAvailableBall(1);
         		if(ball != null)
