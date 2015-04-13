@@ -328,10 +328,10 @@ public class GameActivity extends ARViewActivity // implements
 			//if ant is hit move to tower else move at random 
 			if(GameState.getState().ants.get(i).getIsHit() == true)
 			{
-				GameState.getState().ants.get(i).movementToTower(new Vector3d(300f, 0f, 0f)); // TODO insert the player tower position
+				GameState.getState().ants.get(i).movementToTower(new Vector3d(-600f, 450f, 0f)); // TODO insert the player tower position
 			}
 			else
-				GameState.getState().ants.get(i).movement();			
+				GameState.getState().ants.get(i).randomMovement();			
 
 		}
 		

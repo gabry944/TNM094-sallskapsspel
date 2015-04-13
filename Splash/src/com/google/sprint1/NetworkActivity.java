@@ -163,7 +163,7 @@ public class NetworkActivity extends Activity {
 			
 			while(!mNsdHelper.discoveryStarted){
 
-				//Log.d(TAG, "Jag dampar fan ur här");
+				Log.d(TAG, "Jag dampar fan ur här");
 
 			}
 		}

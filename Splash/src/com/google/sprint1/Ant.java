@@ -8,13 +8,14 @@ import com.metaio.sdk.jni.Vector3d;
 
 public class Ant extends Drawable
 {
-
+	public static final String TAG = "Ant";
 	private IGeometry ant;
 	private boolean isHit;
 	private Vector3d diffVec;
 	
 	float angDiffLimit = 3f;
-	float speed = 10f;
+	float speed = 5f;
+	float rotationSpeed = 10f;
 	
 	/** constructor ant */
 	public Ant(IGeometry geo, boolean hit) {
@@ -60,7 +61,7 @@ public class Ant extends Drawable
 	}
 	
 	/** Function to generate movement to the ants */
-	public void movement()
+	public void randomMovement()
 	{
 
 		// new angle in radians 
@@ -75,7 +76,7 @@ public class Ant extends Drawable
 		
 		//random movement of the ant until being hit 
 		ant.setTranslation(movement);
-		ant.setRotation(new Rotation((float)(Math.PI*3/2), angle * (float)(Math.PI/180), 0f));
+		ant.setRotation(new Rotation((float)(Math.PI*3/2), 0f, angle * (float)(Math.PI/180) * rotationSpeed));  
 
 	}
 	
@@ -83,9 +84,20 @@ public class Ant extends Drawable
 	public void movementToTower(Vector3d pos)
 	{
 		diffVec = pos.subtract(ant.getTranslation());
-		ant.setTranslation(ant.getTranslation().add(diffVec.getNormalized()).multiply(speed));
+		Log.d(TAG, "diffVec = " + diffVec);
+		ant.setTranslation(ant.getTranslation().add((diffVec.getNormalized()).multiply(speed)));
+		ant.setRotation( new Rotation( (float)(Math.PI*3/2),
+										0f,
+										(float)(Math.tanh(diffVec.getY()/diffVec.getX()))));
 		
-//		ant.setTranslation(new Vector3d(0f, 0f, 0f)); //test
+		//when ant reached tower
+		if(diffVec.getX() < 2f && diffVec.getY() < 2f)
+		{
+			ant.setVisible(false);
+			setIsHit(false);
+			spawnAnt();
+			//player.point();
+		}
 	}
 	
 	
