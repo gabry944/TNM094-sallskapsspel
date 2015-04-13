@@ -177,7 +177,9 @@ public class NetworkActivity extends Activity {
 			mNsdHelper.discoverServices();
 			
 			while(!mNsdHelper.discoveryStarted){
+
 				//Log.d(TAG, "Jag dampar fan ur här");
+
 			}
 		}
 	}
