@@ -61,7 +61,7 @@ public class GameActivity extends ARViewActivity // implements
 
 	Ant ant;
 	
-
+	private double angleForCanon;
 	private float prevAng;
 	private ArrayList<Float> prevAngle;
 	
@@ -141,6 +141,8 @@ public class GameActivity extends ARViewActivity // implements
 		endTouch = new Vector3d(0f, 0f, 0f);
 		
 		player = new Player(1);
+		
+		angleForCanon = Math.PI/4;
 
 
 		
@@ -324,7 +326,7 @@ public class GameActivity extends ARViewActivity // implements
 			
 			
 			//if ant is hit move to tower else move at random 
-			if(GameState.getState().ants.get(i).isHit == true)
+			if(GameState.getState().ants.get(i).getIsHit() == true)
 			{
 				GameState.getState().ants.get(i).movementToTower(new Vector3d(300f, 0f, 0f)); // TODO insert the player tower position
 			}
@@ -468,8 +470,9 @@ public class GameActivity extends ARViewActivity // implements
         		if(ball != null)
         		{
             		Vector3d pos = player.position;
-            		// delat på sqrt(2) == gånger sin(45 grader)
-        			Vector3d vel = new Vector3d(touchVec.getX()/4, touchVec.getY()/4, (float)(Math.abs(touchVec.getX()/4)* Math.sin(Math.PI/4)+ Math.abs(touchVec.getY()/4)*Math.sin(Math.PI/4)));
+            		
+            		// Math.sin(Math.PI/6) angle PI/6 = 30' => sin(pi/6) = 0.5 && Math.cos(Math.PI/6) angle PI/6 = 30' => cos(pi/6) = 0.5
+        			Vector3d vel = new Vector3d((float)(touchVec.getX()/4* Math.cos(angleForCanon)), (float)(touchVec.getY()/4* Math.cos(angleForCanon)), (float)(Math.abs(touchVec.getX()/4)* Math.sin(angleForCanon)+ Math.abs(touchVec.getY()/4)*Math.sin(angleForCanon)));
         			DataPackage data = new DataPackage(ball.id, vel, pos);
         			mService.mConnection.sendData(data);
         			ball.fire(vel, pos);            	
