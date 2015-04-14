@@ -138,22 +138,50 @@ public class PaintBall extends Drawable
 	}
 	
 	private boolean checkCollision(IGeometry obj) {
-
-		Vector3d min = obj.getBoundingBox(true).getMin();
-		Vector3d max = obj.getBoundingBox(true).getMax();
-
-		if (geometry.getTranslation().getX() + geometry.getBoundingBox().getMax().getX() >
-		obj.getTranslation().getX() - min.getX() - 15
+		
+		int scale = 4;
+		Vector3d boxmin = obj.getBoundingBox(true).getMin();
+		Vector3d boxmax = obj.getBoundingBox(true).getMax();
+		float min = 0;
+		float max = 0;
+		
+		if(boxmin.getX() < boxmin.getY() && boxmin.getX() < boxmin.getZ() )
+			min = boxmin.getX();
+		else if(boxmin.getY() < boxmin.getX() && boxmin.getY() < boxmin.getZ())
+			min = boxmin.getY();
+		else
+			min = boxmin.getZ();
+		
+		if(boxmax.getX() > boxmax.getY() && boxmax.getX() > boxmax.getZ() )
+			max = boxmax.getX();
+		else if(boxmax.getY() > boxmax.getX() && boxmax.getY() > boxmax.getZ())
+			max = boxmax.getY();
+		else
+			max = boxmax.getZ();
+		/*if (geometry.getTranslation().getX() + geometry.getBoundingBox().getMax().getX() >
+		boxmin.getX() * scale + obj.getTranslation().getX()
 		&& geometry.getTranslation().getX()	+ geometry.getBoundingBox().getMin().getX() <
-		obj.getTranslation().getX() + max.getX() + 15
+		boxmax.getX() * scale + obj.getTranslation().getX()
 		&& geometry.getTranslation().getY() + geometry.getBoundingBox().getMax().getY() > 
-		obj.getTranslation().getY() - min.getY() - 15
+		boxmin.getY() * scale + obj.getTranslation().getY() 
 		&& geometry.getTranslation().getY()	+ geometry.getBoundingBox().getMin().getY() < 
-		obj.getTranslation().getY() + max.getY() + 15
+		boxmax.getY() * scale + obj.getTranslation().getY() 
 		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMax().getZ() > 
-		obj.getTranslation().getZ() - min.getZ() - 15
+		boxmin.getZ() * scale + obj.getTranslation().getZ() 
 		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMin().getZ() < 
-		obj.getTranslation().getZ() + max.getZ() + 15)
+		boxmax.getZ() * scale + obj.getTranslation().getZ())*/
+		if (geometry.getTranslation().getX() + geometry.getBoundingBox().getMax().getX() >
+		min * scale + obj.getTranslation().getX()
+		&& geometry.getTranslation().getX()	+ geometry.getBoundingBox().getMin().getX() <
+		max * scale + obj.getTranslation().getX()
+		&& geometry.getTranslation().getY() + geometry.getBoundingBox().getMax().getY() > 
+		min * scale + obj.getTranslation().getY() 
+		&& geometry.getTranslation().getY()	+ geometry.getBoundingBox().getMin().getY() < 
+		max * scale + obj.getTranslation().getY() 
+		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMax().getZ() > 
+		min * scale + obj.getTranslation().getZ() 
+		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMin().getZ() < 
+		max * scale + obj.getTranslation().getZ())
 			return true;
 		else
 			return false;
