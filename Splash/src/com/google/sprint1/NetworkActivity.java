@@ -41,6 +41,8 @@ public class NetworkActivity extends Activity {
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
 	Handler mNSDHandler;
+	Handler mPlayerHandler;
+	
 
 	// Variables for Network Service handling
 	public NetworkService mService;
@@ -54,6 +56,7 @@ public class NetworkActivity extends Activity {
 	public static final String TAG = "NetworkActivity";
 
 	ArrayAdapter<NsdServiceInfo> listAdapter;
+	ArrayAdapter<Player> playerListAdapter;
 
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,14 +96,14 @@ public class NetworkActivity extends Activity {
 			}
 		};
 
-		ListView listView = (ListView) findViewById(R.id.serviceView);
+		ListView serviceListView = (ListView) findViewById(R.id.serviceListView);
 
 		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
 				android.R.layout.simple_list_item_1,
 				new ArrayList<NsdServiceInfo>());
-
-		listView.setAdapter(listAdapter);
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		
+		serviceListView.setAdapter(listAdapter);
+		serviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
 			// When clicking on a service, an AlertDialog window pops up
@@ -154,6 +157,18 @@ public class NetworkActivity extends Activity {
 
 		});
 		
+//		mPlayerHandler = new Handler() {
+//		
+//	}
+		
+		ListView playerListView = (ListView) findViewById(R.id.playerListView);
+		
+		playerListAdapter = new ArrayAdapter<Player>(this,
+				android.R.layout.simple_list_item_1,
+				new ArrayList<Player>());
+		
+		serviceListView.setAdapter(playerListAdapter);
+				
 		mNsdHelper = new NsdHelper(this, mNSDHandler);
 		mNsdHelper.initializeNsd();
 		
@@ -163,7 +178,7 @@ public class NetworkActivity extends Activity {
 			
 			while(!mNsdHelper.discoveryStarted){
 
-				//Log.d(TAG, "Jag dampar fan ur här");
+				Log.d(TAG, "Jag dampar fan ur här");
 
 			}
 		}
