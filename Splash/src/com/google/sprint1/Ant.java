@@ -87,17 +87,17 @@ public class Ant extends Drawable
 	{
 		pos.setZ(0f);	
 		
-		diffVec = pos.subtract(ant.getTranslation());
+		diffVec = ant.getTranslation().subtract(pos);
 		//Log.d(TAG, "pos = " + pos);
 		
 		// check since atan(y/x) == atan(-y/-x)
 		if(diffVec.getX() < 0f)
-			angle = (float)(Math.atan(diffVec.getY()/diffVec.getX() + Math.PI));
+			angle = (float)(Math.atan(diffVec.getY()/diffVec.getX()) + Math.PI);
 		else
-			angle = (float)(Math.atan(diffVec.getY()/diffVec.getX()));
+			angle = (float)(Math.atan(diffVec.getY()/diffVec.getX()) + Math.PI);
 		
-		ant.setRotation( new Rotation( (float)(Math.PI*3/2), 0f, angle + (float)(Math.PI*3/2)));
-		ant.setTranslation(ant.getTranslation().add((diffVec.getNormalized()).multiply(speed)));
+		ant.setRotation( new Rotation( (float)(Math.PI*3/2), 0f, angle + (float)(-Math.PI/4)));  // (float)(Math.PI*3/2)
+		ant.setTranslation(ant.getTranslation().subtract((diffVec.getNormalized()).multiply(speed)));
 		
 		//when ant reached tower
 		if(diffVec.getX() < 2f && diffVec.getX() > -2f  && diffVec.getY() < 2f && diffVec.getY() > -2f)
