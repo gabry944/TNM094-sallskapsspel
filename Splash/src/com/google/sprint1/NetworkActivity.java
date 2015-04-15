@@ -132,7 +132,7 @@ public class NetworkActivity extends Activity {
 											Log.d(TAG, "Connecting to: "
 													+ service.getServiceName());
 											mService.mConnection
-													.connectToServer(
+													.connectToPeer(
 															service.getHost(),
 															service.getPort());
 										} else {
