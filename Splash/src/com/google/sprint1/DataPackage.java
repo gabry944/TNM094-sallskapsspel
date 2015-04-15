@@ -40,12 +40,36 @@ public class DataPackage implements Serializable{
 		positionZ = pos.getZ();
 	}
 	
-	ByteBuffer getBuffer(){
+	DataPackage(char OC, byte[] data)
+	{
+		if (OC == BALL_FIRED)
+		{
+			ByteBuffer buffer = ByteBuffer.wrap(data);
+			this.id = buffer.getInt();
+			velocityX = buffer.getFloat();
+			velocityY = buffer.getFloat();
+			velocityZ = buffer.getFloat();
+			
+			positionX = buffer.getFloat();
+			positionY = buffer.getFloat();
+			positionZ = buffer.getFloat();
+		}
+		
+	}
+	
+	
+	public ByteBuffer getBuffer(){
 		//Allocate a buffer and add OC and a byte array.
 		ByteBuffer buffer = ByteBuffer.allocate(MAX_CAPACITY);
 		buffer.putChar(operationCode);
-		buffer.put(data);
-		
+		buffer.putInt(id);
+		buffer.putFloat(velocityX);
+		buffer.putFloat(velocityY);
+		buffer.putFloat(velocityZ);
+		buffer.putFloat(positionX);
+		buffer.putFloat(positionY);
+		buffer.putFloat(positionZ);
+	
 		//Switch buffer to read mode and return
 		buffer.flip();
 		return buffer;

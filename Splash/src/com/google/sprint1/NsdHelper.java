@@ -134,6 +134,8 @@ public class NsdHelper {
 				Log.e(TAG, "Resolve Succeeded. ");
 				Log.e(TAG, "Added service: " + serviceInfo.getServiceName());
 				Log.e(TAG, "IP: " + serviceInfo.getHost());
+				
+				//GameState.getState().players.add(new Player(serviceInfo.getHost().getHostAddress()));
 
 				if (serviceInfo.getServiceName().equals(mServiceName)) {
 					Log.d(TAG, "Same IP.");

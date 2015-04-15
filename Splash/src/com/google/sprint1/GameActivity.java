@@ -168,7 +168,7 @@ public class GameActivity extends ARViewActivity // implements
 
 	public void onClickSendData(View v) {
 		TestClass test = new TestClass(5, "hej");
-		mService.mConnection.sendData(test);
+		//mService.mConnection.sendData(test);
 	}
 
 	/**
