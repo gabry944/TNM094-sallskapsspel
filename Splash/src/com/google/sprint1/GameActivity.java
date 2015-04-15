@@ -382,40 +382,6 @@ public class GameActivity extends ARViewActivity // implements
 															   player.getPosition().getY() + (float) ((double) (i) / 5) * touchVec.getY(),
 															   0f));
 		}
-		/*float Zpos = 165f;
-		float Zvel = (float)(Math.abs(touchVec.getX()/4)* Math.sin(Math.PI/4)+ Math.abs(touchVec.getY()/4)*Math.sin(Math.PI/4));
-		float timeStep = 0.2f;	
-		int stepcount =0;
-		Vector3d velocity = new Vector3d(touchVec.getX()/4, touchVec.getY()/4, (float)(Math.abs(touchVec.getX()/4)* Math.sin(Math.PI/4)+ Math.abs(touchVec.getY()/4)*Math.sin(Math.PI/4)));
-		while (Zpos>0)
-		{
-			Zvel = Zvel - timeStep*9.82f;
-			Zpos = Zpos + timeStep*Zvel; 
-			stepcount ++;
-		} 
-		for (int i = 0; i < 10; i++) 
-		{
-			ballPath.get(i).setTranslation( new Vector3d(player.position.getX(),
-														 player.position.getY(),
-														 player.position.getZ()));
-			Vector3d position = ballPath.get(i).getTranslation();
-			for(int j = 0; j<stepcount*i/20; j++)
-			{				
-				velocity.setZ(velocity.getZ()-timeStep*9.82f);
-				
-				// Euler method gives that PositionNew=Position+V*dt;
-				position.setX(position.getX()+timeStep*velocity.getX());
-				position.setY(position.getY()+timeStep*velocity.getY());
-				position.setZ(position.getZ()+timeStep*velocity.getZ());
-				
-				// move object to the new position
-				ballPath.get(i).setTranslation(position);
-			}
-
-			ballPathShadow.get(i).setTranslation( new Vector3d(ballPath.get(i).getTranslation().getX(),
-															   ballPath.get(i).getTranslation().getY(),
-															   0f));
-		}*/
 	}
 
 	/** Function to get ballpath position in Z */
@@ -495,7 +461,7 @@ public class GameActivity extends ARViewActivity // implements
         			ballPath.get(i).setVisible(false);
         			ballPathShadow.get(i).setVisible(false);
         		}
-            	// move "slangbella" to original position
+            	// move slingshot to original position
         		ballGeometry1.setTranslation(towerGeometry1.getTranslation());
         		ballGeometry1.setTranslation(new Vector3d(0f, 0f, 350f), true);
         		

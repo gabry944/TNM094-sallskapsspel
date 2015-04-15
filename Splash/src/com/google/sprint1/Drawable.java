@@ -7,7 +7,9 @@ import com.metaio.sdk.jni.Vector3d;
 
 public class Drawable {
 
-	public Vector3d velocity;
+	protected Vector3d startPosition;
+	protected Vector3d startVelocity;
+	protected long startTime;
 	
 	public Drawable(){
 		
