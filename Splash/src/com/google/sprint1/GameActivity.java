@@ -48,6 +48,7 @@ public class GameActivity extends ARViewActivity // implements
 	private IGeometry crosshair;
 	private IGeometry arrowAim;
 	private IGeometry aimPowerUp;
+	private IGeometry smoke;
 
 	private IGeometry ball;
 	private IGeometry ballShadow;
@@ -141,13 +142,13 @@ public class GameActivity extends ARViewActivity // implements
 		startTouch = new Vector3d(0f, 0f, 0f);
 		endTouch = new Vector3d(0f, 0f, 0f);
 		
-		player = new Player(1);
+		//player = new Player(4);
 		
-		angleForCanon = Math.PI/4;
+		angleForCanon = Math.PI/6;
 
 
 		
-		player = GameState.getState().players.get(1);
+		player = GameState.getState().players.get(0);
 		
 		temp = 20f;
 		point = 0;
@@ -243,6 +244,10 @@ public class GameActivity extends ARViewActivity // implements
 			canonGeometry4 = Load3Dmodel("tower/canon.mfbx");
 			geometryProperties(canonGeometry4, 2f, new Vector3d(650f, -520f,
 					165f), new Rotation(0f, 0f, 0f));
+			
+			//Load smoke
+			smoke = Load3Dmodel("smoke/smoke.mfbx");
+			geometryProperties(smoke, 100f, new Vector3d(0f, 0f, 10f), new Rotation(0f, 0f, 0f));
 
 			// Load crosshair
 			crosshair = Load3Dmodel("crosshair/crosshair.mfbx");
@@ -288,8 +293,8 @@ public class GameActivity extends ARViewActivity // implements
 			for (int i = 0; i < 20; i++) {
 				// add paint ball to list of paint balls
 				GameState.getState().exsisting_paint_balls.add(
-						new PaintBall(i,Load3Dmodel("paintball/paintball/ballBlue.mfbx"),
-									  Load3Dmodel("paintball/splash/splashYellow.mfbx"),
+						new PaintBall(i,Load3Dmodel("paintball/paintball/ballGreen.mfbx"),
+									  Load3Dmodel("paintball/splash/splashBlue.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx")));
 			}
 		} catch (Exception e) {
@@ -331,10 +336,10 @@ public class GameActivity extends ARViewActivity // implements
 			//if ant is hit move to tower else move at random 
 			if(GameState.getState().ants.get(i).getIsHit() == true)
 			{
-				GameState.getState().ants.get(i).movementToTower(new Vector3d(300f, 0f, 0f)); // TODO insert the player tower position
+				GameState.getState().ants.get(i).movementToTower(new Vector3d(player.getPosition()));
 			}
 			else
-				GameState.getState().ants.get(i).movement();			
+				GameState.getState().ants.get(i).randomMovement();			
 
 		}
 		
@@ -369,12 +374,12 @@ public class GameActivity extends ARViewActivity // implements
 		// Log.d(TAG, "time to landing : " + timeToLanding);
 
 		for (int i = 0; i < 10; i++) {
-			ballPath.get(i).setTranslation( new Vector3d(player.position.getX() + ((float) (i) / 5) * touchVec.getX(),
-														 player.position.getY() + ((float) (i) / 5) * touchVec.getY(),
+			ballPath.get(i).setTranslation( new Vector3d(player.getPosition().getX() + ((float) (i) / 5) * touchVec.getX(),
+														 player.getPosition().getY() + ((float) (i) / 5) * touchVec.getY(),
 														 getPathZPos( velocity, (i * timeToLanding / 10))));
 
-			ballPathShadow.get(i).setTranslation( new Vector3d(player.position.getX() + (float) ((double) (i) / 5) * touchVec.getX(),
-															   player.position.getY() + (float) ((double) (i) / 5) * touchVec.getY(),
+			ballPathShadow.get(i).setTranslation( new Vector3d(player.getPosition().getX() + (float) ((double) (i) / 5) * touchVec.getX(),
+															   player.getPosition().getY() + (float) ((double) (i) / 5) * touchVec.getY(),
 															   0f));
 		}
 		/*float Zpos = 165f;
@@ -474,8 +479,8 @@ public class GameActivity extends ARViewActivity // implements
             case MotionEvent.ACTION_MOVE:            	
             	if(player.superPower == true)
             	{
-                	crosshair.setTranslation(new Vector3d( player.position.getX()+2.2f*touchVec.getX(),
-							   player.position.getY()+2.2f*touchVec.getY(),
+                	crosshair.setTranslation(new Vector3d( player.getPosition().getX()+2.2f*touchVec.getX(),
+							   player.getPosition().getY()+2.2f*touchVec.getY(),
 							   0f));
             	}
             	else //if(player.superPower == false)
@@ -497,10 +502,10 @@ public class GameActivity extends ARViewActivity // implements
             	PaintBall ball = getAvailableBall(1);
         		if(ball != null)
         		{
-            		Vector3d pos = player.position;
+            		Vector3d pos = player.getPosition();
             		
             		// Math.sin(Math.PI/6) angle PI/6 = 30' => sin(pi/6) = 0.5 && Math.cos(Math.PI/6) angle PI/6 = 30' => cos(pi/6) = 0.5
-        			Vector3d vel = new Vector3d((float)(touchVec.getX()/4* Math.cos(angleForCanon)), (float)(touchVec.getY()/4* Math.cos(angleForCanon)), (float)(Math.abs(touchVec.getX()/4)* Math.sin(angleForCanon)+ Math.abs(touchVec.getY()/4)*Math.sin(angleForCanon)));
+        			Vector3d vel = new Vector3d((float)(touchVec.getX()/3* Math.cos(angleForCanon)), (float)(touchVec.getY()/3* Math.cos(angleForCanon)), (float)(Math.abs(touchVec.getX()/5)* Math.sin(angleForCanon)+ Math.abs(touchVec.getY()/5)*Math.sin(angleForCanon)));
         			DataPackage data = new DataPackage(ball.id, vel, pos);
         			mService.mConnection.sendData(data);
         			ball.fire(vel, pos);            	

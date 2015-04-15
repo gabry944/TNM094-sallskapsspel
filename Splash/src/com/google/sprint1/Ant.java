@@ -8,20 +8,22 @@ import com.metaio.sdk.jni.Vector3d;
 
 public class Ant extends Drawable
 {
-
+	public static final String TAG = "Ant";
 	private IGeometry ant;
 	private boolean isHit;
 	private Vector3d diffVec;
 	
-	float angDiffLimit = 3f;
-	float speed = 10f;
+	float angDiffLimit = (float)(15*Math.PI/180);
+	float speed = 2f;
+	//float rotationSpeed = 10f;
+	float angle = 0;
 	
 	/** constructor ant */
 	public Ant(IGeometry geo, boolean hit) {
 		super();
 		ant = geo;
 		isHit = hit;
-		setGeometryProperties(ant, 4f, new Vector3d(0f, 0f, 0f), new Rotation((float)(Math.PI*3/2), 0f, 0f)); 
+		setGeometryProperties(ant, 7f, new Vector3d(0f, 0f, 0f), new Rotation((float)(Math.PI*3/2), 0f, 0f)); 
 		ant.setVisible(false);
 		diffVec = new Vector3d(0f, 0f, 0f);
 	}
@@ -60,12 +62,13 @@ public class Ant extends Drawable
 	}
 	
 	/** Function to generate movement to the ants */
-	public void movement()
+	public void randomMovement()
 	{
 
 		// new angle in radians 
-		float angle = ant.getRotation().getAxisAngle().getZ() + randBetween( -angDiffLimit, angDiffLimit);
-		
+		float angle = ant.getRotation().getEulerAngleRadians().getZ() + randBetween2(angDiffLimit);
+		Log.d(TAG, "rand = " +  randBetween2(angDiffLimit));
+		 
 		float diffX = (float)Math.cos(angle);
 		float diffY = (float)Math.sin(angle);
 		
@@ -75,17 +78,35 @@ public class Ant extends Drawable
 		
 		//random movement of the ant until being hit 
 		ant.setTranslation(movement);
-		ant.setRotation(new Rotation((float)(Math.PI*3/2), angle * (float)(Math.PI/180), 0f));
+		ant.setRotation(new Rotation((float)(Math.PI*3/2), 0f, angle ));  
 
 	}
 	
 	/** Makes the ant go to the tower owned by the player who hit the ant */
 	public void movementToTower(Vector3d pos)
 	{
-		diffVec = pos.subtract(ant.getTranslation());
-		ant.setTranslation(ant.getTranslation().add(diffVec.getNormalized()).multiply(speed));
+		pos.setZ(0f);	
 		
-//		ant.setTranslation(new Vector3d(0f, 0f, 0f)); //test
+		diffVec = ant.getTranslation().subtract(pos);
+		//Log.d(TAG, "pos = " + pos);
+		
+		// check since atan(y/x) == atan(-y/-x)
+		if(diffVec.getX() < 0f)
+			angle = (float)(Math.atan(diffVec.getY()/diffVec.getX()) + Math.PI);
+		else
+			angle = (float)(Math.atan(diffVec.getY()/diffVec.getX()) + Math.PI);
+		
+		ant.setRotation( new Rotation( (float)(Math.PI*3/2), 0f, angle + (float)(-Math.PI/4)));  // (float)(Math.PI*3/2)
+		ant.setTranslation(ant.getTranslation().subtract((diffVec.getNormalized()).multiply(speed)));
+		
+		//when ant reached tower
+		if(diffVec.getX() < 2f && diffVec.getX() > -2f  && diffVec.getY() < 2f && diffVec.getY() > -2f)
+		{
+			ant.setVisible(false);
+			setIsHit(false);
+			spawnAnt();
+			//player.point();
+		}
 	}
 	
 	
@@ -104,6 +125,11 @@ public class Ant extends Drawable
 	public static float randBetween(float start, float end)
 	{
 		return (float)(start + (int)Math.round(Math.random()* (end - start)));
+	}
+	
+	public static float randBetween2(float end)
+	{
+		return (float)(Math.random()* (2*end) - end);
 	}
 
 }

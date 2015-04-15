@@ -192,6 +192,7 @@ public class NetworkActivity extends Activity {
 			isDiscovering = true;
 			mNsdHelper.discoverServices();
 
+
 			// Temporary way to wait for discovery to start running (will
 			// register before discovering other services otherwise)
 			while (!mNsdHelper.discoveryStarted) {
