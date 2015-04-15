@@ -30,6 +30,7 @@ public class DataPackage implements Serializable{
 	
 	DataPackage(int id, Vector3d vel, Vector3d pos)
 	{
+		operationCode = BALL_FIRED;
 		this.id = id;
 		velocityX = vel.getX();
 		velocityY = vel.getY();
@@ -40,15 +41,39 @@ public class DataPackage implements Serializable{
 		positionZ = pos.getZ();
 	}
 	
-	ByteBuffer getBuffer(){
-		//Allocate a buffer and add OC and a byte array.
-		ByteBuffer buffer = ByteBuffer.allocate(MAX_CAPACITY);
-		buffer.putChar(operationCode);
-		buffer.put(data);
+	DataPackage(char OC, byte[] data)
+	{
+		if (OC == BALL_FIRED)
+		{
+			ByteBuffer buffer = ByteBuffer.wrap(data);
+			this.id = buffer.getInt();
+			velocityX = buffer.getFloat();
+			velocityY = buffer.getFloat();
+			velocityZ = buffer.getFloat();
+			
+			positionX = buffer.getFloat();
+			positionY = buffer.getFloat();
+			positionZ = buffer.getFloat();
+		}
 		
+	}
+	
+	
+	public byte[] getByteArray(){
+		//Allocate a buffer and add OC and a byte array.
+		ByteBuffer buffer = ByteBuffer.allocate(2 + 4*7);
+		buffer.putChar(operationCode);
+		buffer.putInt(id);
+		buffer.putFloat(velocityX);
+		buffer.putFloat(velocityY);
+		buffer.putFloat(velocityZ);
+		buffer.putFloat(positionX);
+		buffer.putFloat(positionY);
+		buffer.putFloat(positionZ);
+	
 		//Switch buffer to read mode and return
-		buffer.flip();
-		return buffer;
+		//buffer.flip();
+		return buffer.array();
 	}
 	
 	public String toString(){
