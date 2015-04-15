@@ -98,7 +98,7 @@ public class MobileConnection {
 		if(!mClients.isEmpty())
 		{
 			for (int i=0; i < mClients.size(); i++){
-				mClients.get(i).sendData(data);
+				mClients.get(i).sendData(data.getByteArray());
 			}
 		}else
 			Log.d(TAG, "Not connected to any server. Cannot send message");
@@ -194,10 +194,17 @@ public class MobileConnection {
 					inStream.read(OC);
 					ByteBuffer ocbuffer = ByteBuffer.wrap(OC);
 					char operationcode = ocbuffer.getChar();
+					Log.d(TAG, "OC: " + OC);
 					byte[] bytedata = new byte[28];
 					inStream.read(bytedata);
 					DataPackage data = new DataPackage(operationcode, bytedata);
-					updateData(data);
+					if(operationcode == DataPackage.BALL_FIRED)
+					{
+						Log.d(TAG, "Updating data:" + data);
+						updateData(data);
+					}
+					ocbuffer.clear();
+						
 					
 				}
 				inStream.close();
@@ -241,7 +248,7 @@ public class MobileConnection {
 				DataPackage data;
 				try {
 					data = queue.take();
-					sendData(data);
+					sendData(data.getByteArray());
 				} catch (InterruptedException e) {
 					Log.e(CLIENT_TAG, "Sending loop failed.", e);
 					e.printStackTrace();
@@ -252,7 +259,7 @@ public class MobileConnection {
 		
 		
 		/** Sends a serializable object to the sockets output stream */
-		public void sendData(DataPackage pack) {
+		public void sendData(byte[] data) {
 			try {
 				//Checks if socket is active for safety
 				if (socket == null) {
@@ -260,8 +267,8 @@ public class MobileConnection {
 				} else if (socket.getOutputStream() == null) {
 					Log.d(CLIENT_TAG, "Socket output stream is null");
 				}
-				ByteBuffer bb = pack.getBuffer();
-				outStream.write(bb.array());
+				
+				outStream.write(data);
 				outStream.flush();
 				
 			} catch (UnknownHostException e) {
@@ -271,7 +278,7 @@ public class MobileConnection {
 			} catch (Exception e) {
 				Log.d(CLIENT_TAG, "Error3", e);
 			}
-			Log.d(CLIENT_TAG, "Client sent data: " + pack);
+			Log.d(CLIENT_TAG, "Client sent data.");
 		}
 		
 		/** Called to close down socket */
