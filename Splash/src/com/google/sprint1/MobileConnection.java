@@ -95,9 +95,12 @@ public class MobileConnection {
 
 	public synchronized void sendData(DataPackage data)
 	{
-		if(!(mGameClient == null))
-			mGameClient.sendData(data);
-		else
+		if(!mClients.isEmpty())
+		{
+			for (int i=0; i < mClients.size(); i++){
+				mClients.get(i).sendData(data);
+			}
+		}else
 			Log.d(TAG, "Not connected to any server. Cannot send message");
 	}
 	
@@ -148,9 +151,11 @@ public class MobileConnection {
 						new Thread(new ListenerThread(socket)).start();
 						if (!(PeersConnected.contains(socket.getInetAddress())))
 						{
+							/*
 							Log.d(TAG, "Trying to connect back to:" + socket);
 							PeersConnected.add(socket.getInetAddress());
-							new Thread(new Client(socket.getInetAddress(), socket.getPort())).start();
+							new Thread(new Client(socket.getInetAddress(), socket.getLocalPort())).start();
+							*/
 						}
 						
 					}
@@ -215,6 +220,7 @@ public class MobileConnection {
 			Log.d(CLIENT_TAG, "Creating GameClient");	
 			this.mAddress = address;
 			this.PORT = port;
+			mClients.add(this);
 		}
 
 		@Override
