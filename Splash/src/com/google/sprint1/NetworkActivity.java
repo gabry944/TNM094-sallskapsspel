@@ -42,7 +42,6 @@ public class NetworkActivity extends Activity {
 										// AssetExtraxter class
 	Handler mNSDHandler;
 	Handler mPlayerHandler;
-	
 
 	// Variables for Network Service handling
 	public NetworkService mService;
@@ -50,8 +49,7 @@ public class NetworkActivity extends Activity {
 	private boolean mBound = false;
 	private boolean isRegistered = false;
 	private boolean isDiscovering = false;
-	
-
+	//private boolean isOwner = false;
 
 	public static final String TAG = "NetworkActivity";
 
@@ -69,7 +67,7 @@ public class NetworkActivity extends Activity {
 
 		/* Start game */
 		startGame = new AssetsExtracter();
-			
+
 		mNSDHandler = new Handler() {
 			@Override
 			// Called whenever a message is sent to the handler.
@@ -101,84 +99,104 @@ public class NetworkActivity extends Activity {
 		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
 				android.R.layout.simple_list_item_1,
 				new ArrayList<NsdServiceInfo>());
-		
+
 		serviceListView.setAdapter(listAdapter);
-		serviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		serviceListView
+				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-			@Override
-			// When clicking on a service, an AlertDialog window pops up
-			// to allow you to connect to said service.
-			public void onItemClick(AdapterView parent, View view,
-					final int pos, long id) {
+					@Override
+					// When clicking on a service, an AlertDialog window pops up
+					// to allow you to connect to said service.
+					public void onItemClick(AdapterView parent, View view,
+							final int pos, long id) {
 
-				// Instantiate an AlertDialog.Builder with its constructor
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						NetworkActivity.this);
+						// Instantiate an AlertDialog.Builder with its
+						// constructor
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								NetworkActivity.this);
 
-				builder.setMessage(
-						"Connect to "
-								+ listAdapter.getItem(pos).getServiceName()
-								+ "?")
-						.setTitle("Connect")
-						.setPositiveButton(R.string.BTN_OK,
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int which) {
-										NsdServiceInfo service = listAdapter
-												.getItem(pos);
-										service = mNsdHelper
-												.resolveService(service);
-										if (service != null) {
-											Log.d(TAG, "Connecting to: "
-													+ service.getServiceName());
-											mService.mConnection
-													.connectToServer(
+						builder.setMessage(
+								"Connect to "
+										+ listAdapter.getItem(pos)
+												.getServiceName() + "?")
+								.setTitle("Connect")
+								.setPositiveButton(R.string.BTN_OK,
+										new DialogInterface.OnClickListener() {
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												NsdServiceInfo service = listAdapter
+														.getItem(pos);
+												service = mNsdHelper
+														.resolveService(service);
+												if (service != null) {
+													Log.d(TAG,
+															"Connecting to: "
+																	+ service
+																			.getServiceName());
+													mService.mConnection.connectToServer(
 															service.getHost(),
 															service.getPort());
-										} else {
-											Log.d(TAG,
-													"No service to connect to!");
-										}
+												} else {
+													Log.d(TAG,
+															"No service to connect to!");
+												}
 
-									}
-								})
-						.setNegativeButton(R.string.BTN_CANCEL,
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int which) {
-										// TODO Auto-generated method stub
-									}
-								});
-				// 3. Get the AlertDialog from create()
-				AlertDialog dialog = builder.create();
-				// Show the AlertDialog
-				dialog.show();
-			}
+											}
+										})
+								.setNegativeButton(R.string.BTN_CANCEL,
+										new DialogInterface.OnClickListener() {
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												// TODO Auto-generated method
+												// stub
+											}
+										});
+						// 3. Get the AlertDialog from create()
+						AlertDialog dialog = builder.create();
+						// Show the AlertDialog
+						dialog.show();
+					}
 
-		});
-		
-//		mPlayerHandler = new Handler() {
-//		
-//	}
-		
+				});
+
+		// TODO: Add player to playerListAdapter when a new player connect to
+		// the game
+//		 mPlayerHandler = new Handler() {
+//			 @Override
+//			 public void handleMessage(Message msg){
+//				 
+//				 
+//				 
+//				 playerListAdapter.notifyDataSetChanged();
+//			 }
+//			
+//		 };
+
+		// ListView to see player colors and if players are Ready/Standby
 		ListView playerListView = (ListView) findViewById(R.id.playerListView);
-		
+
 		playerListAdapter = new ArrayAdapter<Player>(this,
-				android.R.layout.simple_list_item_1,
-				new ArrayList<Player>());
-		
-		serviceListView.setAdapter(playerListAdapter);
-				
+				android.R.layout.simple_list_item_1, new ArrayList<Player>());
+
+		// Setting the adapter for playerListView
+		playerListView.setAdapter(playerListAdapter);
+
+		// Setting the NsdHelper with the mNSDHandler and initialize mNsdHelper
 		mNsdHelper = new NsdHelper(this, mNSDHandler);
 		mNsdHelper.initializeNsd();
-		
-		if(!isDiscovering){
+
+		// Check if discovery is already running, start it otherwise
+		if (!isDiscovering) {
 			isDiscovering = true;
 			mNsdHelper.discoverServices();
-			
-			while(!mNsdHelper.discoveryStarted){
 
-				//Log.d(TAG, "Jag dampar fan ur här");
+			// Temporary way to wait for discovery to start running (will
+			// register before discovering other services otherwise)
+			while (!mNsdHelper.discoveryStarted) {
+
+				// Log.d(TAG, "Jag dampar fan ur här");
 
 			}
 		}
@@ -203,7 +221,7 @@ public class NetworkActivity extends Activity {
 		mService.mConnection.sendData(test);
 	}
 
-	/**Called when user minimize the window or clicks home button*/
+	/** Called when user minimize the window or clicks home button */
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -211,35 +229,38 @@ public class NetworkActivity extends Activity {
 		// If mNsdHelper is other than null it will be teared down.
 		// This is done to unregister from the network and stop the
 		// service discovery.
-		if(isDiscovering){
+		if (isDiscovering) {
 			mNsdHelper.stopDiscovery();
-			isDiscovering = false;	
+			isDiscovering = false;
 		}
-		
-		if (mNsdHelper != null && isRegistered ) {
+
+		if (mNsdHelper != null && isRegistered) {
 			mNsdHelper.unregisterService();
 			mNsdHelper = null;
 			isRegistered = false;
 		}
-		
+
 	}
-	
-	/**Called when when a new instance of NetworkActivity is started, for example when
-	 * starting the game for the first time or when entering from another activity
+
+	/**
+	 * Called when when a new instance of NetworkActivity is started, for
+	 * example when starting the game for the first time or when entering from
+	 * another activity
 	 */
 	@Override
 	protected void onStart() {
 		super.onStart();
 
 		// Bind to NetworkService. The service will not destroy
-		// until there is no activity bounded to it
+		// until there is no activity bound to it
 		Intent intent = new Intent(this, NetworkService.class);
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 
 	}
-	
-	/**Called when after onStart() when a new instance of NetworkActivity is started 
-	 * and when ever the user enters the activity from a paused state
+
+	/**
+	 * Called when after onStart() when a new instance of NetworkActivity is
+	 * started and when ever the user enters the activity from a paused state
 	 */
 	@Override
 	protected void onResume() {
@@ -248,47 +269,46 @@ public class NetworkActivity extends Activity {
 		try {
 			// If mNsdHelper is null(which always should happen because it is
 			// set to null in onPause()), it will then reinitialize
-			//Fix this shiiiit
 			if (mNsdHelper == null) {
-				Log.d(TAG, "mNsdHelper == null");
 				mNsdHelper = new NsdHelper(this, mNSDHandler);
 				mNsdHelper.initializeNsd();
 			}
 
 			// If not null, mNsdHelper will only register service on the network
 			// and start service discovery.
-			if(!isDiscovering){
+			if (!isDiscovering) {
 				mNsdHelper.discoverServices();
 				isDiscovering = true;
 			}
-			
-			if (mNsdHelper != null && !isRegistered && !mNsdHelper.discoveryReady && mBound) {
-				Log.d(TAG, "In onResume");
-				Log.d(TAG, "Registered in onresume");
-				mNsdHelper.registerService(mService.mConnection
-						.getLocalPort());
+
+			if (mNsdHelper != null && !isRegistered
+					&& !mNsdHelper.discoveryReady && mBound) {
+				mNsdHelper.registerService(mService.mConnection.getLocalPort());
 				isRegistered = true;
-									
+				// TODO Load players to "Players" and share with others
+				//loadPlayers();
+
 			}
 		} catch (NullPointerException e) {
 
 		}
 
 	}
-	
-	/**Called when user exits the Activity or pausing and then destroy the app by 
-	 * brute force 
+
+	/**
+	 * Called when user exits the Activity or pausing and then destroy the app
+	 * by brute force
 	 */
 	protected void onDestroy() {
 
 		// Check if mNsdHelper is not null(will throw NullPointerException
-		// otherwise). Unregister from network and stops the discovery.		
-		if(mNsdHelper != null && isDiscovering){
+		// otherwise). Unregister from network and stops the discovery.
+		if (mNsdHelper != null && isDiscovering) {
 			mNsdHelper.stopDiscovery();
 			isDiscovering = false;
 		}
-		
-		if (mNsdHelper != null && isRegistered ) {
+
+		if (mNsdHelper != null && isRegistered) {
 			mNsdHelper.unregisterService();
 			mNsdHelper = null;
 			isRegistered = false;
@@ -351,28 +371,29 @@ public class NetworkActivity extends Activity {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 			mBound = true;
-			
-			//Initializes the NsdHelper when NetworkAcitivty is started
-			//(try/catch only precaution to prevent app from crashing)
-//			try{
-//				//mService.initNsdHelper(mNSDHandler);
-//				mNsdHelper = new NsdHelper(getApplicationContext(), mNSDHandler);
-//				mNsdHelper.initializeNsd();
-//			} catch(NullPointerException e){
-//				Log.e(TAG, "NullPointerException: " + e);
-//			}
-			
+
+			// Initializes the NsdHelper when NetworkAcitivty is started
+			// (try/catch only precaution to prevent app from crashing)
+			// try{
+			// //mService.initNsdHelper(mNSDHandler);
+			// mNsdHelper = new NsdHelper(getApplicationContext(), mNSDHandler);
+			// mNsdHelper.initializeNsd();
+			// } catch(NullPointerException e){
+			// Log.e(TAG, "NullPointerException: " + e);
+			// }
+
 			// Start discovery to look for other peers
-			if(!isDiscovering){
+			if (!isDiscovering) {
 				isDiscovering = true;
 				mNsdHelper.discoverServices();
 			}
 			// Register the game on the network
-			if(listAdapter.isEmpty() && !isRegistered){
-				Log.d(TAG, "Registered in onserviceconnected");
-				mNsdHelper.registerService(mService.mConnection
-						.getLocalPort());
+			if (listAdapter.isEmpty() && !isRegistered) {
+				mNsdHelper.registerService(mService.mConnection.getLocalPort());
 				isRegistered = true;
+				
+				// TODO Load players to "Players" and share with others
+				//loadPlayers();
 			}
 
 		}

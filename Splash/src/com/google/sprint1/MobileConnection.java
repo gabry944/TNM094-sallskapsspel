@@ -117,7 +117,7 @@ public class MobileConnection {
 						Log.d(TAG, "ServerSocket Created, awaiting connection");
 						setSocket(mServerSocket.accept());
 						Log.d(TAG, "Connected.");
-
+					
 						if (mGameClient == null) {
 							int port = mSocket.getPort();
 							InetAddress address = mSocket.getInetAddress();

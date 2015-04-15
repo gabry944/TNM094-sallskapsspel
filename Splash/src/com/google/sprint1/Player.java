@@ -5,6 +5,7 @@ import com.metaio.sdk.jni.Vector3d;
 public class Player {
 	
 	public int id;
+	public String ip;
 	public Vector3d position;
 	public boolean superPower; 
 	private Vector3d startPosPlayer1 = new Vector3d(-600f, -450f, 165f);
@@ -16,6 +17,14 @@ public class Player {
 	public Player()
 	{
 		id = 0;		//id of player 1-4
+		position = new Vector3d(0f, 0f, 0f);	//position of canon
+		superPower = false;
+	}
+	
+	public Player(String ip){
+		
+		id = 0;
+		this.ip = ip;
 		position = new Vector3d(0f, 0f, 0f);	//position of canon
 		superPower = false;
 	}
