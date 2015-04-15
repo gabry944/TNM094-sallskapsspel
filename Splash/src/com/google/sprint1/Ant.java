@@ -67,7 +67,7 @@ public class Ant extends Drawable
 
 		// new angle in radians 
 		float angle = ant.getRotation().getEulerAngleRadians().getZ() + randBetween2(angDiffLimit);
-		Log.d(TAG, "rand = " +  randBetween2(angDiffLimit));
+		//Log.d(TAG, "rand = " +  randBetween2(angDiffLimit));
 		 
 		float diffX = (float)Math.cos(angle);
 		float diffY = (float)Math.sin(angle);
