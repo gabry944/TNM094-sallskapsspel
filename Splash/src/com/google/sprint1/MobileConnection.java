@@ -98,7 +98,7 @@ public class MobileConnection {
 		if(!mClients.isEmpty())
 		{
 			for (int i=0; i < mClients.size(); i++){
-				mClients.get(i).sendData(data.getByteArray());
+				mClients.get(i).sendData(data);
 			}
 		}else
 			Log.d(TAG, "Not connected to any server. Cannot send message");
@@ -170,7 +170,7 @@ public class MobileConnection {
 	/** One ListenerThread is opened for each peer. It reads the inputStream continuously for data */
 	private class ListenerThread implements Runnable{
 		private Socket socket;
-		private InputStream inStream;
+		private ObjectInputStream inStream;
 		
 		private final String TAG = "ListenerThread";
 		public ListenerThread(Socket socket) {
@@ -185,32 +185,29 @@ public class MobileConnection {
 		
 		public void run(){
 			try {
-				inStream = socket.getInputStream();
+				inStream = new ObjectInputStream(socket.getInputStream());
 				Log.d(TAG, "Listening to peer: " + socket.toString());
 				
 				while (!Thread.currentThread().isInterrupted()) {
 					
-					byte[] OC = new byte[2];
-					inStream.read(OC);
-					ByteBuffer ocbuffer = ByteBuffer.wrap(OC);
-					char operationcode = ocbuffer.getChar();
-					Log.d(TAG, "OC: " + OC);
-					byte[] bytedata = new byte[28];
-					inStream.read(bytedata);
-					DataPackage data = new DataPackage(operationcode, bytedata);
-					if(operationcode == DataPackage.BALL_FIRED)
-					{
-						Log.d(TAG, "Updating data:" + data);
+					Object readData = null;
+				
+						readData = inStream.readObject();
+					
+					if (readData instanceof DataPackage) {
+						Log.d(TAG, "Read from the stream: " + readData);
+						DataPackage data = (DataPackage)readData;
 						updateData(data);
 					}
-					ocbuffer.clear();
-						
 					
 				}
 				inStream.close();
 
 			} catch (IOException e) {
 				Log.e(TAG, "Server loop error: ", e);
+			}catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -221,7 +218,7 @@ public class MobileConnection {
 		private final String CLIENT_TAG = "GameClient";
 		private Socket socket;
 		
-		OutputStream outStream;
+		ObjectOutputStream outStream;
 		
 		public Client(InetAddress address, int port) {
 			Log.d(CLIENT_TAG, "Creating GameClient");	
@@ -235,7 +232,7 @@ public class MobileConnection {
 			try {
 					socket = new Socket(mAddress, PORT);
 					Log.d(CLIENT_TAG, "Client-side socket initialized.");
-					outStream = socket.getOutputStream();
+					outStream = new ObjectOutputStream(socket.getOutputStream());
 				
 			} catch (UnknownHostException e) {
 				Log.d(CLIENT_TAG, "Initializing socket failed, UHE", e);
@@ -246,20 +243,17 @@ public class MobileConnection {
 			//Sending loop
 			while (true) {
 				DataPackage data;
-				try {
-					data = queue.take();
-					sendData(data.getByteArray());
-				} catch (InterruptedException e) {
-					Log.e(CLIENT_TAG, "Sending loop failed.", e);
-					e.printStackTrace();
-				}
+				
+					//data = queue.take();
+					//sendData(data.getByteArray());
+				
 			}
 		}
 		
 		
 		
 		/** Sends a serializable object to the sockets output stream */
-		public void sendData(byte[] data) {
+		public void sendData(Object obj) {
 			try {
 				//Checks if socket is active for safety
 				if (socket == null) {
@@ -268,7 +262,7 @@ public class MobileConnection {
 					Log.d(CLIENT_TAG, "Socket output stream is null");
 				}
 				
-				outStream.write(data);
+				outStream.writeObject(obj);
 				outStream.flush();
 				
 			} catch (UnknownHostException e) {
@@ -278,7 +272,7 @@ public class MobileConnection {
 			} catch (Exception e) {
 				Log.d(CLIENT_TAG, "Error3", e);
 			}
-			Log.d(CLIENT_TAG, "Client sent data.");
+			Log.d(CLIENT_TAG, "Client sent data." + obj);
 		}
 		
 		/** Called to close down socket */

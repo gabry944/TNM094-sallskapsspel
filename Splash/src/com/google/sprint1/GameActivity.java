@@ -285,7 +285,7 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < 10; i++)
 			{
 				// create ant geometry
-				ant = new Ant(Load3Dmodel("ant/formicaRufa.mfbx"), false);
+				ant = new Ant(Load3Dmodel("ant/box.mfbx"), false);
 				GameState.getState().ants.add(ant);
 			}
 			
