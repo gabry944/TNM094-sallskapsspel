@@ -11,10 +11,10 @@ public class PaintBall extends Drawable
 {
 	public static final String TAG = "PaintBall";
 	
-	public IGeometry geometry; 
+	public IGeometry geometry; //TODO make privet
 	private IGeometry splashGeometry;
 	private IGeometry paintballShadow;
-	public int id;
+	public int id; // TODO make privet
 	private boolean isActive;
 
 	public PaintBall(int id, IGeometry geo, IGeometry splGeo, IGeometry pbShad) {
