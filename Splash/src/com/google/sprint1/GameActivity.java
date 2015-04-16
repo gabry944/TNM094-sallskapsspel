@@ -45,9 +45,13 @@ public class GameActivity extends ARViewActivity // implements
 	private IGeometry canonGeometry3;
 	private IGeometry towerGeometry4;
 	private IGeometry canonGeometry4;
-	
+
 	private IGeometry aimPowerUp;
 	private IGeometry aniBox;
+
+	private IGeometry crosshair;
+	private IGeometry arrowAim;
+
 
 	private IGeometry ball;
 	private IGeometry ballShadow;
@@ -59,11 +63,10 @@ public class GameActivity extends ARViewActivity // implements
 	private int mGestureMask;
 
 	Ant ant;
+
 	Aim aim;
 		
 	private double angleForCanon;
-	private float prevAng;
-	private ArrayList<Float> prevAngle;
 	
 	private Vector3d touchVec; // Difference between ball and tower when shooting
 
@@ -123,9 +126,6 @@ public class GameActivity extends ARViewActivity // implements
 		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		GameState.getState().ants = new ArrayList<Ant>(10);
 		
-		prevAngle = new ArrayList<Float>(10);
-
-		// displayPoints = (TextView) findViewById(R.id.myPoints);
 
 		touchVec = new Vector3d(0f, 0f, 0f);
 
@@ -254,7 +254,7 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < 10; i++)
 			{
 				// create ant geometry
-				ant = new Ant(Load3Dmodel("ant/ant.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), false);
+				ant = new Ant(Load3Dmodel("ant/aniAnt2.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), false);
 				GameState.getState().ants.add(ant);
 			}
 			
