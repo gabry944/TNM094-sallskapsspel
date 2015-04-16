@@ -45,15 +45,12 @@ public class GameActivity extends ARViewActivity // implements
 	private IGeometry canonGeometry3;
 	private IGeometry towerGeometry4;
 	private IGeometry canonGeometry4;
-	private IGeometry crosshair;
-	private IGeometry arrowAim;
+	
 	private IGeometry aimPowerUp;
 	private IGeometry aniBox;
 
 	private IGeometry ball;
 	private IGeometry ballShadow;
-	private ArrayList<IGeometry> ballPath; // lista med bollar som visar parabeln för den flygande färgbollen
-	private ArrayList<IGeometry> ballPathShadow; // skuggor till parabelsiktet
 
 	GameState gameState;
 	
@@ -62,15 +59,12 @@ public class GameActivity extends ARViewActivity // implements
 	private int mGestureMask;
 
 	Ant ant;
-	
+	Aim aim;
+		
 	private double angleForCanon;
 	private float prevAng;
 	private ArrayList<Float> prevAngle;
 	
-	private Vector3d startTouch;
-	private Vector3d currentTouch;
-	private Vector3d endTouch;
-
 	private Vector3d touchVec; // Difference between ball and tower when shooting
 
 	Player player;
@@ -129,18 +123,12 @@ public class GameActivity extends ARViewActivity // implements
 		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		GameState.getState().ants = new ArrayList<Ant>(10);
 		
-		ballPath = new ArrayList<IGeometry>(10);
-		ballPathShadow = new ArrayList<IGeometry>(10);
-		
 		prevAngle = new ArrayList<Float>(10);
 
 		// displayPoints = (TextView) findViewById(R.id.myPoints);
 
 		touchVec = new Vector3d(0f, 0f, 0f);
 
-		currentTouch = new Vector3d(0f, 0f, 0f);
-		startTouch = new Vector3d(0f, 0f, 0f);
-		endTouch = new Vector3d(0f, 0f, 0f);
 		
 		//player = new Player(4);
 		
@@ -242,17 +230,6 @@ public class GameActivity extends ARViewActivity // implements
 			geometryProperties(canonGeometry4, 2f, new Vector3d(650f, -520f,
 					165f), new Rotation(0f, 0f, 0f));
 
-			// Load crosshair
-			crosshair = Load3Dmodel("crosshair/crosshair.mfbx");
-			geometryProperties(crosshair, 1f, new Vector3d(0f, 0f, 0f),
-					new Rotation(0f, 0f, 0f));
-			crosshair.setVisible(false);
-
-			arrowAim = Load3Dmodel("crosshair/arrow.obj");
-			geometryProperties(arrowAim, 2f, new Vector3d(-550, -450, 200f),
-					new Rotation((float) (3 * Math.PI / 2), 0f, 0f));
-			arrowAim.setVisible(false);
-
 			// Load powerUps
 			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aimPowerUp.mfbx"));
 			power.setGeometryProperties(power.geometry, 2.1f, new Vector3d(0f, 0f, 0f),
@@ -261,19 +238,17 @@ public class GameActivity extends ARViewActivity // implements
 			
 			
 			// creates the aim path
-			for (int i = 0; i < 10; i++) {
-				// create new paint ball
-
+			ArrayList<IGeometry> ballPath = new ArrayList<IGeometry>(10);
+			ArrayList<IGeometry> ballPathShadow = new ArrayList<IGeometry>(10);			
+			for (int i = 0; i < 10; i++) 
+			{
 				ball = Load3Dmodel("paintball/paintball/ballBlue.mfbx");
 				ballShadow = Load3Dmodel("paintball/paintballShadow.mfbx");
-				geometryProperties(ball, 0.5f, new Vector3d(-550, -450, 200f), new Rotation(0f, 0f, 0f));
-				geometryProperties(ballShadow, 0.2f, new Vector3d(-550, -450, 0), new Rotation(0f, 0f, 0f));
 				ballPath.add(ball);
 				ballPathShadow.add(ballShadow);
-				ball.setVisible(false);
-				ballShadow.setVisible(false);
-
 			}
+			// Load aim (crosshair and ballPath)			
+			aim = new Aim(Load3Dmodel("crosshair/crosshair.mfbx"),ballPath,ballPathShadow, false);
 			
 			// creates a list of ants 
 			for(int i = 0; i < 10; i++)
@@ -362,37 +337,6 @@ public class GameActivity extends ARViewActivity // implements
 	protected void onGeometryTouched(IGeometry geometry) {
 		// Only implemented because its required by the parent class
 	}
-    
-	/** Function to draw the path of the ball (aim) */
-	private void drawBallPath(Vector3d startVelocity) {
-		Vector3d startPosition = player.getPosition();
-		Vector3d gravity = new Vector3d(0f, 0f, -9.82f);
-		Vector3d position = new Vector3d(0f, 0f, 0f);
-		float zVelocity = startVelocity.getZ();
-		float timeToLanding = (float) (zVelocity / (2 * 9.82f) + Math.sqrt(Math.pow( zVelocity / (2 * 9.82), 2) + startPosition.getZ() / 9.82));
-		// Log.d(TAG, "time to landing : " + timeToLanding);
-		float deltaTime = timeToLanding/(10*5);
-		for (int i = 0; i < 10; i++) 
-		{
-			// Calculate the objects position after i timestep
-			deltaTime += deltaTime;
-			position.setX(startPosition.getX()+startVelocity.getX()*deltaTime+gravity.getX()*deltaTime*deltaTime);		
-			position.setY(startPosition.getY()+startVelocity.getY()*deltaTime+gravity.getY()*deltaTime*deltaTime);
-			position.setZ(startPosition.getZ()+startVelocity.getZ()*deltaTime+gravity.getZ()*deltaTime*deltaTime);
-			
-			//check for collision with ground
-			if (position.getZ()<0f)
-			{
-			ballPath.get(i).setVisible(false);
-			ballPathShadow.get(i).setVisible(false);
-			}
-			else
-			{
-				ballPath.get(i).setTranslation(position);
-				ballPathShadow.get(i).setTranslation(new Vector3d(position.getX() , position.getY(),0f));	
-			}
-		}
-	}
 
     private PaintBall getAvailableBall(int id)
     {
@@ -405,7 +349,6 @@ public class GameActivity extends ARViewActivity // implements
     	return null;
     }
     
-
 	/** Pause function, makes you return to the main menu when pressing "back" */
 	@Override
 	public void onPause() {
@@ -432,38 +375,15 @@ public class GameActivity extends ARViewActivity // implements
         switch(event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:                
                 if(player.superPower == true)
-                	{
-                		crosshair.setVisible(true);
-                		
-                	}
-                else //if(player.superPower == false)
-                {                	
-                    for(int i = 0; i < 10; i++)
-                    {
-                    	ballPath.get(i).setVisible(true);
-                    	ballPathShadow.get(i).setVisible(true);
-                    }                       
-                }
+                		aim.setPowerUp(true);
+                
+                aim.activate();
                 break;
             case MotionEvent.ACTION_MOVE:            	
-            	if(player.superPower == true)
-            	{
-                	crosshair.setTranslation(new Vector3d( player.getPosition().getX()+2.2f*touchVec.getX(),
-							   player.getPosition().getY()+2.2f*touchVec.getY(),
-							   0f));
-            	}
-            	else //if(player.superPower == false)
-            	{
-            		drawBallPath(vel);
-            	}            
+            	aim.drawBallPath(vel, player.getPosition());           
                 break;
             case MotionEvent.ACTION_UP:
-            	crosshair.setVisible(false);
-        		for(int i = 0; i < 10; i++)
-        		{
-        			ballPath.get(i).setVisible(false);
-        			ballPathShadow.get(i).setVisible(false);
-        		}
+            	aim.deactivate();
             	// move slingshot to original position
         		ballGeometry1.setTranslation(towerGeometry1.getTranslation());
         		ballGeometry1.setTranslation(new Vector3d(0f, 0f, 350f), true);
