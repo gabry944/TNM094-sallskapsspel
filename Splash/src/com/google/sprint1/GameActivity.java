@@ -48,7 +48,7 @@ public class GameActivity extends ARViewActivity // implements
 	private IGeometry crosshair;
 	private IGeometry arrowAim;
 	private IGeometry aimPowerUp;
-	private IGeometry smoke;
+	private IGeometry aniBox;
 
 	private IGeometry ball;
 	private IGeometry ballShadow;
@@ -241,10 +241,6 @@ public class GameActivity extends ARViewActivity // implements
 			canonGeometry4 = Load3Dmodel("tower/canon.mfbx");
 			geometryProperties(canonGeometry4, 2f, new Vector3d(650f, -520f,
 					165f), new Rotation(0f, 0f, 0f));
-			
-			//Load smoke
-			smoke = Load3Dmodel("smoke/smoke.mfbx");
-			geometryProperties(smoke, 100f, new Vector3d(0f, 0f, 10f), new Rotation(0f, 0f, 0f));
 
 			// Load crosshair
 			crosshair = Load3Dmodel("crosshair/crosshair.mfbx");
@@ -262,6 +258,7 @@ public class GameActivity extends ARViewActivity // implements
 			power.setGeometryProperties(power.geometry, 2.1f, new Vector3d(0f, 0f, 0f),
 					new Rotation(0f, 0f, 0f));
 			GameState.getState().powerUps.add(power);
+			
 			
 			// creates the aim path
 			for (int i = 0; i < 10; i++) {
@@ -282,7 +279,7 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < 10; i++)
 			{
 				// create ant geometry
-				ant = new Ant(Load3Dmodel("ant/box.mfbx"), false);
+				ant = new Ant(Load3Dmodel("ant/ant.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), false);
 				GameState.getState().ants.add(ant);
 			}
 			
@@ -319,6 +316,7 @@ public class GameActivity extends ARViewActivity // implements
 		if ( towerGeometry4== null || GameState.getState().exsisting_paint_balls.isEmpty())
 			return;
 
+		
 		//spawn ant at random and move ants
 		for ( int i = 0; i < 10 ; i++)
 		{

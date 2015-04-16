@@ -93,6 +93,7 @@ public class PaintBall extends Drawable
 		geometry.setVisible(true);
 		paintballShadow.setVisible(true);
 		isActive = true;
+		
 	}
 	
 	/** Disable the ball */
