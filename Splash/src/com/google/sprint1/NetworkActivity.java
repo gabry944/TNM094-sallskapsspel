@@ -284,7 +284,7 @@ public class NetworkActivity extends Activity {
 
 			if (mNsdHelper != null && !isRegistered
 					&& !mNsdHelper.discoveryReady && mBound) {
-				mNsdHelper.registerService(mService.mConnection.getLocalPort());
+				mNsdHelper.registerService(MobileConnection.SERVER_PORT);
 				isRegistered = true;
 				// TODO Load players to "Players" and share with others
 				//loadPlayers();
@@ -390,7 +390,7 @@ public class NetworkActivity extends Activity {
 			}
 			// Register the game on the network
 			if (listAdapter.isEmpty() && !isRegistered) {
-				mNsdHelper.registerService(mService.mConnection.getLocalPort());
+				mNsdHelper.registerService(MobileConnection.SERVER_PORT);
 				isRegistered = true;
 				
 				// TODO Load players to "Players" and share with others

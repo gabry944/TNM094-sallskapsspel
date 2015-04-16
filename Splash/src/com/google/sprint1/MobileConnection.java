@@ -23,85 +23,64 @@ import android.util.Log;
 
 public class MobileConnection {
 
-	private Handler mUpdateHandler;
-	private Server mMobileServer;
-	private Client mGameClient;
-	
-	private List<Server> mServers;
-	private List<Client> mClients;
-	private List<InetAddress> PeersConnected;
+	private ServerSocket mServerSocket;
+	private List<InetAddress> mIPs;
+	private List<Peer> mPeers;
 	
 	private static final String TAG = "MobileConnection";
-
-	private Socket mSocket;
-	private int mPort = -1;
-	
+	public static final int SERVER_PORT = 8196;
 	
 	BlockingQueue<DataPackage> queue;
     private int QUEUE_CAPACITY = 32;
     
-    
 	public MobileConnection(Handler handler) {
-		mServers = new ArrayList<Server>();
-		mClients = new ArrayList<Client>();
-		PeersConnected = new ArrayList<InetAddress>();
-		
+		mIPs = new ArrayList<InetAddress>();
+		mPeers = new ArrayList<Peer>();
+
 		queue = new ArrayBlockingQueue<DataPackage>(QUEUE_CAPACITY);
-				
-		mUpdateHandler = handler;
-		mMobileServer = new Server(handler);
+			
+		//Start a ServerThread
+		new Thread(new ServerThread()).start();
 	}
 
 	public void connectToPeer(InetAddress address, int port) {
-		if (!(PeersConnected.contains(address)))
+		if (!(mIPs.contains(address)))
 		{
-			PeersConnected.add(address);
-			new Thread(new Client(address, port)).start();
+			try {
+				Socket socket = new Socket(address, SERVER_PORT);
+				Peer peer = new Peer(socket);
+				mPeers.add(peer);
+				mIPs.add(address);
+				new Thread(new ListenerThread(peer));
+				Log.d(TAG, "Connected to: " + address);
+			} catch (IOException e) {
+				Log.e(TAG,"Error when connecting.", e);
+				e.printStackTrace();
+			}
+		}else{
+			Log.d(TAG,"Already connected to: " + address);
 		}
 	}
 
 	public void tearDown() {
-		mMobileServer.tearDown();
+		try {
+			mServerSocket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		if(mGameClient != null){
-			mGameClient.tearDown();
-		}
-	}
-
-	public int getLocalPort() {
-		return mPort;
-	}
-
-	public void setLocalPort(int port) {
-		mPort = port;
-	}
-
-	private synchronized void setSocket(Socket socket) {
-		Log.d(TAG, "setSocket being called.");
-		if (socket == null) {
-			Log.d(TAG, "Setting a null socket.");
-		}
-		if (mSocket != null) {
-			if (mSocket.isConnected()) {
-				try {
-					mSocket.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		mSocket = socket;
 	}
 
 	public synchronized void sendData(DataPackage data)
 	{
-		if(!mClients.isEmpty())
+		if(!mPeers.isEmpty())
 		{
-			for (int i=0; i < mClients.size(); i++){
-				mClients.get(i).sendData(data);
-			}
-		}else
-			Log.d(TAG, "Not connected to any server. Cannot send message");
+			for(int i = 0; i < mPeers.size(); i++)
+				sendPackage(data, mPeers.get(i));
+		}else{
+			Log.d(TAG, "Cannot send data. Not connected to any peers.");
+		}
 	}
 	
 	public synchronized void updateData(DataPackage data) {
@@ -113,95 +92,118 @@ public class MobileConnection {
 		
 	}
 
-	private Socket getSocket() {
-		return mSocket;
-	}
-
-	private class Server {
-		ServerSocket mServerSocket = null;
-		Thread mThread = null;
-
-		public Server(Handler handler) {
-			mThread = new Thread(new ServerThread());
-			mThread.start();
-		}
-
-		public void tearDown() {
-			mThread.interrupt();
-			try {
-				mServerSocket.close();
-			} catch (IOException ioe) {
-				Log.e(TAG, "Error when closing server socket.");
+	/** Sends a serializable object to the sockets output stream */
+	private synchronized void sendPackage(Object obj, Peer peer) {
+		try {
+			ObjectOutputStream outStream = peer.getOutputStream();
+			Socket socket = peer.getSocket();
+			
+			//Checks if socket is active for safety
+			if (socket == null) {
+				Log.d(TAG, "Socket is null");
+			} else if (socket.getOutputStream() == null) {
+				Log.d(TAG, "Socket output stream is null");
 			}
+			
+			outStream.writeObject(obj);
+			outStream.flush();
+			
+		} catch (UnknownHostException e) {
+			Log.d(TAG, "Unknown Host", e);
+		} catch (IOException e) {
+			Log.d(TAG, "I/O Exception", e);
+		} catch (Exception e) {
+			Log.d(TAG, "Error3", e);
 		}
-
-		class ServerThread implements Runnable {
-
-			@Override
-			public void run() {
-
-				try {
-					mServerSocket = new ServerSocket(0);
-					setLocalPort(mServerSocket.getLocalPort());
-
-					Log.d(TAG, "ServerSocket Created, waiting for connections.");
-					while (!Thread.currentThread().isInterrupted()) {
-						Socket socket = mServerSocket.accept();
-						//Connection found, create a listener thread.
-						new Thread(new ListenerThread(socket)).start();
-						if (!(PeersConnected.contains(socket.getInetAddress())))
-						{
-							/*
-							Log.d(TAG, "Trying to connect back to:" + socket);
-							PeersConnected.add(socket.getInetAddress());
-							new Thread(new Client(socket.getInetAddress(), socket.getLocalPort())).start();
-							*/
-						}
-						
-					}
-				} catch (IOException e) {
-					Log.e(TAG, "Error creating ServerSocket: ", e);
-					e.printStackTrace();
-				}
-			}
-		}
+		Log.d(TAG, "Sent data to: " + peer.getAdress());
 	}
-
-	/** One ListenerThread is opened for each peer. It reads the inputStream continuously for data */
-	private class ListenerThread implements Runnable{
-		private Socket socket;
-		private ObjectInputStream inStream;
+	
+	/** Handshake is called when the serversocket accepts (finds) another peer
+	 * it will add the Peer to the peerlist and start to listen to it. 
+	 * It also sends a list to all other peers it is connected to so the new peer can connect to them aswell
+	 * @param socket
+	 */
+	private void handshake(Socket socket)
+	{
+		try {
+			//Send back list with other peers
+			Peer peer = new Peer(socket);
+			peer.getOutputStream().writeObject(mIPs);
+			peer.getOutputStream().flush();
+			new Thread(new ListenerThread(peer)).start();
+			
+			//Add this peer to the list
+			mPeers.add(peer);
+			mIPs.add(peer.getAdress());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
-		private final String TAG = "ListenerThread";
-		public ListenerThread(Socket socket) {
+	}
+	/**
+	 * Handle the object found in the outputstream and sends it to the correct place
+	 * @param o
+	 */
+	private void handleData(Object o)
+	{
+		if (o instanceof DataPackage) {
+			Log.d(TAG, "Read from the stream: " + o);
+			DataPackage data = (DataPackage)o;
+			updateData(data);
+		}
+		
+		if (o instanceof ArrayList<?>)
+		{
+			ArrayList<InetAddress> ips = (ArrayList<InetAddress>) o;
+			for(int i = 0; i <ips.size(); i++)
+				connectToPeer(ips.get(i), SERVER_PORT);
+			
+		}
+	}
+	
+	/** One ServerThread will run listening for new connections. */
+	class ServerThread implements Runnable {
+		public ServerThread()
+		{
+			
+		}
+		@Override
+		public void run() {
+
 			try {
-				this.socket = socket;
-				this.socket.setTcpNoDelay(true);
-			} catch (SocketException e) {
-				// TODO Auto-generated catch block
+				mServerSocket = new ServerSocket(SERVER_PORT);
+				Log.d(TAG, "ServerSocket Created, waiting for connections.");
+				while (!Thread.currentThread().isInterrupted()) {
+					Socket socket = mServerSocket.accept();
+					
+					//Connection found, init it.
+					handshake(socket);
+					
+				}
+			} catch (IOException e) {
+				Log.e(TAG, "Error creating ServerSocket: ", e);
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	
+	/** One ListenerThread is opened for each peer. It reads the inputStream continuously for data */
+	private class ListenerThread implements Runnable{
+		
+		private final String TAG = "ListenerThread";
+		private Peer mPeer;
+		public ListenerThread(Peer peer) {
+			mPeer = peer;
 		}
 		
 		public void run(){
 			try {
-				inStream = new ObjectInputStream(socket.getInputStream());
-				Log.d(TAG, "Listening to peer: " + socket.toString());
-				
 				while (!Thread.currentThread().isInterrupted()) {
 					
-					Object readData = null;
-				
-						readData = inStream.readObject();
-					
-					if (readData instanceof DataPackage) {
-						Log.d(TAG, "Read from the stream: " + readData);
-						DataPackage data = (DataPackage)readData;
-						updateData(data);
-					}
-					
+					Object readData = mPeer.getInputStream().readObject();
+					handleData(readData);
 				}
-				inStream.close();
 
 			} catch (IOException e) {
 				Log.e(TAG, "Server loop error: ", e);
@@ -212,77 +214,5 @@ public class MobileConnection {
 		}
 	}
 	
-	private class Client implements Runnable{
-		private InetAddress mAddress;
-		private int PORT;
-		private final String CLIENT_TAG = "GameClient";
-		private Socket socket;
-		
-		ObjectOutputStream outStream;
-		
-		public Client(InetAddress address, int port) {
-			Log.d(CLIENT_TAG, "Creating GameClient");	
-			this.mAddress = address;
-			this.PORT = port;
-			mClients.add(this);
-		}
-
-		@Override
-		public void run() {
-			try {
-					socket = new Socket(mAddress, PORT);
-					Log.d(CLIENT_TAG, "Client-side socket initialized.");
-					outStream = new ObjectOutputStream(socket.getOutputStream());
-				
-			} catch (UnknownHostException e) {
-				Log.d(CLIENT_TAG, "Initializing socket failed, UHE", e);
-			} catch (IOException e) {
-				Log.d(CLIENT_TAG, "Initializing socket failed, IOE.", e);
-			}
-
-			//Sending loop
-			while (true) {
-				DataPackage data;
-				
-					//data = queue.take();
-					//sendData(data.getByteArray());
-				
-			}
-		}
-		
-		
-		
-		/** Sends a serializable object to the sockets output stream */
-		public void sendData(Object obj) {
-			try {
-				//Checks if socket is active for safety
-				if (socket == null) {
-					Log.d(CLIENT_TAG, "Socket is null");
-				} else if (socket.getOutputStream() == null) {
-					Log.d(CLIENT_TAG, "Socket output stream is null");
-				}
-				
-				outStream.writeObject(obj);
-				outStream.flush();
-				
-			} catch (UnknownHostException e) {
-				Log.d(CLIENT_TAG, "Unknown Host", e);
-			} catch (IOException e) {
-				Log.d(CLIENT_TAG, "I/O Exception", e);
-			} catch (Exception e) {
-				Log.d(CLIENT_TAG, "Error3", e);
-			}
-			Log.d(CLIENT_TAG, "Client sent data." + obj);
-		}
-		
-		/** Called to close down socket */
-		public void tearDown() {
-			try {
-				getSocket().close();
-			} catch (IOException ioe) {
-				Log.e(CLIENT_TAG, "Error when closing server socket.");
-			}
-		}
-		
-	}
+	
 }
