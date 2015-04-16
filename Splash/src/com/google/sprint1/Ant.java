@@ -1,5 +1,8 @@
 package com.google.sprint1;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import android.util.Log;
 
 import com.metaio.sdk.jni.IGeometry;
@@ -12,11 +15,13 @@ public class Ant extends Drawable
 	private IGeometry ant;
 	private boolean isHit;
 	private Vector3d diffVec;
+	private float memory;
 	
-	float angDiffLimit = (float)(15*Math.PI/180);
+	float angDiffLimit = (float)(5*Math.PI/180);
 	float speed = 2f;
 	//float rotationSpeed = 10f;
 	float angle = 0;
+	float randNr = 0;
 	int k = 0;
 	
 	/** constructor ant */
@@ -27,6 +32,7 @@ public class Ant extends Drawable
 		setGeometryProperties(ant, 7f, new Vector3d(0f, 0f, 0f), new Rotation((float)(Math.PI*3/2), 0f, 0f)); 
 		ant.setVisible(false);
 		diffVec = new Vector3d(0f, 0f, 0f);
+		memory = 0;
 	}
 	
 	public IGeometry getGeometry()
@@ -65,17 +71,26 @@ public class Ant extends Drawable
 	
 	/** Function to generate movement to the ants */
 	public void randomMovement()
-	{
+	{		
 		//if first time called
 		if(k == 0)
 		{
-			angle = ant.getRotation().getEulerAngleRadians().getZ() + randBetween2(angDiffLimit);
+			float firstRand = randBetween2(angDiffLimit);
+			angle = ant.getRotation().getEulerAngleRadians().getZ() + firstRand;
+			memory = firstRand;
 			k = 1;
 		}
+		
 		//ant gets a new angle at random
-		if(randBetween(1, 4) == 2)
+		if(randBetween(1, 10) == 1)
 		{
-			angle = newAngle(angle);
+			randNr = randBetween2(angDiffLimit);
+			angle = ant.getRotation().getEulerAngleRadians().getZ() + randNr;
+			memory = randNr;
+		}
+		else 
+		{
+			angle = angle + memory;
 		}
 		
 		float diffX = (float)Math.cos(angle);
@@ -89,16 +104,7 @@ public class Ant extends Drawable
 		ant.setTranslation(movement);
 		ant.setRotation(new Rotation(0f, 0f, angle ));  //(float)(Math.PI*3/2)
 
-	}
-	
-	//return new angle for ant
-	private float newAngle(float angle)
-	{
-		float newAngle = 0;
-		newAngle = ant.getRotation().getEulerAngleRadians().getZ() + randBetween2(angDiffLimit);
-		return newAngle;
-	}
-	
+	}	
 	
 	/** Makes the ant go to the tower owned by the player who hit the ant */
 	public void movementToTower(Vector3d pos)
