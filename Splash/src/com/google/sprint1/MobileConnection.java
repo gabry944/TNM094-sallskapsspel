@@ -46,17 +46,7 @@ public class MobileConnection {
 	public void connectToPeer(InetAddress address, int port) {
 		if (!(mIPs.contains(address)))
 		{
-			try {
-				Socket socket = new Socket(address, SERVER_PORT);
-				Peer peer = new Peer(socket);
-				mPeers.add(peer);
-				mIPs.add(address);
-				new Thread(new ListenerThread(peer));
-				Log.d(TAG, "Connected to: " + address);
-			} catch (IOException e) {
-				Log.e(TAG,"Error when connecting.", e);
-				e.printStackTrace();
-			}
+			new Thread(new ConnectionThread(address)).start();
 		}else{
 			Log.d(TAG,"Already connected to: " + address);
 		}
@@ -199,6 +189,7 @@ public class MobileConnection {
 		
 		public void run(){
 			try {
+				Log.d(TAG, "Listening to: " + mPeer.getAdress());
 				while (!Thread.currentThread().isInterrupted()) {
 					
 					Object readData = mPeer.getInputStream().readObject();
@@ -211,8 +202,35 @@ public class MobileConnection {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
+			Log.d(TAG, "Stopped listening to: " + mPeer.getAdress());
 		}
 	}
 	
+	private class ConnectionThread implements Runnable{
+		
+		private InetAddress address;
+		public ConnectionThread(InetAddress address)
+		{
+			this.address =address;
+		}
+		
+		public void run(){
+			try {
+				Socket socket = new Socket(address, SERVER_PORT);
+
+				Peer peer = new Peer(socket);
+				mPeers.add(peer);
+				mIPs.add(address);
+
+				new Thread(new ListenerThread(peer));
+				Log.d(TAG, "Connected to: " + address);
+			} catch (IOException e) {
+				Log.e(TAG,"Error when connecting.", e);
+				e.printStackTrace();
+			}
+		
+		}
+	}
 	
 }
