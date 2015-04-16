@@ -34,15 +34,6 @@ public class Player {
 	{
 		return score;
 	}
-	
-	public Player(String ip){
-		
-		id = 0;
-		this.ip = ip;
-		position = new Vector3d(0f, 0f, 0f);	//position of canon
-		superPower = false;
-	}
-	
 
 	public Vector3d getPosition()
 	{
