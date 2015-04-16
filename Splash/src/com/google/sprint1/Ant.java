@@ -17,6 +17,7 @@ public class Ant extends Drawable
 	float speed = 2f;
 	//float rotationSpeed = 10f;
 	float angle = 0;
+	int k = 0;
 	
 	/** constructor ant */
 	public Ant(IGeometry geo, boolean hit) {
@@ -57,6 +58,7 @@ public class Ant extends Drawable
 			//spawn ant at random
 			ant.setVisible(true);
 			ant.setTranslation(new Vector3d(randBetween(-600 , 600), randBetween(-600 , 600), 0f));
+			ant.setRotation(new Rotation(randBetween(0f , 6.28f), randBetween(0f , 6.28f), 0f));
 		}
 		
 	}
@@ -64,11 +66,18 @@ public class Ant extends Drawable
 	/** Function to generate movement to the ants */
 	public void randomMovement()
 	{
-
-		// new angle in radians 
-		float angle = ant.getRotation().getEulerAngleRadians().getZ() + randBetween2(angDiffLimit);
-		//Log.d(TAG, "rand = " +  randBetween2(angDiffLimit));
-		 
+		//if first time called
+		if(k == 0)
+		{
+			angle = ant.getRotation().getEulerAngleRadians().getZ() + randBetween2(angDiffLimit);
+			k = 1;
+		}
+		//ant gets a new angle at random
+		if(randBetween(1, 4) == 2)
+		{
+			angle = newAngle(angle);
+		}
+		
 		float diffX = (float)Math.cos(angle);
 		float diffY = (float)Math.sin(angle);
 		
@@ -78,9 +87,18 @@ public class Ant extends Drawable
 		
 		//random movement of the ant until being hit 
 		ant.setTranslation(movement);
-		ant.setRotation(new Rotation((float)(Math.PI*3/2), 0f, angle ));  
+		ant.setRotation(new Rotation(0f, 0f, angle ));  //(float)(Math.PI*3/2)
 
 	}
+	
+	//return new angle for ant
+	private float newAngle(float angle)
+	{
+		float newAngle = 0;
+		newAngle = ant.getRotation().getEulerAngleRadians().getZ() + randBetween2(angDiffLimit);
+		return newAngle;
+	}
+	
 	
 	/** Makes the ant go to the tower owned by the player who hit the ant */
 	public void movementToTower(Vector3d pos)
@@ -96,7 +114,7 @@ public class Ant extends Drawable
 		else
 			angle = (float)(Math.atan(diffVec.getY()/diffVec.getX()) + Math.PI);
 		
-		ant.setRotation( new Rotation( (float)(Math.PI*3/2), 0f, angle + (float)(-Math.PI/4)));  // (float)(Math.PI*3/2)
+		ant.setRotation( new Rotation( 0f, 0f, angle));  // (float)(Math.PI*3/2)
 		ant.setTranslation(ant.getTranslation().subtract((diffVec.getNormalized()).multiply(speed)));
 		
 		//when ant reached tower
