@@ -144,6 +144,8 @@ public class MobileConnection {
 		
 		if (o instanceof ArrayList<?>)
 		{
+
+			Log.d(TAG, "Recieved list with IPS: " + o);
 			ArrayList<InetAddress> ips = (ArrayList<InetAddress>) o;
 			for(int i = 0; i <ips.size(); i++)
 				connectToPeer(ips.get(i), SERVER_PORT);
