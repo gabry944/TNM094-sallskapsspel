@@ -71,7 +71,7 @@ public class GameActivity extends ARViewActivity // implements
 	private Vector3d currentTouch;
 	private Vector3d endTouch;
 
-	private Vector3d touchVec; // endTouch-startTouch
+	private Vector3d touchVec; // Difference between ball and tower when shooting
 
 	Player player;
 
@@ -368,29 +368,34 @@ public class GameActivity extends ARViewActivity // implements
 	}
     
 	/** Function to draw the path of the ball (aim) */
-	private void drawBallPath(Vector3d touchVec) {
-		float velocity =(float)(Math.abs(touchVec.getX()/4)* Math.sin(Math.PI/4)+ Math.abs(touchVec.getY()/4)*Math.sin(Math.PI/4));//(Math.abs(currentTouch.getX()) + Math.abs(currentTouch.getY())) / (4f * (float) Math.sqrt(2));
-		float timeToLanding = (float) (velocity / (2 * (float) Math.sqrt(2) * 9.8f) + Math.sqrt(Math.pow( velocity / (2 * Math.sqrt(2) * 9.8), 2) + 165 / 9.8));
+	private void drawBallPath(Vector3d startVelocity) {
+		Vector3d startPosition = player.getPosition();
+		Vector3d gravity = new Vector3d(0f, 0f, -9.82f);
+		Vector3d position = new Vector3d(0f, 0f, 0f);
+		float zVelocity = startVelocity.getZ();
+		float timeToLanding = (float) (zVelocity / (2 * 9.82f) + Math.sqrt(Math.pow( zVelocity / (2 * 9.82), 2) + startPosition.getZ() / 9.82));
 		// Log.d(TAG, "time to landing : " + timeToLanding);
-
-		for (int i = 0; i < 10; i++) {
-			ballPath.get(i).setTranslation( new Vector3d(player.getPosition().getX() + ((float) (i) / 5) * touchVec.getX(),
-														 player.getPosition().getY() + ((float) (i) / 5) * touchVec.getY(),
-														 getPathZPos( velocity, (i * timeToLanding / 10))));
-
-			ballPathShadow.get(i).setTranslation( new Vector3d(player.getPosition().getX() + (float) ((double) (i) / 5) * touchVec.getX(),
-															   player.getPosition().getY() + (float) ((double) (i) / 5) * touchVec.getY(),
-															   0f));
+		float deltaTime = timeToLanding/(10*5);
+		for (int i = 0; i < 10; i++) 
+		{
+			// Calculate the objects position after i timestep
+			deltaTime += deltaTime;
+			position.setX(startPosition.getX()+startVelocity.getX()*deltaTime+gravity.getX()*deltaTime*deltaTime);		
+			position.setY(startPosition.getY()+startVelocity.getY()*deltaTime+gravity.getY()*deltaTime*deltaTime);
+			position.setZ(startPosition.getZ()+startVelocity.getZ()*deltaTime+gravity.getZ()*deltaTime*deltaTime);
+			
+			//check for collision with ground
+			if (position.getZ()<0f)
+			{
+			ballPath.get(i).setVisible(false);
+			ballPathShadow.get(i).setVisible(false);
+			}
+			else
+			{
+				ballPath.get(i).setTranslation(position);
+				ballPathShadow.get(i).setTranslation(new Vector3d(position.getX() , position.getY(),0f));	
+			}
 		}
-	}
-
-	/** Function to get ballpath position in Z */
-	private float getPathZPos(float velocity, float time) 
-	{
-		float pos = 0;
-		pos = (float) (165 - 9.82 * Math.pow(time, 2) + velocity * time / Math.sqrt(2));
-
-		return pos;
 	}
 
     private PaintBall getAvailableBall(int id)
@@ -425,7 +430,9 @@ public class GameActivity extends ARViewActivity // implements
 		touchVec = new Vector3d(-(ballGeometry1.getTranslation().getX()-towerGeometry1.getTranslation().getX()),
 									-(ballGeometry1.getTranslation().getY()-towerGeometry1.getTranslation().getY()),
 									0f);   
-
+		// Math.sin(Math.PI/6) angle PI/6 = 30' => sin(pi/6) = 0.5 && Math.cos(Math.PI/6) angle PI/6 = 30' => cos(pi/6) = 0.5
+		Vector3d vel = new Vector3d((float)(touchVec.getX()/3* Math.cos(angleForCanon)), (float)(touchVec.getY()/3* Math.cos(angleForCanon)), (float)(Math.abs(touchVec.getX()/5)* Math.sin(angleForCanon)+ Math.abs(touchVec.getY()/5)*Math.sin(angleForCanon)));
+		
         switch(event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:                
                 if(player.superPower == true)
@@ -451,7 +458,7 @@ public class GameActivity extends ARViewActivity // implements
             	}
             	else //if(player.superPower == false)
             	{
-            		drawBallPath(touchVec);
+            		drawBallPath(vel);
             	}            
                 break;
             case MotionEvent.ACTION_UP:
@@ -470,8 +477,7 @@ public class GameActivity extends ARViewActivity // implements
         		{
             		Vector3d pos = player.getPosition();
             		
-            		// Math.sin(Math.PI/6) angle PI/6 = 30' => sin(pi/6) = 0.5 && Math.cos(Math.PI/6) angle PI/6 = 30' => cos(pi/6) = 0.5
-        			Vector3d vel = new Vector3d((float)(touchVec.getX()/3* Math.cos(angleForCanon)), (float)(touchVec.getY()/3* Math.cos(angleForCanon)), (float)(Math.abs(touchVec.getX()/5)* Math.sin(angleForCanon)+ Math.abs(touchVec.getY()/5)*Math.sin(angleForCanon)));
+        			//Vector3d vel = new Vector3d((float)(touchVec.getX()/3* Math.cos(angleForCanon)), (float)(touchVec.getY()/3* Math.cos(angleForCanon)), (float)(Math.abs(touchVec.getX()/5)* Math.sin(angleForCanon)+ Math.abs(touchVec.getY()/5)*Math.sin(angleForCanon)));
         			DataPackage data = new DataPackage(ball.id, vel, pos);
         			mService.mConnection.sendData(data);
         			ball.fire(vel, pos);            	
