@@ -44,7 +44,7 @@ public class MobileConnection {
 	}
 
 	public void connectToPeer(InetAddress address, int port) {
-		if (!(mIPs.contains(address)))
+		if (!(mIPs.contains(address)) && mServerSocket.getInetAddress() != address)
 		{
 			new Thread(new ConnectionThread(address)).start();
 		}else{
