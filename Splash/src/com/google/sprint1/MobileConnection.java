@@ -118,10 +118,13 @@ public class MobileConnection {
 		try {
 			//Send back list with other peers
 			Peer peer = new Peer(socket);
+			Log.d(TAG, peer.getAdress() +" connected.");
 			peer.getOutputStream().writeObject(mIPs);
 			peer.getOutputStream().flush();
+
+			Log.d(TAG, "Sent IP list");
 			new Thread(new ListenerThread(peer)).start();
-			
+
 			//Add this peer to the list
 			mPeers.add(peer);
 			mIPs.add(peer.getAdress());
@@ -225,7 +228,7 @@ public class MobileConnection {
 				mPeers.add(peer);
 				mIPs.add(address);
 
-				new Thread(new ListenerThread(peer));
+				new Thread(new ListenerThread(peer)).start();
 				Log.d(TAG, "Connected to: " + address);
 			} catch (IOException e) {
 				Log.e(TAG,"Error when connecting.", e);
