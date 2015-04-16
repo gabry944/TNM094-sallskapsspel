@@ -93,6 +93,7 @@ public class PaintBall extends Drawable
 		geometry.setVisible(true);
 		paintballShadow.setVisible(true);
 		isActive = true;
+		
 	}
 	
 	/** Disable the ball */
@@ -116,6 +117,7 @@ public class PaintBall extends Drawable
 		float deltaTime = currentTime - startTime;
 		//Log.d(TAG, "CurrentTime: " + currentTime + "  DeltaTime : " + deltaTime);
 		deltaTime = deltaTime/1000; // convert from ms to s
+		deltaTime = deltaTime*4; // speed up time
 		//Log.d(TAG, "deltaTime : " + deltaTime);
 		Vector3d gravity = new Vector3d(0f, 0f, -9.82f);
 		Vector3d position = new Vector3d(0f, 0f, 0f);
@@ -126,7 +128,10 @@ public class PaintBall extends Drawable
 		position.setX(startPosition.getX()+startVelocity.getX()*deltaTime+gravity.getX()*deltaTime*deltaTime);		
 		position.setY(startPosition.getY()+startVelocity.getY()*deltaTime+gravity.getY()*deltaTime*deltaTime);
 		position.setZ(startPosition.getZ()+startVelocity.getZ()*deltaTime+gravity.getZ()*deltaTime*deltaTime);
-
+		
+		if (position.getZ()<0f)
+			position.setZ(0f);
+		
 		// Move object to the new position
 		geometry.setTranslation(position);
 	}
