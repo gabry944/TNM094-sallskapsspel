@@ -126,6 +126,7 @@ public class Ant extends Drawable
 		//when ant reached tower
 		if(diffVec.getX() < 2f && diffVec.getX() > -2f  && diffVec.getY() < 2f && diffVec.getY() > -2f)
 		{
+			Player.setScore();
 			ant.setVisible(false);
 			setIsHit(false);
 			spawnAnt();

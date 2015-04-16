@@ -145,13 +145,10 @@ public class GameActivity extends ARViewActivity // implements
 		//player = new Player(4);
 		
 		angleForCanon = Math.PI/6;
-
-
 		
 		player = GameState.getState().players.get(0);
 		
 		temp = 20f;
-		point = 0;
 
 		scaleStart = 0f;
 		
@@ -358,7 +355,8 @@ public class GameActivity extends ARViewActivity // implements
 			}
 		}
 		
-		updateFps();
+		showScore();
+		//updateFps();
 	}
 
 	/** function that activates when an object is being touched */
@@ -511,31 +509,44 @@ public class GameActivity extends ARViewActivity // implements
 		}
 	};
 	
-	/**Updates Fps each frame and display it to user once every second*/ 
-	private void updateFps() {
-		
-		//Adds one each frame
-		frameCounter++;
-		
-		//Uses internal clock to calculate the difference between current time and last time
-		double currentTime = System.currentTimeMillis() - lastTime;
-		//calculates the fps (*1000 due to milliseconds)
-		final int fps = (int) (((double) frameCounter / currentTime) * 1000);
-		
-		//Only displays if current time is over one second
-		if (currentTime > 1.0) {
-			lastTime = System.currentTimeMillis();
-			frameCounter = 0;
-			
-			//Necessary to run on UI thread to be able to edit the TextView
-			runOnUiThread(new Runnable() {
+	private void showScore()
+	{
+		//Necessary to run on UI thread to be able to edit the TextView
+		runOnUiThread(new Runnable() {
 
-				@Override
-				public void run() {
-					TextView displayPoints = (TextView) findViewById(R.id.myPoints);
-					displayPoints.setText("FPS: " + fps);
-				}
-			});
-		}
+			@Override
+			public void run() {
+				TextView displayPoints = (TextView) findViewById(R.id.myPoints);
+				displayPoints.setText("Score: " + Player.getScore());
+			}
+		});
 	}
+		
+	/**Updates Fps each frame and display it to user once every second*/ 
+//	private void updateFps() {
+//		
+//		//Adds one each frame
+//		frameCounter++;
+//		
+//		//Uses internal clock to calculate the difference between current time and last time
+//		double currentTime = System.currentTimeMillis() - lastTime;
+//		//calculates the fps (*1000 due to milliseconds)
+//		final int fps = (int) (((double) frameCounter / currentTime) * 1000);
+//		
+//		//Only displays if current time is over one second
+//		if (currentTime > 1.0) {
+//			lastTime = System.currentTimeMillis();
+//			frameCounter = 0;
+//			
+//			//Necessary to run on UI thread to be able to edit the TextView
+//			runOnUiThread(new Runnable() {
+//
+//				@Override
+//				public void run() {
+//					TextView displayPoints = (TextView) findViewById(R.id.myPoints);
+//					displayPoints.setText("FPS: " + fps);
+//				}
+//			});
+//		}
+//	}
 }
