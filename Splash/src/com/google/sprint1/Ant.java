@@ -13,26 +13,29 @@ public class Ant extends Drawable
 {
 	public static final String TAG = "Ant";
 	private IGeometry ant;
+	private IGeometry marker;
 	private boolean isHit;
 	private Vector3d diffVec;
 	private float memory;
 	
 	float angDiffLimit = (float)(5*Math.PI/180);
 	float speed = 2f;
-	//float rotationSpeed = 10f;
 	float angle = 0;
 	float randNr = 0;
 	int k = 0;
 	
 	/** constructor ant */
-	public Ant(IGeometry geo, boolean hit) {
+	public Ant(IGeometry geo, IGeometry hitMarker, boolean hit) {
 		super();
 		ant = geo;
+		marker = hitMarker;
 		isHit = hit;
-		setGeometryProperties(ant, 7f, new Vector3d(0f, 0f, 0f), new Rotation((float)(Math.PI*3/2), 0f, 0f)); 
+		setGeometryProperties(ant, 50f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f)); 
+		setGeometryProperties(hitMarker, 0.2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
 		ant.setVisible(false);
+		marker.setVisible(false);
 		diffVec = new Vector3d(0f, 0f, 0f);
-		memory = 0;
+		memory = 0f;
 	}
 	
 	public IGeometry getGeometry()
@@ -63,8 +66,8 @@ public class Ant extends Drawable
 		{
 			//spawn ant at random
 			ant.setVisible(true);
-			ant.setTranslation(new Vector3d(randBetween(-600 , 600), randBetween(-600 , 600), 0f));
-			ant.setRotation(new Rotation(randBetween(0f , 6.28f), randBetween(0f , 6.28f), 0f));
+			ant.setTranslation(new Vector3d(randBetween(-600 , 600), randBetween(-600 , 600), (float)(Math.PI*3/2)));
+			ant.setRotation(new Rotation(randBetween(0f , 6.28f), randBetween(0f , 6.28f), (float)(Math.PI*3/2)));
 		}
 		
 	}
@@ -90,7 +93,7 @@ public class Ant extends Drawable
 		}
 		else 
 		{
-			angle = angle + memory;
+			angle = angle + memory;   // keep turning the same way as before 
 		}
 		
 		float diffX = (float)Math.cos(angle);
@@ -102,7 +105,7 @@ public class Ant extends Drawable
 		
 		//random movement of the ant until being hit 
 		ant.setTranslation(movement);
-		ant.setRotation(new Rotation(0f, 0f, angle ));  //(float)(Math.PI*3/2)
+		ant.setRotation(new Rotation(0f, 0f, angle + (float)(Math.PI*3/2) ));  //(float)(Math.PI*3/2)
 
 	}	
 	
@@ -120,17 +123,24 @@ public class Ant extends Drawable
 		else
 			angle = (float)(Math.atan(diffVec.getY()/diffVec.getX()) + Math.PI);
 		
-		ant.setRotation( new Rotation( 0f, 0f, angle));  // (float)(Math.PI*3/2)
+		ant.setRotation( new Rotation( 0f, 0f, angle + (float)(Math.PI*3/2)));  // (float)(Math.PI*3/2)
 		ant.setTranslation(ant.getTranslation().subtract((diffVec.getNormalized()).multiply(speed)));
+		
+		marker.setTranslation(new Vector3d(ant.getTranslation().getX(), ant.getTranslation().getY(), 50f));
+		marker.setVisible(true);
+		marker.startAnimation("Take 001", true);
 		
 		//when ant reached tower
 		if(diffVec.getX() < 2f && diffVec.getX() > -2f  && diffVec.getY() < 2f && diffVec.getY() > -2f)
 		{
 			Player.setScore();
 			ant.setVisible(false);
+			marker.setVisible(false);
+			marker.startAnimation("Take 001", false);
 			setIsHit(false);
 			spawnAnt();
 			//player.point();
+			
 		}
 	}
 	
