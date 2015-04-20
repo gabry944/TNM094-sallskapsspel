@@ -12,6 +12,11 @@ public class GameState {
 	public ArrayList<Ant> ants;
 	public ArrayList<PowerUp> powerUps;
 	
+	public int pointsBluePlayer;
+	public int pointsGreenPlayer;
+	public int pointsRedPlayer;
+	public int pointsYellowPlayer;
+	
 	protected GameState() {
 		
 	}
@@ -29,10 +34,22 @@ public class GameState {
 		powerUps = new ArrayList<PowerUp>();
 		
 		players = new ArrayList<Player>();
-		players.add(new Player(1));
+		/*players.add(new Player(1));
 		players.add(new Player(2));
 		players.add(new Player(3));
-		players.add(new Player(4));
+		players.add(new Player(4));*/
+	}
+	
+	public void addPlayer(Player p){
+		players.add(p);
+	}
+	
+	public void setPoints(int blue, int green, int red, int yellow)
+	{
+		pointsBluePlayer = blue;
+		pointsGreenPlayer = green;
+		pointsRedPlayer = red;
+		pointsYellowPlayer= yellow;
 	}
 	
 }

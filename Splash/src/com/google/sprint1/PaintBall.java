@@ -174,18 +174,8 @@ public class PaintBall extends Drawable
 			max = boxmax.getY();
 		else
 			max = boxmax.getZ();
-		/*if (geometry.getTranslation().getX() + geometry.getBoundingBox().getMax().getX() >
-		boxmin.getX() * scale + obj.getTranslation().getX()
-		&& geometry.getTranslation().getX()	+ geometry.getBoundingBox().getMin().getX() <
-		boxmax.getX() * scale + obj.getTranslation().getX()
-		&& geometry.getTranslation().getY() + geometry.getBoundingBox().getMax().getY() > 
-		boxmin.getY() * scale + obj.getTranslation().getY() 
-		&& geometry.getTranslation().getY()	+ geometry.getBoundingBox().getMin().getY() < 
-		boxmax.getY() * scale + obj.getTranslation().getY() 
-		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMax().getZ() > 
-		boxmin.getZ() * scale + obj.getTranslation().getZ() 
-		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMin().getZ() < 
-		boxmax.getZ() * scale + obj.getTranslation().getZ())*/
+		
+		// a false way to calculate collisions, take some extra buffer since not shore about rotation
 		if (geometry.getTranslation().getX() + max >
 		min * scale + obj.getTranslation().getX() - 50f
 		&& geometry.getTranslation().getX()	+ min <
@@ -201,6 +191,20 @@ public class PaintBall extends Drawable
 			return true;
 		else
 			return false;
+		
+		//the true way to calculate, but do not take rotation into account 
+		/*if (geometry.getTranslation().getX() + geometry.getBoundingBox().getMax().getX() >
+		boxmin.getX() * scale + obj.getTranslation().getX()
+		&& geometry.getTranslation().getX()	+ geometry.getBoundingBox().getMin().getX() <
+		boxmax.getX() * scale + obj.getTranslation().getX()
+		&& geometry.getTranslation().getY() + geometry.getBoundingBox().getMax().getY() > 
+		boxmin.getY() * scale + obj.getTranslation().getY() 
+		&& geometry.getTranslation().getY()	+ geometry.getBoundingBox().getMin().getY() < 
+		boxmax.getY() * scale + obj.getTranslation().getY() 
+		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMax().getZ() > 
+		boxmin.getZ() * scale + obj.getTranslation().getZ() 
+		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMin().getZ() < 
+		boxmax.getZ() * scale + obj.getTranslation().getZ())*/
 	}
 	
 	public String toString(){

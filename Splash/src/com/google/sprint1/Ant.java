@@ -134,7 +134,8 @@ public class Ant extends Drawable
 		//when ant reached tower
 		if(diffVec.getX() < 2f && diffVec.getX() > -2f  && diffVec.getY() < 2f && diffVec.getY() > -2f)
 		{
-			Player.increaseScore();
+			//Player.increaseScore();
+			GameState.getState().players.get(0).increaseScore();
 			ant.setVisible(false);
 			marker.setVisible(false);
 			marker.startAnimation("Take 001", false);

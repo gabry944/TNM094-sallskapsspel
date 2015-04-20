@@ -39,28 +39,13 @@ public class GameActivity extends ARViewActivity // implements
 	private final int NUM_OF_ANTS = 10;
 	
 	/* Variables for objects in the game */
-	/*private IGeometry towerGeometry1;
-	private IGeometry canonGeometry1;
-	private IGeometry ballGeometry1;
-	private IGeometry towerGeometry2;
-	private IGeometry canonGeometry2;
-	private IGeometry ballGeometry2;
-	private IGeometry towerGeometry3;
-	private IGeometry canonGeometry3;
-	private IGeometry ballGeometry3;
-	private IGeometry towerGeometry4;
-	private IGeometry canonGeometry4;*/
 
-	Player player;
-	Player bluePlayer;
-	Player greenPlayer;
-	Player redPlayer;
-	Player yellowPlayer;
+	public Player player;
+	public Player bluePlayer;
+	public Player greenPlayer;
+	public Player redPlayer;
+	public Player yellowPlayer;
 
-	//private IGeometry aimPowerUp;
-	//private IGeometry aniBox;
-
-	//private IGeometry crosshair;
 
 	GameState gameState;
 
@@ -72,9 +57,7 @@ public class GameActivity extends ARViewActivity // implements
 	private IGeometry ballShadow;
 	//private IGeometry touchSphere;
 
-	
 	private IGeometry movBox;
-
 	
 	//Gesture handler
 	private GestureHandlerAndroid mGestureHandler;
@@ -88,9 +71,6 @@ public class GameActivity extends ARViewActivity // implements
 	protected int point;
 	TextView displayPoints;
 
-	float temp;
-	float scaleStart; // skalning av pilen för siktet
-
 	// Variables for Service handling
 	private NetworkService mService;
 	boolean mBound = false;
@@ -98,6 +78,10 @@ public class GameActivity extends ARViewActivity // implements
 	// FPS specific variables
 	//private int frameCounter = 0;
 	//private double lastTime;
+	
+	// Timer for game round TODO sync between units playing the game
+	private long gameStart;
+	private long gameRunning;
 
 	public static final String TAG = "GameActivity";
 
@@ -140,17 +124,13 @@ public class GameActivity extends ARViewActivity // implements
 		
 
 		touchVec = new Vector3d(0f, 0f, 0f);
-
-		
-		//player = new Player(4);
 		
 		angleForCanon = Math.PI/6;
 		
 		//player = GameState.getState().players.get(0);
 		
-		temp = 20f;
 
-		scaleStart = 0f;
+		gameStart = System.currentTimeMillis();
 		
 		//Gesture handler
 		mGestureMask = GestureHandler.GESTURE_DRAG;
@@ -215,7 +195,16 @@ public class GameActivity extends ARViewActivity // implements
 			greenPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));	
 			redPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));
 			yellowPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));
-				
+			
+			//! make sure that init is called!
+			GameState.getState().addPlayer(bluePlayer);
+			//GameState.addPlayer(bluePlayer);
+			//GameState.players.add(bluePlayer);			
+			GameState.getState().addPlayer(greenPlayer);
+			GameState.getState().addPlayer(redPlayer);
+			GameState.getState().addPlayer(yellowPlayer);
+			
+			// TODO this should be chosen by Id of player or something like that
 			player = bluePlayer;
 			mGestureHandler.addObject(player.touchSphere, 1);
 
@@ -334,6 +323,15 @@ public class GameActivity extends ARViewActivity // implements
 					obj.update();
 				}
 			}
+		}
+		
+		//Update Gametime 
+		gameRunning = System.currentTimeMillis() - gameStart;
+		if (gameRunning >= 3*60*1000) // 3 min game round (5 min quit long)
+		{
+			GameState.getState().setPoints(bluePlayer.getScore(), greenPlayer.getScore(), redPlayer.getScore(), yellowPlayer.getScore());
+			Intent GameEnded = new Intent(this, GameEndedActivity.class);
+			startActivity(GameEnded);
 		}
 		
 		showScore();
@@ -478,7 +476,7 @@ public class GameActivity extends ARViewActivity // implements
 			@Override
 			public void run() {
 				TextView displayPoints = (TextView) findViewById(R.id.myPoints);
-				displayPoints.setText("Score: " + Player.getScore());
+				displayPoints.setText("Score: " + player.getScore());
 			}
 		});
 	}
