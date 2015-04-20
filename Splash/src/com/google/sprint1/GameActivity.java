@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -107,6 +108,13 @@ public class GameActivity extends ARViewActivity // implements
 		// Bind to NetworkService
 		Intent intent = new Intent(this, NetworkService.class);
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+		
+		FragmentManager fm = getSupportFragmentManager();
+		
+		DFragment dFragment = new DFragment();
+		// Show DialogFragment
+		dFragment.show(fm, "Dialog Fragment");
+
 	}
 
 	/** Attaching layout to the activity */
