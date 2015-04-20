@@ -51,7 +51,12 @@ public class NetworkActivity extends Activity {
 
 	ArrayAdapter<NsdServiceInfo> listAdapter;
 	ArrayAdapter<Player> playerListAdapter;
-
+	ArrayList<NsdServiceInfo> arraylist;
+	
+	Runnable runHere;
+	ListView serviceListView;
+	ListView mListView;
+	
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,9 +65,17 @@ public class NetworkActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_network);
+		
+		serviceListView = (ListView) findViewById(R.id.serviceListView);
 
 		/* Start game */
 		startGame = new AssetsExtracter();
+		
+		arraylist = new ArrayList<NsdServiceInfo>();
+
+		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
+				android.R.layout.simple_list_item_1,
+				arraylist);
 
 		mNSDHandler = new Handler() {
 			@Override
@@ -78,27 +91,27 @@ public class NetworkActivity extends Activity {
 				}
 				// If key is "found", add to the adapter
 				else if ((service = (NsdServiceInfo) msg.getData().get("found")) != null) {
-					listAdapter.add(service);
+					//listAdapter.add(service);
+					arraylist.add(service);
 				}
 				// If key is "lost", remove from adapter
 				else if ((service = (NsdServiceInfo) msg.getData().get("lost")) != null) {
-					Log.d(TAG, "1.Service lost");
-					listAdapter.remove(service);
-					Log.d(TAG, "2.Service lost");
-
+					
+					for(int i = 0; i < arraylist.size(); i++){
+						if(arraylist.get(i).getServiceName().equals(service.getServiceName()))
+							arraylist.remove(i);
+					}
+					
 				}
+				
 				// Notify adapter that the list is updated.
 				listAdapter.notifyDataSetChanged();
 
 			}
 		};
 
-		ListView serviceListView = (ListView) findViewById(R.id.serviceListView);
-
-		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
-				android.R.layout.simple_list_item_1,
-				new ArrayList<NsdServiceInfo>());
-
+		 
+		
 		serviceListView.setAdapter(listAdapter);
 		serviceListView
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -198,6 +211,8 @@ public class NetworkActivity extends Activity {
 			mNsdHelper.unregisterService();
 			mNsdHelper = null;
         }
+		listAdapter.clear();
+		listAdapter.notifyDataSetChanged();
 		
 		super.onPause();
 	}
