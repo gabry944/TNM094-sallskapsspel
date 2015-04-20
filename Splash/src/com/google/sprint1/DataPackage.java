@@ -1,83 +1,71 @@
 package com.google.sprint1;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+
+import android.util.Log;
 
 import com.metaio.sdk.jni.Vector3d;
 
-enum DataType {
-	BALL_FIRED,
-	ANT_HIT,
-};
+
 
 public class DataPackage implements Serializable{
 	
 	public static final char BALL_FIRED = 'A';
-	public static final char ANT_HIT = 'B';
-	public static final int MAX_CAPACITY = 64;
+	public static final char ANT = 'B';
+	public static final char IP_LIST = 'c';
+	public static final char INVALID = 'I';
+	
+	public static final int BUFFER_HEAD_SIZE = 6;
+	private byte[] bufferHead = new byte[BUFFER_HEAD_SIZE];
+	private byte[] data;
 	
 	char operationCode;
 	
-	byte[] data;
-	int id;
-	float velocityX;
-	float velocityY;
-	float velocityZ;
-	
-	float positionX;
-	float positionY;
-	float positionZ;
-	
-	DataPackage(int id, Vector3d vel, Vector3d pos)
-	{
-		operationCode = BALL_FIRED;
-		this.id = id;
-		velocityX = vel.getX();
-		velocityY = vel.getY();
-		velocityZ = vel.getZ();
-		
-		positionX = pos.getX();
-		positionY = pos.getY();
-		positionZ = pos.getZ();
-	}
-	
+
 	DataPackage(char OC, byte[] data)
 	{
-		if (OC == BALL_FIRED)
-		{
-			ByteBuffer buffer = ByteBuffer.wrap(data);
-			this.id = buffer.getInt();
-			velocityX = buffer.getFloat();
-			velocityY = buffer.getFloat();
-			velocityZ = buffer.getFloat();
-			
-			positionX = buffer.getFloat();
-			positionY = buffer.getFloat();
-			positionZ = buffer.getFloat();
+		operationCode = OC;
+		this.data = data;
+	}
+	
+	
+	DataPackage(InputStream instream)
+	{
+		try {
+			//Bytes to read 
+			instream.read(bufferHead);
+			Log.d("DataPackage", "Read data");
+			ByteBuffer buffer = ByteBuffer.wrap(bufferHead);
+			int bytesToRead = buffer.getInt();
+			operationCode = buffer.getChar();
+			if(bytesToRead > 0) 
+			{
+				data = new byte[bytesToRead];
+				instream.read(data);
+			}else{
+				operationCode = INVALID;
+			}
+				
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
 	}
 	
-	
-	public byte[] getByteArray(){
-		//Allocate a buffer and add OC and a byte array.
-		ByteBuffer buffer = ByteBuffer.allocate(2 + 4*7);
-		buffer.putChar(operationCode);
-		buffer.putInt(id);
-		buffer.putFloat(velocityX);
-		buffer.putFloat(velocityY);
-		buffer.putFloat(velocityZ);
-		buffer.putFloat(positionX);
-		buffer.putFloat(positionY);
-		buffer.putFloat(positionZ);
-	
-		//Switch buffer to read mode and return
-		//buffer.flip();
-		return buffer.array();
+	public byte[] getData(){
+		return data;
 	}
+	
+	public char getOperationCode(){
+		return operationCode;
+	}
+	
 	
 	public String toString(){
-		return ("id: " + id + "velocity: " + velocityX + ", "+ velocityY + ", " + velocityZ +"," +
-				"position: " + positionX + "," + positionY +", " + positionZ);
+		return "NOT IMPLEMENTED";
 	}
 }

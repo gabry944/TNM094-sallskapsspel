@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -19,6 +20,7 @@ import java.util.concurrent.BlockingQueue;
 import com.metaio.sdk.jni.Vector3d;
 
 import android.os.Handler;
+import android.provider.ContactsContract.Contacts.Data;
 import android.util.Log;
 
 public class MobileConnection {
@@ -62,7 +64,7 @@ public class MobileConnection {
 		
 	}
 
-	public synchronized void sendData(DataPackage data)
+	public synchronized void sendData(byte[] data)
 	{
 		if(!mPeers.isEmpty())
 		{
@@ -73,29 +75,12 @@ public class MobileConnection {
 		}
 	}
 	
-	public synchronized void updateData(DataPackage data) {
-		Vector3d vel = new Vector3d(data.velocityX,data.velocityY,data.velocityZ);
-		Vector3d pos = new Vector3d(data.positionX,data.positionY,data.positionZ);
-		
-		GameState.getState().exsisting_paint_balls.get(data.id).fire(vel, pos);
-		//TODO: Send data back to activity using mUpdateHandler.
-		
-	}
 
 	/** Sends a serializable object to the sockets output stream */
-	private synchronized void sendPackage(Object obj, Peer peer) {
+	private synchronized void sendPackage(byte[] data, Peer peer) {
 		try {
-			ObjectOutputStream outStream = peer.getOutputStream();
-			Socket socket = peer.getSocket();
-			
-			//Checks if socket is active for safety
-			if (socket == null) {
-				Log.d(TAG, "Socket is null");
-			} else if (socket.getOutputStream() == null) {
-				Log.d(TAG, "Socket output stream is null");
-			}
-			
-			outStream.writeObject(obj);
+			OutputStream outStream = peer.getOutputStream();
+			outStream.write(data);
 			outStream.flush();
 			
 		} catch (UnknownHostException e) {
@@ -119,9 +104,22 @@ public class MobileConnection {
 			//Send back list with other peers
 			Peer peer = new Peer(socket);
 			Log.d(TAG, peer.getAdress() +" connected.");
-			peer.getOutputStream().writeObject(mIPs);
-			peer.getOutputStream().flush();
-
+			
+			ByteBuffer buffer;
+			for (int i = 0; i < mIPs.size(); i++)
+			{
+				byte[] byteAddress = mIPs.get(i).getAddress();
+				
+				buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + byteAddress.length);	
+				buffer.putInt(byteAddress.length);
+				buffer.putChar(DataPackage.IP_LIST);
+				buffer.put(byteAddress);
+				Log.d(TAG, "Created IP to send with size: " + byteAddress.length);
+				peer.getOutputStream().write(buffer.array());
+				peer.getOutputStream().flush();
+				buffer.clear();
+			}
+			
 			Log.d(TAG, "Sent IP list");
 			new Thread(new ListenerThread(peer)).start();
 
@@ -137,23 +135,30 @@ public class MobileConnection {
 	 * Handle the object found in the outputstream and sends it to the correct place
 	 * @param o
 	 */
-	private void handleData(Object o)
+	private synchronized void handleData(DataPackage data)
 	{
-		if (o instanceof DataPackage) {
-			Log.d(TAG, "Read from the stream: " + o);
-			DataPackage data = (DataPackage)o;
-			updateData(data);
+		switch (data.getOperationCode())
+		{
+		case DataPackage.BALL_FIRED: 
+				fireBall(data.getData());
+				break;
+			case DataPackage.ANT: 
+				updateAnt(data.getData());
+				break;
+		case DataPackage.IP_LIST:
+			try {
+				Log.d(TAG, "Recieved from other peer: " + InetAddress.getByAddress(data.getData()).toString());
+				connectToPeer(InetAddress.getByAddress(data.getData()), SERVER_PORT);
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		default:
+			break;
 		}
 		
-		if (o instanceof ArrayList<?>)
-		{
-
-			Log.d(TAG, "Recieved list with IPS: " + o);
-			ArrayList<InetAddress> ips = (ArrayList<InetAddress>) o;
-			for(int i = 0; i <ips.size(); i++)
-				connectToPeer(ips.get(i), SERVER_PORT);
-			
-		}
+		
 	}
 	
 	/** One ServerThread will run listening for new connections. */
@@ -193,21 +198,11 @@ public class MobileConnection {
 		}
 		
 		public void run(){
-			try {
-				Log.d(TAG, "Listening to: " + mPeer.getAdress());
-				while (!Thread.currentThread().isInterrupted()) {
-					
-					Object readData = mPeer.getInputStream().readObject();
-					handleData(readData);
-				}
-
-			} catch (IOException e) {
-				Log.e(TAG, "Server loop error: ", e);
-			}catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			Log.d(TAG, "Listening to: " + mPeer.getAdress());
+			while (!Thread.currentThread().isInterrupted()) {
+				DataPackage data = new DataPackage(mPeer.getInputStream());
+				handleData(data);
 			}
-
 			Log.d(TAG, "Stopped listening to: " + mPeer.getAdress());
 		}
 	}
@@ -236,6 +231,23 @@ public class MobileConnection {
 			}
 		
 		}
+	}
+	//FUNCTIONS FOR UPDATING GAME STATE
+	private void fireBall(byte[] data)
+	{
+		ByteBuffer buffer = ByteBuffer.wrap(data);
+		int id = buffer.getInt();
+		Vector3d vel = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
+		Vector3d pos = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
+		GameState.getState().exsisting_paint_balls.get(id).fire(vel, pos);
+	}
+	
+	private void updateAnt(byte[] data)
+	{
+		ByteBuffer buffer = ByteBuffer.wrap(data);
+		int id = buffer.getInt();
+		Vector3d pos = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
+		GameState.getState().ants.get(id).setPosition(pos);
 	}
 	
 }
