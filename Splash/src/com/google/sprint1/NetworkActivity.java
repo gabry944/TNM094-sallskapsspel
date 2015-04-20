@@ -74,6 +74,7 @@ public class NetworkActivity extends Activity {
 		/* Start game */
 		startGame = new AssetsExtracter();
 		
+		//ArrayList to store all services
 		arraylist = new ArrayList<NsdServiceInfo>();
 
 		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
@@ -222,19 +223,6 @@ public class NetworkActivity extends Activity {
 	}
 
 	/**
-	 * Called when when a new instance of NetworkActivity is started, for
-	 * example when starting the game for the first time or when entering from
-	 * another activity
-	 */
-	@Override
-	protected void onStart() {
-		super.onStart();
-
-		
-
-	}
-
-	/**
 	 * Called when after onStart() when a new instance of NetworkActivity is
 	 * started and when ever the user enters the activity from a paused state
 	 */
@@ -271,8 +259,9 @@ public class NetworkActivity extends Activity {
 
         }
 		
-//		if(mService != null)
-//			unbindService(mServiceConnection);
+		if(mService != null)
+			unbindService(mServiceConnection);
+		
 		super.onDestroy();
 	}
 

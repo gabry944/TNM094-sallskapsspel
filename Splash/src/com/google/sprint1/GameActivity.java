@@ -209,57 +209,16 @@ public class GameActivity extends ARViewActivity // implements
 
 			/** Load Object */
 
-			//creates the tower
-
-			/*towerGeometry1 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry1, 3f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
-=======
-			towerGeometry1 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry1, 2f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
-
-			canonGeometry1 = Load3Dmodel("tower/slingshotRed.mfbx");
-			geometryProperties(canonGeometry1, 1.5f, new Vector3d(-675f, -495f, 165f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
-			
-			//Load touchSphere to easier shoot from tower
-			touchSphere = Load3Dmodel("tower/invisibleBall.mfbx");
-			geometryProperties(touchSphere, 6f, new Vector3d(-650f, -520f, 250f), new Rotation(0f, 0f, 0f));
-			
-			ballGeometry1 = Load3Dmodel("paintball/paintball/ballRed.mfbx");
-			geometryProperties(ballGeometry1, 2f, new Vector3d(-650f, -520f, 350f), new Rotation(0f, 0f, 0f));
-			mGestureHandler.addObject(ballGeometry1, 1);	*/		
+			//creates the tower	
 			
 			bluePlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));
 			greenPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));	
 			redPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));
 			yellowPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));
 				
-			
 			player = bluePlayer;
-			//mGestureHandler.addObject(player.ballGeometry, 1);
 			mGestureHandler.addObject(player.touchSphere, 1);
-			
-			
-			/*towerGeometry2 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry2, 2f, new Vector3d(650f, 520f, 0f), new Rotation(0f, 0f, 0f));
-			canonGeometry2 = Load3Dmodel("tower/slingshotBlue.mfbx");
-			geometryProperties(canonGeometry2, 1.5f, new Vector3d(625f, 545f, 165f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
-			ballGeometry2 = Load3Dmodel("paintball/paintball/ballBlue.mfbx");
-			geometryProperties(ballGeometry2, 2f, new Vector3d(650f, 520f, 250f), new Rotation(0f, 0f, 0f));
-			
-			towerGeometry3 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry3, 2f, new Vector3d(-650f, 520f, 0f), new Rotation(0f, 0f, 0f));
-			canonGeometry3 = Load3Dmodel("tower/slingshotYellow.mfbx");
-			geometryProperties(canonGeometry3, 1.5f, new Vector3d(-625f, 545f, 165f), new Rotation((float)Math.PI/2, 0f, -(float)Math.PI/4));
-			ballGeometry3 = Load3Dmodel("paintball/paintball/ballYellow.mfbx");
-			geometryProperties(ballGeometry3, 2f, new Vector3d(-650f, 520f, 250f), new Rotation(0f, 0f, 0f));
-			
-			towerGeometry4 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry4, 2f, new Vector3d(650f, -520f, 0f), new Rotation(0f, 0f, 0f));
-			canonGeometry4 = Load3Dmodel("tower/slingshotGreen.mfbx");
-			geometryProperties(canonGeometry4, 1.5f, new Vector3d(675f, -495f, 165f), new Rotation((float)Math.PI/2, 0f, -(float)Math.PI/4));
-			ballGeometry4 = Load3Dmodel("paintball/paintball/ballGreen.mfbx");
-			geometryProperties(ballGeometry4, 2f, new Vector3d(650f, -520f, 250f), new Rotation(0f, 0f, 0f));
-*/
+
 
 			// Load powerUps
 			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aimPowerUp.mfbx"));

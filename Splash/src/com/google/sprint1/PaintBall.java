@@ -186,18 +186,18 @@ public class PaintBall extends Drawable
 		boxmin.getZ() * scale + obj.getTranslation().getZ() 
 		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMin().getZ() < 
 		boxmax.getZ() * scale + obj.getTranslation().getZ())*/
-		if (geometry.getTranslation().getX() + geometry.getBoundingBox().getMax().getX() >
-		min * scale + obj.getTranslation().getX()
-		&& geometry.getTranslation().getX()	+ geometry.getBoundingBox().getMin().getX() <
-		max * scale + obj.getTranslation().getX()
-		&& geometry.getTranslation().getY() + geometry.getBoundingBox().getMax().getY() > 
-		min * scale + obj.getTranslation().getY() 
-		&& geometry.getTranslation().getY()	+ geometry.getBoundingBox().getMin().getY() < 
-		max * scale + obj.getTranslation().getY() 
-		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMax().getZ() > 
-		min * scale + obj.getTranslation().getZ() 
-		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMin().getZ() < 
-		max * scale + obj.getTranslation().getZ())
+		if (geometry.getTranslation().getX() + max >
+		min * scale + obj.getTranslation().getX() - 50f
+		&& geometry.getTranslation().getX()	+ min <
+		max * scale + obj.getTranslation().getX() + 50f
+		&& geometry.getTranslation().getY() + max > 
+		min * scale + obj.getTranslation().getY() - 50f
+		&& geometry.getTranslation().getY()	+ min < 
+		max * scale + obj.getTranslation().getY() + 50f
+		&& geometry.getTranslation().getZ()+ max > 
+		min * scale + obj.getTranslation().getZ() - 50f
+		&& geometry.getTranslation().getZ()+ min < 
+		max * scale + obj.getTranslation().getZ() + 50f)
 			return true;
 		else
 			return false;

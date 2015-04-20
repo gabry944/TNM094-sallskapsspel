@@ -16,12 +16,11 @@ public class Player extends Drawable {
 
 	public boolean superPower; 
 
-	/*private Vector3d startPosPlayer1 = new Vector3d(-600f, -450f, 165f);
-	private Vector3d startPosPlayer1 = new Vector3d(-650f, -520f, 250f);
-
+	private Vector3d startPosPlayer1 = new Vector3d(-600f, -450f, 165f);
+	//private Vector3d startPosPlayer1 = new Vector3d(-650f, -520f, 250f);
 	private Vector3d startPosPlayer2 = new Vector3d(-600f, 450f, 165f);
 	private Vector3d startPosPlayer3 = new Vector3d(600f, -450f, 165f);
-	private Vector3d startPosPlayer4 = new Vector3d(600f, 450f, 165f);*/
+	private Vector3d startPosPlayer4 = new Vector3d(600f, 450f, 165f);
 	
 	
 	public Player(IGeometry towerGeo,IGeometry slingshotGeo,IGeometry ballGeo, Vector3d startPosPlayer, IGeometry invisibleBall)
@@ -65,28 +64,28 @@ public class Player extends Drawable {
 		return startPosition;
 	}
 	
-	/*public Player(int id)
+	public Player(int id)
 	{
 		if (id == 1)
 		{
-			position = new Vector3d(startPosPlayer1);
+			startPosition = new Vector3d(startPosPlayer1);
 		}
 		
 		if (id == 2)
 		{
-			position = new Vector3d(startPosPlayer2);
+			startPosition = new Vector3d(startPosPlayer2);
 		}
 		
 		if (id == 3)
 		{
-			position = new Vector3d(startPosPlayer3);
+			startPosition = new Vector3d(startPosPlayer3);
 		}
 		
 		if (id == 4)
 		{
-			position = new Vector3d(startPosPlayer4);
+			startPosition = new Vector3d(startPosPlayer4);
 		}
 			
-	}*/
+	}
 
 }
