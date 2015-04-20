@@ -8,7 +8,7 @@ public class GameState {
 	
 	
 	public ArrayList<PaintBall> exsisting_paint_balls;
-	public ArrayList<Player> players;
+	//public ArrayList<Player> players;
 	public ArrayList<Ant> ants;
 	public ArrayList<PowerUp> powerUps;
 	
@@ -27,12 +27,12 @@ public class GameState {
 	/** Initialize the Game State, currently called the first time getState is called*/
 	private void init(){
 		powerUps = new ArrayList<PowerUp>();
-		
+		/*
 		players = new ArrayList<Player>();
 		players.add(new Player(1));
 		players.add(new Player(2));
 		players.add(new Player(3));
-		players.add(new Player(4));
+		players.add(new Player(4));*/
 	}
 	
 }

@@ -36,7 +36,7 @@ public class GameActivity extends ARViewActivity // implements
 													// OnGesturePerformedListener
 {
 	/* Variables for objects in the game */
-	private IGeometry towerGeometry1;
+	/*private IGeometry towerGeometry1;
 	private IGeometry canonGeometry1;
 	private IGeometry ballGeometry1;
 	private IGeometry towerGeometry2;
@@ -44,9 +44,13 @@ public class GameActivity extends ARViewActivity // implements
 	private IGeometry towerGeometry3;
 	private IGeometry canonGeometry3;
 	private IGeometry towerGeometry4;
-	private IGeometry canonGeometry4;
+	private IGeometry canonGeometry4;*/
 
 	Player player;
+	Player bluePlayer;
+	Player greenPlayer;
+	Player redPlayer;
+	Player yellowPlayer;
 
 	private IGeometry aimPowerUp;
 	private IGeometry aniBox;
@@ -134,7 +138,7 @@ public class GameActivity extends ARViewActivity // implements
 		
 		angleForCanon = Math.PI/6;
 		
-		player = GameState.getState().players.get(0);
+		//player = GameState.getState().players.get(0);
 		
 		temp = 20f;
 
@@ -201,19 +205,30 @@ public class GameActivity extends ARViewActivity // implements
 
 			/** Load Object */
 
-			//Gesture handler
 			//creates the tower
-			towerGeometry1 = Load3Dmodel("tower/tower.mfbx");
+			/*towerGeometry1 = Load3Dmodel("tower/tower.mfbx");
 			geometryProperties(towerGeometry1, 3f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
 			canonGeometry1 = Load3Dmodel("tower/slingshotRed.mfbx");
 			geometryProperties(canonGeometry1, 2f, new Vector3d(-685f, -485f, 250f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
 			ballGeometry1 = Load3Dmodel("paintball/paintball/ballRed.mfbx");
 			geometryProperties(ballGeometry1, 2f, new Vector3d(-650f, -520f, 350f), new Rotation(0f, 0f, 0f));
-			mGestureHandler.addObject(ballGeometry1, 1);			
+			mGestureHandler.addObject(ballGeometry1, 1);	*/		
 			
-			towerGeometry2 = Load3Dmodel("tower/tower.mfbx");
+			bluePlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-685f, -485f, 250f));
+				
+			
+			player = bluePlayer;
+			mGestureHandler.addObject(player.ballGeometry, 1);
+			
+			greenPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 250f));	
+			
+			redPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 250f));
+			
+			yellowPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 250f));
+			
+			/*towerGeometry2 = Load3Dmodel("tower/tower.mfbx");
 			geometryProperties(towerGeometry2, 2f,
-					new Vector3d(650f, 520f, 0f), new Rotation(0f, 0f, 0f));
+					new Vector3d(650f, 520f, 0f), new Rotation(0f, 0f, 0f));	
 			canonGeometry2 = Load3Dmodel("tower/canon.mfbx");
 			geometryProperties(canonGeometry2, 2f, new Vector3d(650f, 520f,
 					165f), new Rotation(0f, 0f, 0f));
@@ -228,7 +243,7 @@ public class GameActivity extends ARViewActivity // implements
 					new Vector3d(650f, -520f, 0f), new Rotation(0f, 0f, 0f));
 			canonGeometry4 = Load3Dmodel("tower/canon.mfbx");
 			geometryProperties(canonGeometry4, 2f, new Vector3d(650f, -520f,
-					165f), new Rotation(0f, 0f, 0f));
+					165f), new Rotation(0f, 0f, 0f));*/
 
 			// Load powerUps
 			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aimPowerUp.mfbx"));
@@ -286,7 +301,7 @@ public class GameActivity extends ARViewActivity // implements
 		super.onDrawFrame();
 
 		// If content not loaded yet, do nothing
-		if ( towerGeometry4== null || GameState.getState().exsisting_paint_balls.isEmpty())
+		if ( GameState.getState().exsisting_paint_balls.isEmpty())
 			return;
 
 		
@@ -364,8 +379,8 @@ public class GameActivity extends ARViewActivity // implements
 		mGestureHandler.onTouch(v, event);
 
     	//coordinates between tower and "slangbella"
-		touchVec = new Vector3d(-(ballGeometry1.getTranslation().getX()-towerGeometry1.getTranslation().getX()),
-									-(ballGeometry1.getTranslation().getY()-towerGeometry1.getTranslation().getY()),
+		touchVec = new Vector3d(-(player.ballGeometry.getTranslation().getX()-player.towerGeometry.getTranslation().getX()),
+									-(player.ballGeometry.getTranslation().getY()-player.towerGeometry.getTranslation().getY()),
 									0f);   
 		// Math.sin(Math.PI/6) angle PI/6 = 30' => sin(pi/6) = 0.5 && Math.cos(Math.PI/6) angle PI/6 = 30' => cos(pi/6) = 0.5
 		Vector3d vel = new Vector3d((float)(touchVec.getX()/3* Math.cos(angleForCanon)), 
@@ -385,8 +400,8 @@ public class GameActivity extends ARViewActivity // implements
             case MotionEvent.ACTION_UP:
             	aim.deactivate();
             	// move slingshot to original position
-        		ballGeometry1.setTranslation(towerGeometry1.getTranslation());
-        		ballGeometry1.setTranslation(new Vector3d(0f, 0f, 350f), true);
+        		player.ballGeometry.setTranslation(player.towerGeometry.getTranslation());
+        		player.ballGeometry.setTranslation(new Vector3d(0f, 0f, 350f), true);
         		
             	PaintBall ball = getAvailableBall(1);
         		if(ball != null)
