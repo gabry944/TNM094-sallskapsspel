@@ -11,10 +11,10 @@ public class PaintBall extends Drawable
 {
 	public static final String TAG = "PaintBall";
 	
-	public IGeometry geometry; //TODO make privet
+	private IGeometry geometry; 
 	private IGeometry splashGeometry;
 	private IGeometry paintballShadow;
-	public int id; // TODO make privet
+	private int id; 
 	private boolean isActive;
 
 	public PaintBall(int id, IGeometry geo, IGeometry splGeo, IGeometry pbShad) {
@@ -38,6 +38,26 @@ public class PaintBall extends Drawable
 		
 		}
 		
+	public IGeometry getGeometry()
+	{
+		return geometry;
+	}
+	
+	public void setGeometry(Vector3d vec)
+	{
+		geometry.setTranslation(vec);
+	}
+	
+	public int getId()
+	{
+		return id;
+	}
+	
+	public void setId(int ID)
+	{
+		id = ID;
+	}
+	
 	/** Called every frame. Updates position and checks if on the ground */
 	public void update(){
 		
