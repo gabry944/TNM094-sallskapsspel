@@ -45,7 +45,7 @@ public class MobileConnection {
 		new Thread(new ServerThread()).start();
 	}
 
-	public void connectToPeer(InetAddress address, int port) {
+	public synchronized void connectToPeer(InetAddress address, int port) {
 		if (!(mIPs.contains(address)) && mServerSocket.getInetAddress() != address)
 		{
 			new Thread(new ConnectionThread(address)).start();
@@ -90,7 +90,6 @@ public class MobileConnection {
 		} catch (Exception e) {
 			Log.d(TAG, "Error3", e);
 		}
-		Log.d(TAG, "Sent data to: " + peer.getAdress());
 	}
 	
 	/** Handshake is called when the serversocket accepts (finds) another peer
@@ -233,8 +232,8 @@ public class MobileConnection {
 		}
 	}
 	//FUNCTIONS FOR UPDATING GAME STATE
-	private void fireBall(byte[] data)
-	{
+	private synchronized void fireBall(byte[] data)
+	{ 	
 		ByteBuffer buffer = ByteBuffer.wrap(data);
 		int id = buffer.getInt();
 		Vector3d vel = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
@@ -242,12 +241,13 @@ public class MobileConnection {
 		GameState.getState().exsisting_paint_balls.get(id).fire(vel, pos);
 	}
 	
-	private void updateAnt(byte[] data)
+	private synchronized void updateAnt(byte[] data)
 	{
+		
 		ByteBuffer buffer = ByteBuffer.wrap(data);
 		int id = buffer.getInt();
 		Vector3d pos = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
-		GameState.getState().ants.get(id).setPosition(pos);
+		//GameState.getState().ants.get(id).setPosition(pos);
 	}
 	
 }

@@ -38,7 +38,6 @@ public class DataPackage implements Serializable{
 		try {
 			//Bytes to read 
 			instream.read(bufferHead);
-			Log.d("DataPackage", "Read data");
 			ByteBuffer buffer = ByteBuffer.wrap(bufferHead);
 			int bytesToRead = buffer.getInt();
 			operationCode = buffer.getChar();

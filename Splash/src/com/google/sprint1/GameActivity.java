@@ -359,7 +359,7 @@ public class GameActivity extends ARViewActivity // implements
     		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getY());
     		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getZ());
     		
-			mService.mConnection.sendData(buffer.array());
+			//mService.mConnection.sendData(buffer.array());
 		}
 		
 		//Update powerup(s)
