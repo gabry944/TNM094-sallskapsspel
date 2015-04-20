@@ -13,10 +13,10 @@ public class PaintBall extends Drawable
 {
 	public static final String TAG = "PaintBall";
 	
-	public IGeometry geometry; //TODO make privet
+	private IGeometry geometry; 
 	private IGeometry splashGeometry;
 	private IGeometry paintballShadow;
-	public int id; // TODO make privet
+	private int id; 
 	private boolean isActive;
 
 	public PaintBall(int id, IGeometry geo, IGeometry splGeo, IGeometry pbShad) {
@@ -40,6 +40,26 @@ public class PaintBall extends Drawable
 		
 		}
 		
+	public IGeometry getGeometry()
+	{
+		return geometry;
+	}
+	
+	public void setGeometry(Vector3d vec)
+	{
+		geometry.setTranslation(vec);
+	}
+	
+	public int getId()
+	{
+		return id;
+	}
+	
+	public void setId(int ID)
+	{
+		id = ID;
+	}
+	
 	/** Called every frame. Updates position and checks if on the ground */
 	public void update(){
 		
@@ -72,9 +92,9 @@ public class PaintBall extends Drawable
 		
 		for (int i = 0; i < GameState.getState().powerUps.size(); i++)
 		{
-			if (checkCollision(GameState.getState().powerUps.get(i).geometry)) {
+			if (checkCollision(GameState.getState().powerUps.get(i).getGeometry()) && isActive == true) {
 				//player.superPower = true;
-				GameState.getState().powerUps.get(i).geometry.setVisible(false);
+				GameState.getState().powerUps.get(i).isHit();
 			}
 		}
 		
@@ -101,14 +121,14 @@ public class PaintBall extends Drawable
 	/** Disable the ball */
 	public void disable(){
 		splashGeometry.setTranslation(geometry.getTranslation());
-		startPosition = new Vector3d(0.0f, 0.0f, 0.0f);
-		startVelocity = new Vector3d(0.0f, 0.0f, 0.0f);
 		startTime = 0;		
 		geometry.setTranslation(new Vector3d(0f,0f,0f));
 		splashGeometry.setVisible(true);
 		geometry.setVisible(false);
 		paintballShadow.setVisible(false);
 		isActive = false;
+		startPosition = new Vector3d(0.0f, 0.0f, 0.0f);
+		startVelocity = new Vector3d(0.0f, 0.0f, 0.0f);
 	}
 	
 	/** move an object depending on physics calculated with Euler model*/

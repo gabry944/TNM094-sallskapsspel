@@ -44,36 +44,35 @@ public class GameActivity extends ARViewActivity // implements
 	private IGeometry ballGeometry1;
 	private IGeometry towerGeometry2;
 	private IGeometry canonGeometry2;
+	private IGeometry ballGeometry2;
 	private IGeometry towerGeometry3;
 	private IGeometry canonGeometry3;
+	private IGeometry ballGeometry3;
 	private IGeometry towerGeometry4;
 	private IGeometry canonGeometry4;
+	private IGeometry ballGeometry4;
 
-	private IGeometry aimPowerUp;
-	private IGeometry aniBox;
+	GameState gameState;
+	Player player;
+	Ant ant;
+	Aim aim;
 
-	private IGeometry crosshair;
-	private IGeometry arrowAim;
+	//private IGeometry crosshair;
+	//private IGeometry arrowAim;
 
 
 	private IGeometry ball;
 	private IGeometry ballShadow;
+	private IGeometry touchSphere;
 
-	GameState gameState;
 	
 	//Gesture handler
 	private GestureHandlerAndroid mGestureHandler;
 	private int mGestureMask;
-
-	Ant ant;
-
-	Aim aim;
 		
 	private double angleForCanon;
 	
 	private Vector3d touchVec; // Difference between ball and tower when shooting
-
-	Player player;
 
 	// point count
 	protected int point;
@@ -87,8 +86,8 @@ public class GameActivity extends ARViewActivity // implements
 	boolean mBound = false;
 
 	// FPS specific variables
-	private int frameCounter = 0;
-	private double lastTime;
+	//private int frameCounter = 0;
+	//private double lastTime;
 
 	public static final String TAG = "GameActivity";
 
@@ -200,39 +199,42 @@ public class GameActivity extends ARViewActivity // implements
 
 			/** Load Object */
 
-			//Gesture handler
 			//creates the tower
 			towerGeometry1 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry1, 3f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
+			geometryProperties(towerGeometry1, 2f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
 			canonGeometry1 = Load3Dmodel("tower/slingshotRed.mfbx");
-			geometryProperties(canonGeometry1, 2f, new Vector3d(-685f, -485f, 250f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
+			geometryProperties(canonGeometry1, 1.5f, new Vector3d(-675f, -495f, 165f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
+			//Load touchSphere to easier shoot from tower
+			touchSphere = Load3Dmodel("tower/invisibleBall.mfbx");
+			geometryProperties(touchSphere, 6f, new Vector3d(-650f, -520f, 250f), new Rotation(0f, 0f, 0f));
 			ballGeometry1 = Load3Dmodel("paintball/paintball/ballRed.mfbx");
-			geometryProperties(ballGeometry1, 2f, new Vector3d(-650f, -520f, 350f), new Rotation(0f, 0f, 0f));
-			mGestureHandler.addObject(ballGeometry1, 1);			
+			geometryProperties(ballGeometry1, 1.8f, new Vector3d(-650f, -520f, 250f), new Rotation(0f, 0f, 0f));
+			//touchSphere.setVisible(false);
+			mGestureHandler.addObject(touchSphere, 1);			
 			
 			towerGeometry2 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry2, 2f,
-					new Vector3d(650f, 520f, 0f), new Rotation(0f, 0f, 0f));
-			canonGeometry2 = Load3Dmodel("tower/canon.mfbx");
-			geometryProperties(canonGeometry2, 2f, new Vector3d(650f, 520f,
-					165f), new Rotation(0f, 0f, 0f));
+			geometryProperties(towerGeometry2, 2f, new Vector3d(650f, 520f, 0f), new Rotation(0f, 0f, 0f));
+			canonGeometry2 = Load3Dmodel("tower/slingshotBlue.mfbx");
+			geometryProperties(canonGeometry2, 1.5f, new Vector3d(625f, 545f, 165f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
+			ballGeometry2 = Load3Dmodel("paintball/paintball/ballBlue.mfbx");
+			geometryProperties(ballGeometry2, 2f, new Vector3d(650f, 520f, 250f), new Rotation(0f, 0f, 0f));
+			
 			towerGeometry3 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry3, 2f,
-					new Vector3d(-650f, 520f, 0f), new Rotation(0f, 0f, 0f));
-			canonGeometry3 = Load3Dmodel("tower/canon.mfbx");
-			geometryProperties(canonGeometry3, 2f, new Vector3d(-650f, 520f,
-					165f), new Rotation(0f, 0f, 0f));
+			geometryProperties(towerGeometry3, 2f, new Vector3d(-650f, 520f, 0f), new Rotation(0f, 0f, 0f));
+			canonGeometry3 = Load3Dmodel("tower/slingshotYellow.mfbx");
+			geometryProperties(canonGeometry3, 1.5f, new Vector3d(-625f, 545f, 165f), new Rotation((float)Math.PI/2, 0f, -(float)Math.PI/4));
+			ballGeometry3 = Load3Dmodel("paintball/paintball/ballYellow.mfbx");
+			geometryProperties(ballGeometry3, 2f, new Vector3d(-650f, 520f, 250f), new Rotation(0f, 0f, 0f));
+			
 			towerGeometry4 = Load3Dmodel("tower/tower.mfbx");
-			geometryProperties(towerGeometry4, 2f,
-					new Vector3d(650f, -520f, 0f), new Rotation(0f, 0f, 0f));
-			canonGeometry4 = Load3Dmodel("tower/canon.mfbx");
-			geometryProperties(canonGeometry4, 2f, new Vector3d(650f, -520f,
-					165f), new Rotation(0f, 0f, 0f));
+			geometryProperties(towerGeometry4, 2f, new Vector3d(650f, -520f, 0f), new Rotation(0f, 0f, 0f));
+			canonGeometry4 = Load3Dmodel("tower/slingshotGreen.mfbx");
+			geometryProperties(canonGeometry4, 1.5f, new Vector3d(675f, -495f, 165f), new Rotation((float)Math.PI/2, 0f, -(float)Math.PI/4));
+			ballGeometry4 = Load3Dmodel("paintball/paintball/ballGreen.mfbx");
+			geometryProperties(ballGeometry4, 2f, new Vector3d(650f, -520f, 250f), new Rotation(0f, 0f, 0f));
 
 			// Load powerUps
 			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aimPowerUp.mfbx"));
-			power.setGeometryProperties(power.geometry, 2.1f, new Vector3d(0f, 0f, 0f),
-					new Rotation(0f, 0f, 0f));
 			GameState.getState().powerUps.add(power);
 			
 			
@@ -241,14 +243,16 @@ public class GameActivity extends ARViewActivity // implements
 			ArrayList<IGeometry> ballPathShadow = new ArrayList<IGeometry>(10);			
 			for (int i = 0; i < 10; i++) 
 			{
-				ball = Load3Dmodel("paintball/paintball/ballBlue.mfbx");
+				ball = Load3Dmodel("paintball/paintball/ballRed.mfbx");
 				ballShadow = Load3Dmodel("paintball/paintballShadow.mfbx");
 				ballPath.add(ball);
 				ballPathShadow.add(ballShadow);
 			}
+			
 			// Load aim (crosshair and ballPath)			
 			aim = new Aim(Load3Dmodel("crosshair/crosshair.mfbx"),ballPath,ballPathShadow, false);
 			
+
 			// creates a list of ants 
 			for(int i = 0; i < NUM_OF_ANTS; i++)
 			{
@@ -261,8 +265,8 @@ public class GameActivity extends ARViewActivity // implements
 			for (int i = 0; i < 20; i++) {
 				// add paint ball to list of paint balls
 				GameState.getState().exsisting_paint_balls.add(
-						new PaintBall(i,Load3Dmodel("paintball/paintball/ballGreen.mfbx"),
-									  Load3Dmodel("paintball/splash/splashBlue.mfbx"),
+						new PaintBall(i,Load3Dmodel("paintball/paintball/ballRed.mfbx"),
+									  Load3Dmodel("paintball/splash/splashRed.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx")));
 			}
 		} catch (Exception e) {
@@ -341,7 +345,7 @@ public class GameActivity extends ARViewActivity // implements
     {
     	for(PaintBall obj : GameState.getState().exsisting_paint_balls)
     	{
-    		if (!(obj.geometry.isVisible()))
+    		if (!(obj.getGeometry().isVisible()))
     			return obj;
     	}
     	
@@ -365,55 +369,70 @@ public class GameActivity extends ARViewActivity // implements
 		mGestureHandler.onTouch(v, event);
 
     	//coordinates between tower and "slangbella"
-		touchVec = new Vector3d(-(ballGeometry1.getTranslation().getX()-towerGeometry1.getTranslation().getX()),
-									-(ballGeometry1.getTranslation().getY()-towerGeometry1.getTranslation().getY()),
+		touchVec = new Vector3d(-(touchSphere.getTranslation().getX()-towerGeometry1.getTranslation().getX()),
+									-(touchSphere.getTranslation().getY()-towerGeometry1.getTranslation().getY()),
 									0f);   
-		// Math.sin(Math.PI/6) angle PI/6 = 30' => sin(pi/6) = 0.5 && Math.cos(Math.PI/6) angle PI/6 = 30' => cos(pi/6) = 0.5
-		Vector3d vel = new Vector3d((float)(touchVec.getX()/3* Math.cos(angleForCanon)), (float)(touchVec.getY()/3* Math.cos(angleForCanon)), (float)(Math.abs(touchVec.getX()/5)* Math.sin(angleForCanon)+ Math.abs(touchVec.getY()/5)*Math.sin(angleForCanon)));
 		
-        switch(event.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:                
-                if(player.superPower == true)
-                		aim.setPowerUp(true);
-                
-                aim.activate();
-                break;
-            case MotionEvent.ACTION_MOVE:            	
-            	aim.drawBallPath(vel, player.getPosition());           
-                break;
-            case MotionEvent.ACTION_UP:
-            	aim.deactivate();
-            	// move slingshot to original position
-        		ballGeometry1.setTranslation(towerGeometry1.getTranslation());
-        		ballGeometry1.setTranslation(new Vector3d(0f, 0f, 350f), true);
-        		
-            	PaintBall ball = getAvailableBall(1);
-        		if(ball != null)
-        		{
-            		Vector3d pos = player.getPosition();
-            		
-        			//Vector3d vel = new Vector3d((float)(touchVec.getX()/3* Math.cos(angleForCanon)), (float)(touchVec.getY()/3* Math.cos(angleForCanon)), (float)(Math.abs(touchVec.getX()/5)* Math.sin(angleForCanon)+ Math.abs(touchVec.getY()/5)*Math.sin(angleForCanon)));
-            		
-            		
-            		//Allocate a buffer and add OC and a byte array.
-            		ByteBuffer buffer = ByteBuffer.allocate(6 + 4*7);
-            		//amount of bytes
-            		buffer.putInt(7*4);
-            		//operation code
-            		buffer.putChar(DataPackage.BALL_FIRED);
-            		//data 
-            		buffer.putInt(ball.id);
-            		buffer.putFloat(vel.getX());
-            		buffer.putFloat(vel.getY());
-            		buffer.putFloat(vel.getZ());
-            		buffer.putFloat(pos.getX());
-            		buffer.putFloat(pos.getY());
-            		buffer.putFloat(pos.getZ());
-            		
-        			mService.mConnection.sendData(buffer.array());
-        			ball.fire(vel, pos);            	
-        		}
-        		break;
+
+		// Math.sin(Math.PI/6) angle PI/6 = 30' => sin(pi/6) = 0.5 && Math.cos(Math.PI/6) angle PI/6 = 30' => cos(pi/6) = 0.5
+		Vector3d vel = new Vector3d((float)(touchVec.getX()/3* Math.cos(angleForCanon)), 
+									(float)(touchVec.getY()/3* Math.cos(angleForCanon)),
+									(float)(Math.abs(touchVec.getX()/5)* Math.sin(angleForCanon)+ Math.abs(touchVec.getY()/5)*Math.sin(angleForCanon)));
+			
+			aim.drawBallPath(vel, player.getPosition()); 
+	        switch(event.getActionMasked()) {
+	            case MotionEvent.ACTION_DOWN:                
+	                if(player.superPower == true)
+	                		aim.setPowerUp(true);
+	                
+	                aim.activate();
+	                break;
+	            case MotionEvent.ACTION_MOVE:    
+	            	
+	            	//don't draw path if touched outside touchSphere
+	            	if(!(Math.abs(touchVec.getX()) < 0.1f))
+	            	{
+		            	aim.drawBallPath(vel, player.getPosition()); 	            		
+	            	}
+	            	
+	            	ballGeometry1.setTranslation(touchSphere.getTranslation());
+	                break;
+	            case MotionEvent.ACTION_UP:
+	            	aim.deactivate();
+	            	
+	            	// move slingshot to original position
+	        		ballGeometry1.setTranslation(player.getPosition());
+	        		touchSphere.setTranslation(player.getPosition());
+	        		
+	            	PaintBall ball = getAvailableBall(1);
+	        		if(ball != null)
+	        		{
+	            		Vector3d pos = player.getPosition();
+	        			
+	        			//check if touched outside sphere -> do nothing
+	        			if(!(Math.abs(touchVec.getX()) < 0.1f))
+	        			{
+	        				//Allocate a buffer and add OC and a byte array.
+	                		ByteBuffer buffer = ByteBuffer.allocate(6 + 4*7);
+	                		//amount of bytes
+	                		buffer.putInt(7*4);
+	                		//operation code
+	                		buffer.putChar(DataPackage.BALL_FIRED);
+	                		//data 
+	                		buffer.putInt(ball.getId());
+	                		buffer.putFloat(vel.getX());
+	                		buffer.putFloat(vel.getY());
+	                		buffer.putFloat(vel.getZ());
+	                		buffer.putFloat(pos.getX());
+	                		buffer.putFloat(pos.getY());
+	                		buffer.putFloat(pos.getZ());
+	                		
+	            			mService.mConnection.sendData(buffer.array());
+	            			ball.fire(vel, pos); 
+	        			}
+	        			
+	        		}
+	        		break;
         }        
 		return true;
 	}

@@ -20,7 +20,7 @@ public class Ant extends Drawable
 	private int ownerID;
 	
 	float angDiffLimit = (float)(5*Math.PI/180);
-	float speed = 3f;
+	float speed = 2f;
 	float angle = 0;
 	float randNr = 0;
 	int k = 0;

@@ -25,17 +25,12 @@ public class NsdHelper {
 	public String mServiceName = "";
 
 	public boolean serviceResolved = false;
-	public boolean discoveryReady;
-	public boolean serviceFound;
-	public boolean discoveryStarted;
 
 	NsdServiceInfo mService;
 	
 	/**Constructor */
 	public NsdHelper(Context context, Handler handler) {
-		discoveryReady = false;
-		serviceFound = false;
-		discoveryStarted = false;
+
 		mContext = context;
 		mUpdateHandler = handler;
 		mNsdManager = (NsdManager) context
@@ -47,7 +42,6 @@ public class NsdHelper {
 		initializeResolveListener();
 		initializeDiscoveryListener();
 		initializeRegistrationListener();
-		Log.d(TAG, "sist i initNsd()");
 
 	}
 
@@ -57,14 +51,11 @@ public class NsdHelper {
 			@Override
 			public void onDiscoveryStarted(String regType) {
 				Log.d(TAG, "Service discovery started");
-				discoveryStarted = true;
 			}
 
 			@Override
 			public void onServiceFound(NsdServiceInfo service) {
-				
-				serviceFound = true;
-				
+								
 				Log.d(TAG,
 						"Service discovery success. Found: "
 								+ service.getServiceName());
@@ -83,7 +74,6 @@ public class NsdHelper {
 					mUpdateHandler.sendMessage(msg);
 
 				}
-				discoveryReady = true;
 			}
 
 			@Override
@@ -135,8 +125,6 @@ public class NsdHelper {
 				Log.e(TAG, "Added service: " + serviceInfo.getServiceName());
 				Log.e(TAG, "IP: " + serviceInfo.getHost());
 				
-				//GameState.getState().players.add(new Player(serviceInfo.getHost().getHostAddress()));
-
 				if (serviceInfo.getServiceName().equals(mServiceName)) {
 					Log.d(TAG, "Same IP.");
 					return;
