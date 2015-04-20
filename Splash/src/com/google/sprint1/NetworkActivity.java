@@ -53,9 +53,7 @@ public class NetworkActivity extends Activity {
 	ArrayAdapter<Player> playerListAdapter;
 	ArrayList<NsdServiceInfo> arraylist;
 	
-	Runnable runHere;
 	ListView serviceListView;
-	ListView mListView;
 	
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +63,11 @@ public class NetworkActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_network);
+		
+		// Bind to NetworkService. The service will not destroy
+		// until there is no activity bound to it
+		Intent intent = new Intent(this, NetworkService.class);
+		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		
 		serviceListView = (ListView) findViewById(R.id.serviceListView);
 
@@ -94,6 +97,7 @@ public class NetworkActivity extends Activity {
 					//listAdapter.add(service);
 					arraylist.add(service);
 				}
+				
 				// If key is "lost", remove from adapter
 				else if ((service = (NsdServiceInfo) msg.getData().get("lost")) != null) {
 					
@@ -226,10 +230,7 @@ public class NetworkActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 
-		// Bind to NetworkService. The service will not destroy
-		// until there is no activity bound to it
-		Intent intent = new Intent(this, NetworkService.class);
-		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+		
 
 	}
 
@@ -269,6 +270,9 @@ public class NetworkActivity extends Activity {
 	
 
         }
+		
+//		if(mService != null)
+//			unbindService(mServiceConnection);
 		
 		super.onDestroy();
 	}
