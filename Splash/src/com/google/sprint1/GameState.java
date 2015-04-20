@@ -6,7 +6,7 @@ public class GameState {
 	
 	private static GameState instance = null;
 	
-	
+	public int myPlayerID = 0;
 	public ArrayList<PaintBall> exsisting_paint_balls;
 	public ArrayList<Player> players;
 	public ArrayList<Ant> ants;
