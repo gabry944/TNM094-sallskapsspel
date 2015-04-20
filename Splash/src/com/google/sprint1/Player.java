@@ -12,15 +12,19 @@ public class Player extends Drawable {
 	public IGeometry towerGeometry;
 	public IGeometry slingshotGeometry;
 	public IGeometry ballGeometry;
+	public IGeometry touchSphere;
 
 	public boolean superPower; 
+
 	/*private Vector3d startPosPlayer1 = new Vector3d(-600f, -450f, 165f);
+	private Vector3d startPosPlayer1 = new Vector3d(-650f, -520f, 250f);
+
 	private Vector3d startPosPlayer2 = new Vector3d(-600f, 450f, 165f);
 	private Vector3d startPosPlayer3 = new Vector3d(600f, -450f, 165f);
 	private Vector3d startPosPlayer4 = new Vector3d(600f, 450f, 165f);*/
 	
 	
-	public Player(IGeometry towerGeo,IGeometry slingshotGeo,IGeometry ballGeo, Vector3d startPosPlayer)
+	public Player(IGeometry towerGeo,IGeometry slingshotGeo,IGeometry ballGeo, Vector3d startPosPlayer, IGeometry invisibleBall)
 	{
 		score = 0;
 		superPower = false;
@@ -28,13 +32,21 @@ public class Player extends Drawable {
 		slingshotGeometry = slingshotGeo;
 		ballGeometry = ballGeo;
 		startPosition = startPosPlayer;
+		touchSphere = invisibleBall; 
 		
 		//setGeometryProperties(towerGeometry, 3f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
-		setGeometryProperties(towerGeometry, 3f, new Vector3d(startPosition.getX() + 35f, startPosition.getY()- 35f, 0f), new Rotation(0f, 0f, 0f));
+		setGeometryProperties(towerGeometry, 3f, new Vector3d(startPosition.getX(), startPosition.getY(), 0f), new Rotation(0f, 0f, 0f));
 		//setGeometryProperties(slingshotGeometry, 2f, new Vector3d(-685f, -485f, 250f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
-		setGeometryProperties(slingshotGeometry, 2f, startPosition, new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
+		setGeometryProperties(slingshotGeometry, 2f, new Vector3d(startPosition.getX()-35f, startPosition.getY() + 35f, startPosition.getZ() -100f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
 		//setGeometryProperties(ballGeometry, 2f, new Vector3d(-650f, -520f, 350f), new Rotation(0f, 0f, 0f));
-		setGeometryProperties(ballGeometry, 2f, new Vector3d(startPosition.getX()+35f, startPosition.getY()- 35f, startPosition.getZ() +100f), new Rotation(0f, 0f, 0f));
+		setGeometryProperties(ballGeometry, 2f, startPosition, new Rotation(0f, 0f, 0f));
+		//setGeometryProperties(touchSphere, 6f, new Vector3d(-650f, -520f, 250f), new Rotation(0f, 0f, 0f));
+		setGeometryProperties(touchSphere, 6f, startPosition, new Rotation(0f, 0f, 0f));
+		
+		//touchSphere.setTransparency(1);// set to fully transparant
+		//touchSphere.setTransparency(0);
+		//touchSphere.setVisible(false);
+		//touchSphere.setOcclusionMode(true);
 		
 	}
 	
