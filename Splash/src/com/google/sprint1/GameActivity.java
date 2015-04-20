@@ -232,8 +232,6 @@ public class GameActivity extends ARViewActivity // implements
 
 			// Load powerUps
 			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aimPowerUp.mfbx"));
-			power.setGeometryProperties(power.geometry, 2.1f, new Vector3d(0f, 0f, 0f),
-					new Rotation(0f, 0f, 0f));
 			GameState.getState().powerUps.add(power);
 			
 			
@@ -370,7 +368,9 @@ public class GameActivity extends ARViewActivity // implements
 									-(ballGeometry1.getTranslation().getY()-towerGeometry1.getTranslation().getY()),
 									0f);   
 		// Math.sin(Math.PI/6) angle PI/6 = 30' => sin(pi/6) = 0.5 && Math.cos(Math.PI/6) angle PI/6 = 30' => cos(pi/6) = 0.5
-		Vector3d vel = new Vector3d((float)(touchVec.getX()/3* Math.cos(angleForCanon)), (float)(touchVec.getY()/3* Math.cos(angleForCanon)), (float)(Math.abs(touchVec.getX()/5)* Math.sin(angleForCanon)+ Math.abs(touchVec.getY()/5)*Math.sin(angleForCanon)));
+		Vector3d vel = new Vector3d((float)(touchVec.getX()/3* Math.cos(angleForCanon)), 
+									(float)(touchVec.getY()/3* Math.cos(angleForCanon)),
+									(float)(Math.abs(touchVec.getX()/5)* Math.sin(angleForCanon)+ Math.abs(touchVec.getY()/5)*Math.sin(angleForCanon)));
 		
         switch(event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:                

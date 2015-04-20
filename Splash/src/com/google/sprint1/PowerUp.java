@@ -1,18 +1,32 @@
 package com.google.sprint1;
 
 import com.metaio.sdk.jni.IGeometry;
+import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
 
 public class PowerUp extends Drawable {
 	
-	public IGeometry geometry;
+	private IGeometry geometry;
+	private boolean visible;
 	
 	public PowerUp(IGeometry geo){
 		geometry = geo;
+		visible = true;
+		setGeometryProperties(geometry, 2.1f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
 	}
 	
-	public void update(){
-		
+	public IGeometry getGeometry()
+	{
+		return geometry;
+	}
+	
+	public void isHit()
+	{
+		visible = false;
+	}
+	
+	public void update()
+	{	
 		float scaleStart = 0f;
 		/** Function for animation on the powerup */
 			if (geometry.getScale().getX() > 2.0f) {
@@ -24,6 +38,8 @@ public class PowerUp extends Drawable {
 			geometry.setScale(geometry.getScale().add(
 					new Vector3d(scaleStart, scaleStart, scaleStart)));
 			// Log.d(TAG, "scale = " + powerUp.getScale());
+			if(visible == false)
+				geometry.setVisible(false);
 	}
 	
 	
