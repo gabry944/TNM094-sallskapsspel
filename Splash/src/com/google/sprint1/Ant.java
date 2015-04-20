@@ -17,6 +17,7 @@ public class Ant extends Drawable
 	private boolean isHit;
 	private Vector3d diffVec;
 	private float memory;
+	private int ownerID;
 	
 	float angDiffLimit = (float)(5*Math.PI/180);
 	float speed = 3f;
@@ -144,6 +145,10 @@ public class Ant extends Drawable
 		}
 	}
 	
+	public Vector3d getPosition()
+	{
+		return ant.getTranslation();
+	}
 	
 	/** function to see if ant is active = visible */
 	public boolean isActive()

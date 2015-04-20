@@ -1,8 +1,10 @@
 package com.google.sprint1;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
@@ -14,8 +16,8 @@ public class Peer {
 	
 	private Socket mSocket;
 	private InetAddress mIP;
-	private ObjectOutputStream mOutStream;
-	private ObjectInputStream mInStream;
+	private OutputStream mOutStream;
+	private InputStream mInStream;
 	
 	public Peer(Socket socket)
 	{
@@ -23,8 +25,8 @@ public class Peer {
 			mSocket = socket;
 			mSocket.setTcpNoDelay(true);
 			mIP = socket.getInetAddress();
-			mOutStream = new ObjectOutputStream(socket.getOutputStream());
-			mInStream = new ObjectInputStream(socket.getInputStream());
+			mOutStream = socket.getOutputStream();
+			mInStream = socket.getInputStream();
 			
 		} catch (IOException e) {
 			Log.d(TAG, "Error initializing Peer");
@@ -37,11 +39,11 @@ public class Peer {
 		return mSocket;
 	}
 	
-	public ObjectOutputStream getOutputStream(){
+	public OutputStream getOutputStream(){
 		return mOutStream;
 	}
 	
-	public ObjectInputStream getInputStream(){
+	public InputStream getInputStream(){
 		return mInStream;
 	}
 

@@ -1,6 +1,7 @@
 package com.google.sprint1;
 
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import android.content.ComponentName;
@@ -35,6 +36,8 @@ import com.metaio.tools.io.AssetsManager;
 public class GameActivity extends ARViewActivity // implements
 													// OnGesturePerformedListener
 {
+	private final int NUM_OF_ANTS = 10;
+	
 	/* Variables for objects in the game */
 	private IGeometry towerGeometry1;
 	private IGeometry canonGeometry1;
@@ -151,10 +154,6 @@ public class GameActivity extends ARViewActivity // implements
 		finish();
 	}
 
-	public void onClickSendData(View v) {
-		TestClass test = new TestClass(5, "hej");
-		//mService.mConnection.sendData(test);
-	}
 
 	/**
 	 * Create a geometry, the string input gives the filepach (relative from the
@@ -251,7 +250,7 @@ public class GameActivity extends ARViewActivity // implements
 			aim = new Aim(Load3Dmodel("crosshair/crosshair.mfbx"),ballPath,ballPathShadow, false);
 			
 			// creates a list of ants 
-			for(int i = 0; i < 10; i++)
+			for(int i = 0; i < NUM_OF_ANTS; i++)
 			{
 				// create ant geometry
 				ant = new Ant(Load3Dmodel("ant/aniAnt2.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), false);
@@ -293,7 +292,7 @@ public class GameActivity extends ARViewActivity // implements
 
 		
 		//spawn ant at random and move ants
-		for ( int i = 0; i < 10 ; i++)
+		for ( int i = 0; i < NUM_OF_ANTS ; i++)
 		{
 			if(!GameState.getState().ants.get(i).isActive())
 
@@ -394,8 +393,24 @@ public class GameActivity extends ARViewActivity // implements
             		Vector3d pos = player.getPosition();
             		
         			//Vector3d vel = new Vector3d((float)(touchVec.getX()/3* Math.cos(angleForCanon)), (float)(touchVec.getY()/3* Math.cos(angleForCanon)), (float)(Math.abs(touchVec.getX()/5)* Math.sin(angleForCanon)+ Math.abs(touchVec.getY()/5)*Math.sin(angleForCanon)));
-        			DataPackage data = new DataPackage(ball.id, vel, pos);
-        			mService.mConnection.sendData(data);
+            		
+            		
+            		//Allocate a buffer and add OC and a byte array.
+            		ByteBuffer buffer = ByteBuffer.allocate(6 + 4*7);
+            		//amount of bytes
+            		buffer.putInt(7*4);
+            		//operation code
+            		buffer.putChar(DataPackage.BALL_FIRED);
+            		//data 
+            		buffer.putInt(ball.id);
+            		buffer.putFloat(vel.getX());
+            		buffer.putFloat(vel.getY());
+            		buffer.putFloat(vel.getZ());
+            		buffer.putFloat(pos.getX());
+            		buffer.putFloat(pos.getY());
+            		buffer.putFloat(pos.getZ());
+            		
+        			mService.mConnection.sendData(buffer.array());
         			ball.fire(vel, pos);            	
         		}
         		break;
