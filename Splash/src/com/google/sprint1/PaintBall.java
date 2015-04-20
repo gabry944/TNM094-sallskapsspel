@@ -1,8 +1,5 @@
 package com.google.sprint1;
 
-import java.io.Serializable;
-import android.util.Log;
-
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
@@ -11,10 +8,10 @@ public class PaintBall extends Drawable
 {
 	public static final String TAG = "PaintBall";
 	
-	public IGeometry geometry; //TODO make privet
+	private IGeometry geometry; 
 	private IGeometry splashGeometry;
 	private IGeometry paintballShadow;
-	public int id; // TODO make privet
+	private int id; 
 	private boolean isActive;
 
 	public PaintBall(int id, IGeometry geo, IGeometry splGeo, IGeometry pbShad) {
@@ -38,6 +35,26 @@ public class PaintBall extends Drawable
 		
 		}
 		
+	public IGeometry getGeometry()
+	{
+		return geometry;
+	}
+	
+	public void setPosition(Vector3d vec)
+	{
+		geometry.setTranslation(vec);
+	}
+	
+	public int getId()
+	{
+		return id;
+	}
+	
+	public void setId(int ID)
+	{
+		id = ID;
+	}
+	
 	/** Called every frame. Updates position and checks if on the ground */
 	public void update(){
 		
@@ -70,9 +87,9 @@ public class PaintBall extends Drawable
 		
 		for (int i = 0; i < GameState.getState().powerUps.size(); i++)
 		{
-			if (checkCollision(GameState.getState().powerUps.get(i).geometry)) {
+			if (checkCollision(GameState.getState().powerUps.get(i).getGeometry()) && isActive == true) {
 				//player.superPower = true;
-				GameState.getState().powerUps.get(i).geometry.setVisible(false);
+				GameState.getState().powerUps.get(i).setHit();
 			}
 		}
 		
@@ -99,14 +116,14 @@ public class PaintBall extends Drawable
 	/** Disable the ball */
 	public void disable(){
 		splashGeometry.setTranslation(geometry.getTranslation());
-		startPosition = new Vector3d(0.0f, 0.0f, 0.0f);
-		startVelocity = new Vector3d(0.0f, 0.0f, 0.0f);
 		startTime = 0;		
 		geometry.setTranslation(new Vector3d(0f,0f,0f));
 		splashGeometry.setVisible(true);
 		geometry.setVisible(false);
 		paintballShadow.setVisible(false);
 		isActive = false;
+		startPosition = new Vector3d(0.0f, 0.0f, 0.0f);
+		startVelocity = new Vector3d(0.0f, 0.0f, 0.0f);
 	}
 	
 	/** move an object depending on physics calculated with Euler model*/
@@ -169,18 +186,18 @@ public class PaintBall extends Drawable
 		boxmin.getZ() * scale + obj.getTranslation().getZ() 
 		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMin().getZ() < 
 		boxmax.getZ() * scale + obj.getTranslation().getZ())*/
-		if (geometry.getTranslation().getX() + geometry.getBoundingBox().getMax().getX() >
-		min * scale + obj.getTranslation().getX()
-		&& geometry.getTranslation().getX()	+ geometry.getBoundingBox().getMin().getX() <
-		max * scale + obj.getTranslation().getX()
-		&& geometry.getTranslation().getY() + geometry.getBoundingBox().getMax().getY() > 
-		min * scale + obj.getTranslation().getY() 
-		&& geometry.getTranslation().getY()	+ geometry.getBoundingBox().getMin().getY() < 
-		max * scale + obj.getTranslation().getY() 
-		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMax().getZ() > 
-		min * scale + obj.getTranslation().getZ() 
-		&& geometry.getTranslation().getZ()+ geometry.getBoundingBox().getMin().getZ() < 
-		max * scale + obj.getTranslation().getZ())
+		if (geometry.getTranslation().getX() + max >
+		min * scale + obj.getTranslation().getX() - 50f
+		&& geometry.getTranslation().getX()	+ min <
+		max * scale + obj.getTranslation().getX() + 50f
+		&& geometry.getTranslation().getY() + max > 
+		min * scale + obj.getTranslation().getY() - 50f
+		&& geometry.getTranslation().getY()	+ min < 
+		max * scale + obj.getTranslation().getY() + 50f
+		&& geometry.getTranslation().getZ()+ max > 
+		min * scale + obj.getTranslation().getZ() - 50f
+		&& geometry.getTranslation().getZ()+ min < 
+		max * scale + obj.getTranslation().getZ() + 50f)
 			return true;
 		else
 			return false;

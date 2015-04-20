@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background3"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-10dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/end_result"
+        android:textColor="#19D119"
+        android:textSize="40dp" />
+
+    <TextView
+        android:id="@+id/bluePlayer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/blue_player"
+        android:textColor="#5989FF"
+        android:textSize="30dp" />
+
+</RelativeLayout>

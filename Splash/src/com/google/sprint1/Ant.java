@@ -1,8 +1,5 @@
 package com.google.sprint1;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
 import android.util.Log;
 
 import com.metaio.sdk.jni.IGeometry;
@@ -17,16 +14,18 @@ public class Ant extends Drawable
 	private boolean isHit;
 	private Vector3d diffVec;
 	private float memory;
+	private int id;
 	
 	float angDiffLimit = (float)(5*Math.PI/180);
-	float speed = 3f;
+	float speed = 1f;
 	float angle = 0;
 	float randNr = 0;
 	int k = 0;
 	
 	/** constructor ant */
-	public Ant(IGeometry geo, IGeometry hitMarker, boolean hit) {
+	public Ant(int id, IGeometry geo, IGeometry hitMarker, boolean hit) {
 		super();
+		this.id = id;
 		ant = geo;
 		marker = hitMarker;
 		isHit = hit;
@@ -98,6 +97,7 @@ public class Ant extends Drawable
 		}
 		
 		float diffX = (float)Math.cos(angle);
+		
 		float diffY = (float)Math.sin(angle);
 		
 		Vector3d movement = new Vector3d(new Vector3d(ant.getTranslation().getX() + speed * diffX,
@@ -134,7 +134,7 @@ public class Ant extends Drawable
 		//when ant reached tower
 		if(diffVec.getX() < 2f && diffVec.getX() > -2f  && diffVec.getY() < 2f && diffVec.getY() > -2f)
 		{
-			Player.setScore();
+			Player.increaseScore();
 			ant.setVisible(false);
 			marker.setVisible(false);
 			marker.startAnimation("Take 001", false);
@@ -144,6 +144,20 @@ public class Ant extends Drawable
 		}
 	}
 	
+	public void setPosition(Vector3d pos)
+	{
+		ant.setTranslation(pos);
+	}
+	public Vector3d getPosition()
+	{
+		return ant.getTranslation();
+	}
+	
+	
+	public int getId()
+	{
+		return id;
+	}
 	
 	/** function to see if ant is active = visible */
 	public boolean isActive()

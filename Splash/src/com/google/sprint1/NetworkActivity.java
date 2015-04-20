@@ -41,21 +41,20 @@ public class NetworkActivity extends Activity {
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
 	Handler mNSDHandler;
-	Handler mPlayerHandler;
-
+	
 	// Variables for Network Service handling
 	public NetworkService mService;
 	public NsdHelper mNsdHelper;
 	private boolean mBound = false;
-	private boolean isRegistered = false;
-	private boolean isDiscovering = false;
-	//private boolean isOwner = false;
 
 	public static final String TAG = "NetworkActivity";
 
 	ArrayAdapter<NsdServiceInfo> listAdapter;
 	ArrayAdapter<Player> playerListAdapter;
-
+	ArrayList<NsdServiceInfo> arraylist;
+	
+	ListView serviceListView;
+	
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,9 +63,23 @@ public class NetworkActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_network);
+		
+		// Bind to NetworkService. The service will not destroy
+		// until there is no activity bound to it
+		Intent intent = new Intent(this, NetworkService.class);
+		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+		
+		serviceListView = (ListView) findViewById(R.id.serviceListView);
 
 		/* Start game */
 		startGame = new AssetsExtracter();
+		
+		//ArrayList to store all services
+		arraylist = new ArrayList<NsdServiceInfo>();
+
+		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
+				android.R.layout.simple_list_item_1,
+				arraylist);
 
 		mNSDHandler = new Handler() {
 			@Override
@@ -82,24 +95,28 @@ public class NetworkActivity extends Activity {
 				}
 				// If key is "found", add to the adapter
 				else if ((service = (NsdServiceInfo) msg.getData().get("found")) != null) {
-					listAdapter.add(service);
+					//listAdapter.add(service);
+					arraylist.add(service);
 				}
+				
 				// If key is "lost", remove from adapter
 				else if ((service = (NsdServiceInfo) msg.getData().get("lost")) != null) {
-					listAdapter.remove(service);
+					
+					for(int i = 0; i < arraylist.size(); i++){
+						if(arraylist.get(i).getServiceName().equals(service.getServiceName()))
+							arraylist.remove(i);
+					}
+					
 				}
+				
 				// Notify adapter that the list is updated.
 				listAdapter.notifyDataSetChanged();
 
 			}
 		};
 
-		ListView serviceListView = (ListView) findViewById(R.id.serviceListView);
-
-		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
-				android.R.layout.simple_list_item_1,
-				new ArrayList<NsdServiceInfo>());
-
+		 
+		
 		serviceListView.setAdapter(listAdapter);
 		serviceListView
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -160,47 +177,10 @@ public class NetworkActivity extends Activity {
 					}
 
 				});
-
-		// TODO: Add player to playerListAdapter when a new player connect to
-		// the game
-//		 mPlayerHandler = new Handler() {
-//			 @Override
-//			 public void handleMessage(Message msg){
-//				 
-//				 
-//				 
-//				 playerListAdapter.notifyDataSetChanged();
-//			 }
-//			
-//		 };
-
-		// ListView to see player colors and if players are Ready/Standby
-		ListView playerListView = (ListView) findViewById(R.id.playerListView);
-
-		playerListAdapter = new ArrayAdapter<Player>(this,
-				android.R.layout.simple_list_item_1, new ArrayList<Player>());
-
-		// Setting the adapter for playerListView
-		playerListView.setAdapter(playerListAdapter);
-
-		// Setting the NsdHelper with the mNSDHandler and initialize mNsdHelper
+		
 		mNsdHelper = new NsdHelper(this, mNSDHandler);
 		mNsdHelper.initializeNsd();
 
-		// Check if discovery is already running, start it otherwise
-		if (!isDiscovering) {
-			isDiscovering = true;
-			mNsdHelper.discoverServices();
-
-
-			// Temporary way to wait for discovery to start running (will
-			// register before discovering other services otherwise)
-			while (!mNsdHelper.discoveryStarted) {
-
-				// Log.d(TAG, "Jag dampar fan ur här");
-
-			}
-		}
 	}
 
 	/** Called when the user clicks the start Game button (starta spel) */
@@ -225,38 +205,21 @@ public class NetworkActivity extends Activity {
 	/** Called when user minimize the window or clicks home button */
 	@Override
 	protected void onPause() {
-		super.onPause();
+		
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		// If mNsdHelper is other than null it will be teared down.
 		// This is done to unregister from the network and stop the
 		// service discovery.
-		if (isDiscovering) {
-			mNsdHelper.stopDiscovery();
-			isDiscovering = false;
-		}
+		
 
-		if (mNsdHelper != null && isRegistered) {
+		if (mNsdHelper != null) {
+			mNsdHelper.stopDiscovery();
 			mNsdHelper.unregisterService();
 			mNsdHelper = null;
-			isRegistered = false;
-		}
+        }
 
-	}
-
-	/**
-	 * Called when when a new instance of NetworkActivity is started, for
-	 * example when starting the game for the first time or when entering from
-	 * another activity
-	 */
-	@Override
-	protected void onStart() {
-		super.onStart();
-
-		// Bind to NetworkService. The service will not destroy
-		// until there is no activity bound to it
-		Intent intent = new Intent(this, NetworkService.class);
-		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
-
+		
+		super.onPause();
 	}
 
 	/**
@@ -266,33 +229,17 @@ public class NetworkActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-		try {
-			// If mNsdHelper is null(which always should happen because it is
-			// set to null in onPause()), it will then reinitialize
-			if (mNsdHelper == null) {
-				mNsdHelper = new NsdHelper(this, mNSDHandler);
-				mNsdHelper.initializeNsd();
-			}
-
-			// If not null, mNsdHelper will only register service on the network
-			// and start service discovery.
-			if (!isDiscovering) {
-				mNsdHelper.discoverServices();
-				isDiscovering = true;
-			}
-
-			if (mNsdHelper != null && !isRegistered
-					&& !mNsdHelper.discoveryReady && mBound) {
-				mNsdHelper.registerService(MobileConnection.SERVER_PORT);
-				isRegistered = true;
-				// TODO Load players to "Players" and share with others
-				//loadPlayers();
-
-			}
-		} catch (NullPointerException e) {
-
+		
+		if(mNsdHelper == null){
+			mNsdHelper = new NsdHelper(this, mNSDHandler);
+			mNsdHelper.initializeNsd();
 		}
+		
+		if (mNsdHelper != null) {
+			mNsdHelper.discoverServices();
+			mNsdHelper.registerService(MobileConnection.SERVER_PORT);
+            
+        }
 
 	}
 
@@ -304,23 +251,17 @@ public class NetworkActivity extends Activity {
 
 		// Check if mNsdHelper is not null(will throw NullPointerException
 		// otherwise). Unregister from network and stops the discovery.
-		if (mNsdHelper != null && isDiscovering) {
+
+		if (mNsdHelper != null) {
 			mNsdHelper.stopDiscovery();
-			isDiscovering = false;
-		}
-
-		if (mNsdHelper != null && isRegistered) {
 			mNsdHelper.unregisterService();
-			mNsdHelper = null;
-			isRegistered = false;
-		}
+	
 
-		// Unbind from service, GameActivity will manage to bind before and
-		// therefore the service will still be active.
-		if (mBound) {
+        }
+		
+		if(mService != null)
 			unbindService(mServiceConnection);
-			mBound = false;
-		}
+		
 		super.onDestroy();
 	}
 
@@ -372,30 +313,6 @@ public class NetworkActivity extends Activity {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 			mBound = true;
-
-			// Initializes the NsdHelper when NetworkAcitivty is started
-			// (try/catch only precaution to prevent app from crashing)
-			// try{
-			// //mService.initNsdHelper(mNSDHandler);
-			// mNsdHelper = new NsdHelper(getApplicationContext(), mNSDHandler);
-			// mNsdHelper.initializeNsd();
-			// } catch(NullPointerException e){
-			// Log.e(TAG, "NullPointerException: " + e);
-			// }
-
-			// Start discovery to look for other peers
-			if (!isDiscovering) {
-				isDiscovering = true;
-				mNsdHelper.discoverServices();
-			}
-			// Register the game on the network
-			if (listAdapter.isEmpty() && !isRegistered) {
-				mNsdHelper.registerService(MobileConnection.SERVER_PORT);
-				isRegistered = true;
-				
-				// TODO Load players to "Players" and share with others
-				//loadPlayers();
-			}
 
 		}
 
