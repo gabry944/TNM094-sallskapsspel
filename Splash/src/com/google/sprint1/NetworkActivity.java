@@ -53,9 +53,7 @@ public class NetworkActivity extends Activity {
 	ArrayAdapter<Player> playerListAdapter;
 	ArrayList<NsdServiceInfo> arraylist;
 	
-	Runnable runHere;
 	ListView serviceListView;
-	ListView mListView;
 	
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +64,17 @@ public class NetworkActivity extends Activity {
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_network);
 		
+		// Bind to NetworkService. The service will not destroy
+		// until there is no activity bound to it
+		Intent intent = new Intent(this, NetworkService.class);
+		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+		
 		serviceListView = (ListView) findViewById(R.id.serviceListView);
 
 		/* Start game */
 		startGame = new AssetsExtracter();
 		
+		//ArrayList to store all services
 		arraylist = new ArrayList<NsdServiceInfo>();
 
 		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
@@ -94,6 +98,7 @@ public class NetworkActivity extends Activity {
 					//listAdapter.add(service);
 					arraylist.add(service);
 				}
+				
 				// If key is "lost", remove from adapter
 				else if ((service = (NsdServiceInfo) msg.getData().get("lost")) != null) {
 					
@@ -207,30 +212,14 @@ public class NetworkActivity extends Activity {
 		// service discovery.
 		
 
-//		if (mNsdHelper != null) {
-//			mNsdHelper.stopDiscovery();
-//			mNsdHelper.unregisterService();
-//			mNsdHelper = null;
-//        }
+		if (mNsdHelper != null) {
+			mNsdHelper.stopDiscovery();
+			mNsdHelper.unregisterService();
+			mNsdHelper = null;
+        }
 
 		
 		super.onPause();
-	}
-
-	/**
-	 * Called when when a new instance of NetworkActivity is started, for
-	 * example when starting the game for the first time or when entering from
-	 * another activity
-	 */
-	@Override
-	protected void onStart() {
-		super.onStart();
-
-		// Bind to NetworkService. The service will not destroy
-		// until there is no activity bound to it
-		Intent intent = new Intent(this, NetworkService.class);
-		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
-
 	}
 
 	/**
@@ -241,16 +230,16 @@ public class NetworkActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		
-//		if(mNsdHelper == null){
-//			mNsdHelper = new NsdHelper(this, mNSDHandler);
-//			mNsdHelper.initializeNsd();
-//		}
-//		
-//		if (mNsdHelper != null) {
-//			mNsdHelper.discoverServices();
-//			mNsdHelper.registerService(MobileConnection.SERVER_PORT);
-//            
-//        }
+		if(mNsdHelper == null){
+			mNsdHelper = new NsdHelper(this, mNSDHandler);
+			mNsdHelper.initializeNsd();
+		}
+		
+		if (mNsdHelper != null) {
+			mNsdHelper.discoverServices();
+			mNsdHelper.registerService(MobileConnection.SERVER_PORT);
+            
+        }
 
 	}
 
@@ -263,13 +252,16 @@ public class NetworkActivity extends Activity {
 		// Check if mNsdHelper is not null(will throw NullPointerException
 		// otherwise). Unregister from network and stops the discovery.
 
-//		if (mNsdHelper != null) {
-//			mNsdHelper.stopDiscovery();
-//			mNsdHelper.unregisterService();
-//	
-//
-//        }
-//		
+		if (mNsdHelper != null) {
+			mNsdHelper.stopDiscovery();
+			mNsdHelper.unregisterService();
+	
+
+        }
+		
+		if(mService != null)
+			unbindService(mServiceConnection);
+		
 		super.onDestroy();
 	}
 
