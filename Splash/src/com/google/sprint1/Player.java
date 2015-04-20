@@ -2,7 +2,7 @@ package com.google.sprint1;
 
 import com.metaio.sdk.jni.Vector3d;
 
-public class Player {
+public class Player extends Drawable {
 	
 	public int id;
 

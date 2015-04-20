@@ -46,6 +46,8 @@ public class GameActivity extends ARViewActivity // implements
 	private IGeometry towerGeometry4;
 	private IGeometry canonGeometry4;
 
+	Player player;
+
 	private IGeometry aimPowerUp;
 	private IGeometry aniBox;
 
@@ -69,8 +71,6 @@ public class GameActivity extends ARViewActivity // implements
 	private double angleForCanon;
 	
 	private Vector3d touchVec; // Difference between ball and tower when shooting
-
-	Player player;
 
 	// point count
 	protected int point;

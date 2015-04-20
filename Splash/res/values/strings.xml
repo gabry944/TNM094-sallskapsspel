@@ -14,5 +14,12 @@
     <string name="startaSpel">Starta spel</string>
     <string name="Huvudmeny">Huvudmeny</string>
     <string name="Spelmusik">Spelmusik</string>
+    <string name="title_activity_game_ended">GameEndedActivity</string>
+    <string name="end_result">Resultat:</string>
+    <string name="red_player">Röd spelare: </string>
+    <string name="blue_player">Blå spelare</string>
+    <string name="green_player">Grön spelare</string>
+    <string name="yellow_player">Gul spelare</string>
+    <string name="magenta_player">Rosa spelare</string>
 
 </resources>
