@@ -4,11 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-
-import android.util.Log;
-
-import com.metaio.sdk.jni.Vector3d;
 
 
 
@@ -38,7 +33,6 @@ public class DataPackage implements Serializable{
 		try {
 			//Bytes to read 
 			instream.read(bufferHead);
-			Log.d("DataPackage", "Read data");
 			ByteBuffer buffer = ByteBuffer.wrap(bufferHead);
 			int bytesToRead = buffer.getInt();
 			operationCode = buffer.getChar();

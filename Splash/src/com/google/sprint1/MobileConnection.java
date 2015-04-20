@@ -29,6 +29,7 @@ public class MobileConnection {
 	private List<InetAddress> mIPs;
 	private List<Peer> mPeers;
 	
+	private InetAddress mIP;
 	private static final String TAG = "MobileConnection";
 	public static final int SERVER_PORT = 8196;
 	
@@ -45,7 +46,7 @@ public class MobileConnection {
 		new Thread(new ServerThread()).start();
 	}
 
-	public void connectToPeer(InetAddress address, int port) {
+	public synchronized void connectToPeer(InetAddress address, int port) {
 		if (!(mIPs.contains(address)) && mServerSocket.getInetAddress() != address)
 		{
 			new Thread(new ConnectionThread(address)).start();
@@ -90,7 +91,6 @@ public class MobileConnection {
 		} catch (Exception e) {
 			Log.d(TAG, "Error3", e);
 		}
-		Log.d(TAG, "Sent data to: " + peer.getAdress());
 	}
 	
 	/** Handshake is called when the serversocket accepts (finds) another peer
@@ -104,24 +104,29 @@ public class MobileConnection {
 			//Send back list with other peers
 			Peer peer = new Peer(socket);
 			Log.d(TAG, peer.getAdress() +" connected.");
-			
+			Log.d(TAG, "SIZE OF MIPS: " + mIPs.size());
 			ByteBuffer buffer;
+
+			//Data sent in following order: your ID - InetAddress
+			buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + 4*mIPs.size()+ 4);
+			buffer.putInt(4*mIPs.size()+ 4);
+			buffer.putChar(DataPackage.IP_LIST);
+			buffer.putInt(mIPs.size()+1);
 			for (int i = 0; i < mIPs.size(); i++)
 			{
 				byte[] byteAddress = mIPs.get(i).getAddress();
-				
-				buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + byteAddress.length);	
-				buffer.putInt(byteAddress.length);
-				buffer.putChar(DataPackage.IP_LIST);
 				buffer.put(byteAddress);
 				Log.d(TAG, "Created IP to send with size: " + byteAddress.length);
-				peer.getOutputStream().write(buffer.array());
-				peer.getOutputStream().flush();
-				buffer.clear();
+				
 			}
+			peer.getOutputStream().write(buffer.array());
+			peer.getOutputStream().flush();
+			buffer.clear();
 			
 			Log.d(TAG, "Sent IP list");
-			new Thread(new ListenerThread(peer)).start();
+		
+			if (!(mIPs.contains(peer.getAdress())))
+					new Thread(new ListenerThread(peer)).start();
 
 			//Add this peer to the list
 			mPeers.add(peer);
@@ -146,13 +151,8 @@ public class MobileConnection {
 				updateAnt(data.getData());
 				break;
 		case DataPackage.IP_LIST:
-			try {
-				Log.d(TAG, "Recieved from other peer: " + InetAddress.getByAddress(data.getData()).toString());
-				connectToPeer(InetAddress.getByAddress(data.getData()), SERVER_PORT);
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				resolveHandshake(data.getData());
+				break;
 		
 		default:
 			break;
@@ -172,6 +172,7 @@ public class MobileConnection {
 
 			try {
 				mServerSocket = new ServerSocket(SERVER_PORT);
+				mIP = mServerSocket.getInetAddress();
 				Log.d(TAG, "ServerSocket Created, waiting for connections.");
 				while (!Thread.currentThread().isInterrupted()) {
 					Socket socket = mServerSocket.accept();
@@ -220,10 +221,11 @@ public class MobileConnection {
 				Socket socket = new Socket(address, SERVER_PORT);
 
 				Peer peer = new Peer(socket);
-				mPeers.add(peer);
-				mIPs.add(address);
-
 				new Thread(new ListenerThread(peer)).start();
+				
+				mPeers.add(peer);
+				mIPs.add(peer.getAdress());
+				
 				Log.d(TAG, "Connected to: " + address);
 			} catch (IOException e) {
 				Log.e(TAG,"Error when connecting.", e);
@@ -233,8 +235,8 @@ public class MobileConnection {
 		}
 	}
 	//FUNCTIONS FOR UPDATING GAME STATE
-	private void fireBall(byte[] data)
-	{
+	private synchronized void fireBall(byte[] data)
+	{ 	
 		ByteBuffer buffer = ByteBuffer.wrap(data);
 		int id = buffer.getInt();
 		Vector3d vel = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
@@ -242,12 +244,31 @@ public class MobileConnection {
 		GameState.getState().exsisting_paint_balls.get(id).fire(vel, pos);
 	}
 	
-	private void updateAnt(byte[] data)
+	private synchronized void updateAnt(byte[] data)
 	{
+		
 		ByteBuffer buffer = ByteBuffer.wrap(data);
 		int id = buffer.getInt();
 		Vector3d pos = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
-		GameState.getState().ants.get(id).setPosition(pos);
+		//GameState.getState().ants.get(id).setPosition(pos);
 	}
-	
+
+	private synchronized void resolveHandshake(byte[] data)
+	{
+		ByteBuffer buffer = ByteBuffer.wrap(data);
+		GameState.getState().myPlayerID = buffer.getInt();
+		Log.d(TAG, "Assigned ID: " + GameState.getState().myPlayerID);
+		byte[] byteIP = new byte[4];
+		for (int i = 0; i < GameState.getState().myPlayerID-1; i++)
+		{
+			try {
+				buffer.get(byteIP);
+				connectToPeer(InetAddress.getByAddress(byteIP), SERVER_PORT);
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
 }
