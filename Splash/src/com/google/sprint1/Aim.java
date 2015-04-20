@@ -16,11 +16,11 @@ public class Aim extends Drawable
 	private ArrayList<IGeometry> ballPathShadow; // skuggor till parabelsiktet
 	
 	/** constructor Aim */
-	public Aim(IGeometry geo, ArrayList<IGeometry> ball, ArrayList<IGeometry> ballShadow, boolean power) {
+	public Aim(IGeometry geo, ArrayList<IGeometry> ball, ArrayList<IGeometry> ballShadow) {
 		super();
-		powerUp = power;
+		powerUp = false;
 		crosshair = geo;
-		setGeometryProperties(crosshair, 1f, new Vector3d(0f, 0f, 0f),	new Rotation(0f, 0f, 0f)); 
+		setGeometryProperties(crosshair, 4f, new Vector3d(0f, 0f, 2f),	new Rotation(0f, 0f, 0f)); 
 		crosshair.setVisible(false);
 		
 		ballPath = ball;
@@ -53,7 +53,7 @@ public class Aim extends Drawable
 			position.setZ(startPosition.getZ()+startVelocity.getZ()*timeToLanding+gravity.getZ()*timeToLanding*timeToLanding);
 			
 			crosshair.setTranslation(new Vector3d( position.getX(), position.getY(), 0f));
-			//crosshair.setVisible(true);
+			crosshair.setVisible(true);
 		}
 		else
 		{
