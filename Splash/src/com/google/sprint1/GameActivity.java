@@ -70,6 +70,9 @@ public class GameActivity extends ARViewActivity // implements
 	//private IGeometry touchSphere;
 
 	
+	private IGeometry movBox;
+
+	
 	//Gesture handler
 	private GestureHandlerAndroid mGestureHandler;
 	private int mGestureMask;
@@ -263,6 +266,9 @@ public class GameActivity extends ARViewActivity // implements
 			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aimPowerUp.mfbx"));
 			GameState.getState().powerUps.add(power);
 			
+			movBox = Load3Dmodel("movBox.mfbx");
+			geometryProperties(movBox, 4f, new Vector3d(0, 0, 100f), new Rotation(0f, 0f, 0f));
+			movBox.startAnimation("Take 001", true);
 			
 			// creates the aim path
 			ArrayList<IGeometry> ballPath = new ArrayList<IGeometry>(10);
@@ -276,7 +282,7 @@ public class GameActivity extends ARViewActivity // implements
 			}
 			
 			// Load aim (crosshair and ballPath)			
-			aim = new Aim(Load3Dmodel("crosshair/crosshair.mfbx"),ballPath,ballPathShadow, false);
+			aim = new Aim(Load3Dmodel("crosshair/crosshair.mfbx"),ballPath,ballPathShadow);
 			
 
 			// creates a list of ants 
@@ -320,7 +326,8 @@ public class GameActivity extends ARViewActivity // implements
 		if ( GameState.getState().exsisting_paint_balls.isEmpty())
 			return;
 
-		
+		if(GameState.getState().powerUps.get(0).isHit())
+			aim.setPowerUp(true);
 		//spawn ant at random and move ants
 		for ( int i = 0; i < 10 ; i++)
 		{
@@ -338,7 +345,8 @@ public class GameActivity extends ARViewActivity // implements
 				GameState.getState().ants.get(i).movementToTower(new Vector3d(player.getPosition()));
 			}
 			else
-				GameState.getState().ants.get(i).randomMovement();			
+				GameState.getState().ants.get(i).randomMovement();
+					
 
 		}
 		
