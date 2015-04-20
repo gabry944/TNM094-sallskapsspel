@@ -104,7 +104,7 @@ public class MobileConnection {
 			//Send back list with other peers
 			Peer peer = new Peer(socket);
 			Log.d(TAG, peer.getAdress() +" connected.");
-			
+			Log.d(TAG, "SIZE OF MIPS: " + mIPs.size());
 			ByteBuffer buffer;
 
 			//Data sent in following order: your ID - InetAddress
@@ -124,7 +124,9 @@ public class MobileConnection {
 			buffer.clear();
 			
 			Log.d(TAG, "Sent IP list");
-			new Thread(new ListenerThread(peer)).start();
+		
+			if (!(mIPs.contains(peer.getAdress())))
+					new Thread(new ListenerThread(peer)).start();
 
 			//Add this peer to the list
 			mPeers.add(peer);
@@ -219,10 +221,11 @@ public class MobileConnection {
 				Socket socket = new Socket(address, SERVER_PORT);
 
 				Peer peer = new Peer(socket);
-				mPeers.add(peer);
-				mIPs.add(address);
-
 				new Thread(new ListenerThread(peer)).start();
+				
+				mPeers.add(peer);
+				mIPs.add(peer.getAdress());
+				
 				Log.d(TAG, "Connected to: " + address);
 			} catch (IOException e) {
 				Log.e(TAG,"Error when connecting.", e);

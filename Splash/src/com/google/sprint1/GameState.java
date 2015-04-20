@@ -28,11 +28,11 @@ public class GameState {
 	private void init(){
 		powerUps = new ArrayList<PowerUp>();
 		
-		players = new ArrayList<Player>();
+		players = new ArrayList<Player>();/*
 		players.add(new Player(1));
 		players.add(new Player(2));
 		players.add(new Player(3));
-		players.add(new Player(4));
+		players.add(new Player(4));*/
 	}
 	
 }
