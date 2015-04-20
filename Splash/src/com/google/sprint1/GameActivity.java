@@ -49,29 +49,23 @@ public class GameActivity extends ARViewActivity // implements
 	private IGeometry canonGeometry4;
 	private IGeometry ballGeometry4;
 
-
+	GameState gameState;
 	Player player;
+	Ant ant;
+	Aim aim;
 
-	private IGeometry aimPowerUp;
-	private IGeometry aniBox;
-
-	private IGeometry crosshair;
-	private IGeometry arrowAim;
+	//private IGeometry crosshair;
+	//private IGeometry arrowAim;
 
 
 	private IGeometry ball;
 	private IGeometry ballShadow;
 	private IGeometry touchSphere;
 
-	GameState gameState;
 	
 	//Gesture handler
 	private GestureHandlerAndroid mGestureHandler;
 	private int mGestureMask;
-
-	Ant ant;
-
-	Aim aim;
 		
 	private double angleForCanon;
 	
@@ -89,8 +83,8 @@ public class GameActivity extends ARViewActivity // implements
 	boolean mBound = false;
 
 	// FPS specific variables
-	private int frameCounter = 0;
-	private double lastTime;
+	//private int frameCounter = 0;
+	//private double lastTime;
 
 	public static final String TAG = "GameActivity";
 
@@ -352,7 +346,7 @@ public class GameActivity extends ARViewActivity // implements
     {
     	for(PaintBall obj : GameState.getState().exsisting_paint_balls)
     	{
-    		if (!(obj.geometry.isVisible()))
+    		if (!(obj.getGeometry().isVisible()))
     			return obj;
     	}
     	
@@ -416,7 +410,7 @@ public class GameActivity extends ARViewActivity // implements
 	            		Vector3d pos = player.getPosition();
 	            		
 	        			//Vector3d vel = new Vector3d((float)(touchVec.getX()/3* Math.cos(angleForCanon)), (float)(touchVec.getY()/3* Math.cos(angleForCanon)), (float)(Math.abs(touchVec.getX()/5)* Math.sin(angleForCanon)+ Math.abs(touchVec.getY()/5)*Math.sin(angleForCanon)));
-	        			DataPackage data = new DataPackage(ball.id, vel, pos);
+	        			DataPackage data = new DataPackage(ball.getId(), vel, pos);
 	        			mService.mConnection.sendData(data);
 	        			
 	        			//check if touched outside sphere -> do nothing
