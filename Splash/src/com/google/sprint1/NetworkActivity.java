@@ -211,11 +211,11 @@ public class NetworkActivity extends Activity {
 		// service discovery.
 		
 
-//		if (mNsdHelper != null) {
-//			mNsdHelper.stopDiscovery();
-//			mNsdHelper.unregisterService();
-//			mNsdHelper = null;
-//        }
+		if (mNsdHelper != null) {
+			mNsdHelper.stopDiscovery();
+			mNsdHelper.unregisterService();
+			mNsdHelper = null;
+        }
 
 		
 		super.onPause();
@@ -242,16 +242,16 @@ public class NetworkActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		
-//		if(mNsdHelper == null){
-//			mNsdHelper = new NsdHelper(this, mNSDHandler);
-//			mNsdHelper.initializeNsd();
-//		}
-//		
-//		if (mNsdHelper != null) {
-//			mNsdHelper.discoverServices();
-//			mNsdHelper.registerService(MobileConnection.SERVER_PORT);
-//            
-//        }
+		if(mNsdHelper == null){
+			mNsdHelper = new NsdHelper(this, mNSDHandler);
+			mNsdHelper.initializeNsd();
+		}
+		
+		if (mNsdHelper != null) {
+			mNsdHelper.discoverServices();
+			mNsdHelper.registerService(MobileConnection.SERVER_PORT);
+            
+        }
 
 	}
 
