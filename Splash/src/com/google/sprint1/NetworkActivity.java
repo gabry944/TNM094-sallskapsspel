@@ -55,6 +55,7 @@ public class NetworkActivity extends Activity {
 	
 	Runnable runHere;
 	ListView serviceListView;
+	ListView mListView;
 	
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +76,6 @@ public class NetworkActivity extends Activity {
 		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
 				android.R.layout.simple_list_item_1,
 				arraylist);
-		
-		
-		
 
 		mNSDHandler = new Handler() {
 			@Override
@@ -93,27 +91,21 @@ public class NetworkActivity extends Activity {
 				}
 				// If key is "found", add to the adapter
 				else if ((service = (NsdServiceInfo) msg.getData().get("found")) != null) {
-					listAdapter.add(service);
+					//listAdapter.add(service);
 					arraylist.add(service);
 				}
 				// If key is "lost", remove from adapter
 				else if ((service = (NsdServiceInfo) msg.getData().get("lost")) != null) {
-					Log.d(TAG, "1.Service lost");
-//					serviceListView.destroyDrawingCache();
-//					serviceListView.setVisibility(ListView.INVISIBLE);
-//					serviceListView.setVisibility(ListView.VISIBLE);
-					listAdapter.remove(service);
-					arraylist.remove(service);	
-					Log.d(TAG, "2.Service lost");
-
+					
+					for(int i = 0; i < arraylist.size(); i++){
+						if(arraylist.get(i).getServiceName().equals(service.getServiceName()))
+							arraylist.remove(i);
+					}
+					
 				}
 				
-				updateListView();
 				// Notify adapter that the list is updated.
-//				listAdapter.notifyDataSetChanged();
-				
-				
-				//runOnUiThread(runHere);
+				listAdapter.notifyDataSetChanged();
 
 			}
 		};
@@ -180,37 +172,10 @@ public class NetworkActivity extends Activity {
 					}
 
 				});
-		/*runHere = new Runnable(){
-            public void run(){
-                       //reload content
-                   listAdapter.notifyDataSetChanged();
-                   serviceListView.invalidateViews();
-                   serviceListView.refreshDrawableState();
-            }
-       };*/
 		
 		mNsdHelper = new NsdHelper(this, mNSDHandler);
 		mNsdHelper.initializeNsd();
 
-	}
-	
-	public void updateListView(){
-		listAdapter.clear();
-		//listAdapter.addAll(arraylist);
-		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
-				android.R.layout.simple_list_item_1,
-				arraylist);
-		
-		runOnUiThread(new Runnable() {
-	        @Override
-	        public void run() {
-//				serviceListView.destroyDrawingCache();
-//				serviceListView.setVisibility(ListView.INVISIBLE);
-//				serviceListView.setVisibility(ListView.VISIBLE);
-	        	serviceListView.setAdapter(listAdapter);
-	            listAdapter.notifyDataSetChanged();
-	        }
-	    });
 	}
 
 	/** Called when the user clicks the start Game button (starta spel) */
