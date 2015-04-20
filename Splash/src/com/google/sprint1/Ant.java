@@ -1,8 +1,5 @@
 package com.google.sprint1;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
 import android.util.Log;
 
 import com.metaio.sdk.jni.IGeometry;
@@ -19,7 +16,7 @@ public class Ant extends Drawable
 	private float memory;
 	
 	float angDiffLimit = (float)(5*Math.PI/180);
-	float speed = 2f;
+	float speed = 1f;
 	float angle = 0;
 	float randNr = 0;
 	int k = 0;
@@ -98,6 +95,7 @@ public class Ant extends Drawable
 		}
 		
 		float diffX = (float)Math.cos(angle);
+		
 		float diffY = (float)Math.sin(angle);
 		
 		Vector3d movement = new Vector3d(new Vector3d(ant.getTranslation().getX() + speed * diffX,
@@ -134,7 +132,7 @@ public class Ant extends Drawable
 		//when ant reached tower
 		if(diffVec.getX() < 2f && diffVec.getX() > -2f  && diffVec.getY() < 2f && diffVec.getY() > -2f)
 		{
-			Player.setScore();
+			Player.increaseScore();
 			ant.setVisible(false);
 			marker.setVisible(false);
 			marker.startAnimation("Take 001", false);
