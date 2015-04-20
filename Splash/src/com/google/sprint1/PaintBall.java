@@ -1,10 +1,5 @@
 package com.google.sprint1;
 
-import java.io.Serializable;
-import java.nio.ByteBuffer;
-
-import android.util.Log;
-
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
@@ -45,7 +40,7 @@ public class PaintBall extends Drawable
 		return geometry;
 	}
 	
-	public void setGeometry(Vector3d vec)
+	public void setPosition(Vector3d vec)
 	{
 		geometry.setTranslation(vec);
 	}

@@ -257,7 +257,7 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < NUM_OF_ANTS; i++)
 			{
 				// create ant geometry
-				ant = new Ant(Load3Dmodel("ant/aniAnt2.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), false);
+				ant = new Ant(i, Load3Dmodel("ant/aniAnt2.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), false);
 				GameState.getState().ants.add(ant);
 			}
 			
@@ -314,6 +314,19 @@ public class GameActivity extends ARViewActivity // implements
 			else
 				GameState.getState().ants.get(i).randomMovement();			
 
+			//Allocate a buffer and add OC and a byte array.
+    		ByteBuffer buffer = ByteBuffer.allocate(6 + 4*4);
+    		//amount of bytes
+    		buffer.putInt(4*4);
+    		//operation code
+    		buffer.putChar(DataPackage.ANT);
+    		//data 
+    		buffer.putInt(GameState.getState().ants.get(i).getId());
+    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getX());
+    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getY());
+    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getZ());
+    		
+			mService.mConnection.sendData(buffer.array());
 		}
 		
 		//Update powerup(s)

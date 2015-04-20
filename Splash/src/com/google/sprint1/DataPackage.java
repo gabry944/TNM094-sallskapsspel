@@ -17,6 +17,7 @@ public class DataPackage implements Serializable{
 	public static final char BALL_FIRED = 'A';
 	public static final char ANT = 'B';
 	public static final char IP_LIST = 'c';
+	public static final char INVALID = 'I';
 	
 	public static final int BUFFER_HEAD_SIZE = 6;
 	private byte[] bufferHead = new byte[BUFFER_HEAD_SIZE];
@@ -41,8 +42,14 @@ public class DataPackage implements Serializable{
 			ByteBuffer buffer = ByteBuffer.wrap(bufferHead);
 			int bytesToRead = buffer.getInt();
 			operationCode = buffer.getChar();
-			data = new byte[bytesToRead];
-			instream.read(data);
+			if(bytesToRead > 0) 
+			{
+				data = new byte[bytesToRead];
+				instream.read(data);
+			}else{
+				operationCode = INVALID;
+			}
+				
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

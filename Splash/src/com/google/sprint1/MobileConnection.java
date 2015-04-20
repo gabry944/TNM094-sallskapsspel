@@ -113,6 +113,8 @@ public class MobileConnection {
 				buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + byteAddress.length);	
 				buffer.putInt(byteAddress.length);
 				buffer.putChar(DataPackage.IP_LIST);
+				buffer.put(byteAddress);
+				Log.d(TAG, "Created IP to send with size: " + byteAddress.length);
 				peer.getOutputStream().write(buffer.array());
 				peer.getOutputStream().flush();
 				buffer.clear();
@@ -138,14 +140,14 @@ public class MobileConnection {
 		switch (data.getOperationCode())
 		{
 		case DataPackage.BALL_FIRED: 
-			ByteBuffer buffer = ByteBuffer.wrap(data.getData());
-			int id = buffer.getInt();
-			Vector3d vel = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
-			Vector3d pos = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
-			GameState.getState().exsisting_paint_balls.get(id).fire(vel, pos);
-			break;
+				fireBall(data.getData());
+				break;
+			case DataPackage.ANT: 
+				updateAnt(data.getData());
+				break;
 		case DataPackage.IP_LIST:
 			try {
+				Log.d(TAG, "Recieved from other peer: " + InetAddress.getByAddress(data.getData()).toString());
 				connectToPeer(InetAddress.getByAddress(data.getData()), SERVER_PORT);
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
@@ -229,6 +231,23 @@ public class MobileConnection {
 			}
 		
 		}
+	}
+	//FUNCTIONS FOR UPDATING GAME STATE
+	private void fireBall(byte[] data)
+	{
+		ByteBuffer buffer = ByteBuffer.wrap(data);
+		int id = buffer.getInt();
+		Vector3d vel = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
+		Vector3d pos = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
+		GameState.getState().exsisting_paint_balls.get(id).fire(vel, pos);
+	}
+	
+	private void updateAnt(byte[] data)
+	{
+		ByteBuffer buffer = ByteBuffer.wrap(data);
+		int id = buffer.getInt();
+		Vector3d pos = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
+		GameState.getState().ants.get(id).setPosition(pos);
 	}
 	
 }

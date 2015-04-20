@@ -17,7 +17,7 @@ public class Ant extends Drawable
 	private boolean isHit;
 	private Vector3d diffVec;
 	private float memory;
-	private int ownerID;
+	private int id;
 	
 	float angDiffLimit = (float)(5*Math.PI/180);
 	float speed = 2f;
@@ -26,8 +26,9 @@ public class Ant extends Drawable
 	int k = 0;
 	
 	/** constructor ant */
-	public Ant(IGeometry geo, IGeometry hitMarker, boolean hit) {
+	public Ant(int id, IGeometry geo, IGeometry hitMarker, boolean hit) {
 		super();
+		this.id = id;
 		ant = geo;
 		marker = hitMarker;
 		isHit = hit;
@@ -145,9 +146,19 @@ public class Ant extends Drawable
 		}
 	}
 	
+	public void setPosition(Vector3d pos)
+	{
+		ant.setTranslation(pos);
+	}
 	public Vector3d getPosition()
 	{
 		return ant.getTranslation();
+	}
+	
+	
+	public int getId()
+	{
+		return id;
 	}
 	
 	/** function to see if ant is active = visible */
