@@ -193,11 +193,11 @@ public class NetworkActivity extends Activity {
 		// This is done to unregister from the network and stop the
 		// service discovery.
 		
-		if (mNsdHelper != null) {
-			mNsdHelper.stopDiscovery();
-			mNsdHelper.unregisterService();
-			mNsdHelper = null;
-        }
+//		if (mNsdHelper != null) {
+//			mNsdHelper.stopDiscovery();
+//			mNsdHelper.unregisterService();
+//			mNsdHelper = null;
+//        }
 		
 		super.onPause();
 	}
@@ -226,16 +226,16 @@ public class NetworkActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		
-		if(mNsdHelper == null){
-			mNsdHelper = new NsdHelper(this, mNSDHandler);
-			mNsdHelper.initializeNsd();
-		}
-		
-		if (mNsdHelper != null) {
-			mNsdHelper.discoverServices();
-			mNsdHelper.registerService(MobileConnection.SERVER_PORT);
-            
-        }
+//		if(mNsdHelper == null){
+//			mNsdHelper = new NsdHelper(this, mNSDHandler);
+//			mNsdHelper.initializeNsd();
+//		}
+//		
+//		if (mNsdHelper != null) {
+//			mNsdHelper.discoverServices();
+//			mNsdHelper.registerService(MobileConnection.SERVER_PORT);
+//            
+//        }
 
 	}
 
@@ -248,13 +248,13 @@ public class NetworkActivity extends Activity {
 		// Check if mNsdHelper is not null(will throw NullPointerException
 		// otherwise). Unregister from network and stops the discovery.
 
-		if (mNsdHelper != null) {
-			mNsdHelper.stopDiscovery();
-			mNsdHelper.unregisterService();
-	
-
-        }
-		
+//		if (mNsdHelper != null) {
+//			mNsdHelper.stopDiscovery();
+//			mNsdHelper.unregisterService();
+//	
+//
+//        }
+//		
 		super.onDestroy();
 	}
 
