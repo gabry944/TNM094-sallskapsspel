@@ -20,9 +20,17 @@ public class PowerUp extends Drawable {
 		return geometry;
 	}
 	
-	public void isHit()
+	public void setHit()
 	{
 		visible = false;
+	}
+	
+	public boolean isHit()
+	{
+		if (visible)
+			return false;
+		else 
+			return true;
 	}
 	
 	public void update()
