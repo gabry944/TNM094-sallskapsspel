@@ -74,7 +74,7 @@ public class PaintBall extends Drawable
 		
 		
 		//Check for collision with ants
-		for(int i = 0; i < 10 ; i++)
+		for(int i = 0; i < GameActivity.getNrOfAnts() ; i++)
 		{
 			if (checkCollision(GameState.getState().ants.get(i).getGeometry())) { 
 				//GameState.getState().ants.get(i).ant.setRotation(new Rotation( (float) (3 * Math.PI / 4), 0f, 0f), true);
@@ -84,6 +84,16 @@ public class PaintBall extends Drawable
 			}
 		}
 		
+		//Check for collision with ants
+		for(int i = 0; i < GameActivity.getNrOfAnts() ; i++)
+		{
+			if (checkCollision(GameState.getState().bigAnts.get(i).getGeometry())) { 
+				//GameState.getState().ants.get(i).ant.setRotation(new Rotation( (float) (3 * Math.PI / 4), 0f, 0f), true);
+				
+				GameState.getState().bigAnts.get(i).setIsHit(true);
+				disable();
+			}
+		}
 		
 		for (int i = 0; i < GameState.getState().powerUps.size(); i++)
 		{
