@@ -37,7 +37,7 @@ import com.metaio.tools.io.AssetsManager;
 public class GameActivity extends ARViewActivity // implements
 													// OnGesturePerformedListener
 {
-	private final int NUM_OF_ANTS = 7;
+	public final static int NUM_OF_ANTS = 7;
 	
 	/* Variables for objects in the game */
 
@@ -59,7 +59,7 @@ public class GameActivity extends ARViewActivity // implements
 	private IGeometry ballShadow;
 	//private IGeometry touchSphere;
 
-	private IGeometry movBox;
+	private IGeometry groundPlane;
 	
 	//Gesture handler
 	private GestureHandlerAndroid mGestureHandler;
@@ -129,8 +129,8 @@ public class GameActivity extends ARViewActivity // implements
 		super.onCreate(savedInstanceState);		
 		
 		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
-		GameState.getState().ants = new ArrayList<Ant>(10);
-		GameState.getState().bigAnts = new ArrayList<Ant>(10);
+		GameState.getState().ants = new ArrayList<Ant>(NUM_OF_ANTS);
+		GameState.getState().bigAnts = new ArrayList<Ant>(NUM_OF_ANTS);
 		
 
 		touchVec = new Vector3d(0f, 0f, 0f);
@@ -198,7 +198,12 @@ public class GameActivity extends ARViewActivity // implements
 			MetaioDebug.log("Tracking data loaded: " + result);
 
 			/** Load Object */
-
+			
+			//create ground plane
+			
+			groundPlane = Load3Dmodel("groundPlane/plane2.mfbx");
+			geometryProperties(groundPlane, 25f, new Vector3d(0f, 0f, -15f), new Rotation(0f, 0f, 0f));
+			
 			//creates the tower	
 			
 			bluePlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));
@@ -500,6 +505,11 @@ public class GameActivity extends ARViewActivity // implements
 				displayPoints.setText("Score: " + player.getScore());
 			}
 		});
+	}
+	
+	public static int getNrOfAnts()
+	{
+		return NUM_OF_ANTS;
 	}
 		
 	/**Updates Fps each frame and display it to user once every second*/ 

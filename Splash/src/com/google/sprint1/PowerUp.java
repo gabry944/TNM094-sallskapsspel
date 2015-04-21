@@ -12,7 +12,7 @@ public class PowerUp extends Drawable {
 	public PowerUp(IGeometry geo){
 		geometry = geo;
 		visible = true;
-		setGeometryProperties(geometry, 2.1f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+		setGeometryProperties(geometry, 2.1f, new Vector3d(0f, 0f, 50f), new Rotation(0f, 0f, 0f));
 	}
 	
 	public IGeometry getGeometry()

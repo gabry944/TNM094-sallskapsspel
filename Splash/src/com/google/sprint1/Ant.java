@@ -74,7 +74,7 @@ public class Ant extends Drawable
 	
 	public void bigAnt()
 	{
-		ant.setScale(70f);
+		ant.setScale(75f);
 	}
 	
 	/** Function to generate movement to the ants */
