@@ -11,12 +11,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="14sp"
         android:gravity="center"
-        android:padding="10dp"
+        android:padding="10sp"
         android:text="@string/end_result"
         android:textColor="#19D119"
-        android:textSize="40dp" />
+        android:textSize="40sp" />
 
     <TextView
         android:id="@+id/bluePlayer"
@@ -25,10 +25,10 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView1"
         android:gravity="center"
-        android:padding="10dp"
+        android:padding="10sp"
         android:text="@string/blue_player"
         android:textColor="#70BBFF"
-        android:textSize="30dp" />
+        android:textSize="30sp" />
 
     <TextView
         android:id="@+id/greenPlayer"
@@ -37,9 +37,29 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/bluePlayer"
         android:gravity="center"
-        android:padding="10dp"
+        android:padding="10sp"
         android:text="@string/green_player"
         android:textColor="#50FF50"
-        android:textSize="30dp" />
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/returnButtom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/greenPlayer"
+        android:layout_marginLeft="78dp"
+        android:onClick="onPlayAgain"
+        android:text="spela igen" />
+
+    <Button
+        android:id="@+id/quitButtom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/greenPlayer"
+        android:layout_marginRight="58dp"
+        android:onClick="onFinishGame"
+        android:text="tillbaks till startmenyn" />
 
 </RelativeLayout>

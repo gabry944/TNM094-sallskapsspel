@@ -1,7 +1,9 @@
 package com.google.sprint1;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class GameEndedActivity extends Activity {
@@ -25,5 +27,21 @@ public class GameEndedActivity extends Activity {
 			}
 		});
 	
+	}
+	
+	/** Called when the user clicks the Return button */
+	public void onPlayAgain(View v) {
+		GameState.getState().gameStartTime = System.currentTimeMillis();
+		for (int i = 0; i < GameState.getState().nrOfPlayers; i++ )
+		{
+			GameState.getState().players.get(i).score = 0;
+		}
+		finish();
+	}
+	/** Called when the user clicks the finish button */
+	public void onFinishGame(View v) {
+		//TODO nätverket ska kopplas från också!
+		Intent mainMenu = new Intent(this, MainActivity.class);
+		startActivity(mainMenu);
 	}
 }
