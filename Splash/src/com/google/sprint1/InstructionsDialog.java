@@ -12,11 +12,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
  
-public class DFragment extends DialogFragment {
+public class InstructionsDialog extends DialogFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.dialogfragment, container,
+		View rootView = inflater.inflate(R.layout.instructionsdialog, container,
 				false);
 		
 		final Timer time = new Timer();
@@ -40,9 +40,7 @@ public class DFragment extends DialogFragment {
              }
         }, 10000);
 		
-		return rootView;
-		
-		
+		return rootView;	
 	}
 }
 

@@ -70,6 +70,7 @@ public class NetworkActivity extends Activity {
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		
 		serviceListView = (ListView) findViewById(R.id.serviceListView);
+		
 
 		/* Start game */
 		startGame = new AssetsExtracter();
@@ -95,8 +96,26 @@ public class NetworkActivity extends Activity {
 				}
 				// If key is "found", add to the adapter
 				else if ((service = (NsdServiceInfo) msg.getData().get("found")) != null) {
-					//listAdapter.add(service);
+					
 					arraylist.add(service);
+					
+//					if(mBound == true){
+//						for(int i = 0;  i < arraylist.size(); i++){
+//							
+//							if(arraylist.get(i).getServiceName().equals("ARGame")){
+//								mNsdHelper.resolveService(arraylist.get(i));
+//								
+//								Log.d(TAG, "Buhuuuu");
+//								
+//								mService.mConnection.connectToPeer(
+//										arraylist.get(i).getHost(),
+//										arraylist.get(i).getPort());
+//							}
+//								
+//						
+//						}
+//							
+//					}
 				}
 				
 				// If key is "lost", remove from adapter

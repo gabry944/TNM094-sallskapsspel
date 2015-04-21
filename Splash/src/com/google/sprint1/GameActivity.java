@@ -102,9 +102,9 @@ public class GameActivity extends ARViewActivity // implements
 		Intent intent = new Intent(this, NetworkService.class);
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		
-		FragmentManager fm = getSupportFragmentManager();
-		
-		DFragment dFragment = new DFragment();
+		//Create and show a DialogFragment with How-to-play instructions
+		FragmentManager fm = getSupportFragmentManager();		
+		InstructionsDialog dFragment = new InstructionsDialog();
 		// Show DialogFragment
 		dFragment.show(fm, "Dialog Fragment");
 
