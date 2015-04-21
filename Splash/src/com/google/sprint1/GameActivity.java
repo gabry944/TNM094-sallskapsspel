@@ -365,10 +365,12 @@ public class GameActivity extends ARViewActivity // implements
 
     private PaintBall getAvailableBall(int id)
     {
-    	for(PaintBall obj : GameState.getState().exsisting_paint_balls)
+    	PaintBall ball;
+    	for(int i=id*5; i < (id+1)*5;i++)
     	{
-    		if (!(obj.getGeometry().isVisible()))
-    			return obj;
+    		ball = GameState.getState().exsisting_paint_balls.get(i);
+    		if (!(ball.getGeometry().isVisible()))
+    			return ball;
     	}
     	
     	return null;
@@ -430,7 +432,7 @@ public class GameActivity extends ARViewActivity // implements
         		player.ballGeometry.setTranslation(new Vector3d(0f, 0f, 350f), true);
         		player.touchSphere.setTranslation(player.ballGeometry.getTranslation());
         		
-            	PaintBall ball = getAvailableBall(1);
+            	PaintBall ball = getAvailableBall(GameState.getState().myPlayerID);
         		if(ball != null)
         		{
             		Vector3d pos = player.getPosition();
