@@ -240,6 +240,9 @@ public class MobileConnection {
 			} catch (IOException e) {
 				Log.e(TAG,"Error when connecting.", e);
 				e.printStackTrace();
+			}	catch(NullPointerException e){
+				Log.e(TAG,"Error when connecting.", e);
+				e.printStackTrace();
 			}
 		
 		}
