@@ -10,6 +10,7 @@ public class GameState {
 	public ArrayList<PaintBall> exsisting_paint_balls;
 	public ArrayList<Player> players;
 	public ArrayList<Ant> ants;
+	public ArrayList<Ant> bigAnts;
 	public ArrayList<PowerUp> powerUps;
 	
 	protected GameState() {

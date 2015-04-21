@@ -36,7 +36,7 @@ import com.metaio.tools.io.AssetsManager;
 public class GameActivity extends ARViewActivity // implements
 													// OnGesturePerformedListener
 {
-	private final int NUM_OF_ANTS = 10;
+	private final int NUM_OF_ANTS = 7;
 	
 	/* Variables for objects in the game */
 	/*private IGeometry towerGeometry1;
@@ -65,6 +65,7 @@ public class GameActivity extends ARViewActivity // implements
 	GameState gameState;
 
 	Ant ant;
+	Ant bigAnt;
 	Aim aim;
 
 
@@ -137,6 +138,7 @@ public class GameActivity extends ARViewActivity // implements
 		
 		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		GameState.getState().ants = new ArrayList<Ant>(10);
+		GameState.getState().bigAnts = new ArrayList<Ant>(10);
 		
 
 		touchVec = new Vector3d(0f, 0f, 0f);
@@ -224,16 +226,12 @@ public class GameActivity extends ARViewActivity // implements
 			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aimPowerUp.mfbx"));
 			GameState.getState().powerUps.add(power);
 			
-			movBox = Load3Dmodel("movBox.mfbx");
-			geometryProperties(movBox, 4f, new Vector3d(0, 0, 100f), new Rotation(0f, 0f, 0f));
-			movBox.startAnimation("Take 001", true);
-			
 			// creates the aim path
 			ArrayList<IGeometry> ballPath = new ArrayList<IGeometry>(10);
 			ArrayList<IGeometry> ballPathShadow = new ArrayList<IGeometry>(10);			
 			for (int i = 0; i < 10; i++) 
 			{
-				ball = Load3Dmodel("paintball/paintball/ballRed.mfbx");
+				ball = Load3Dmodel("paintball/paintball/ballBlue.mfbx");
 				ballShadow = Load3Dmodel("paintball/paintballShadow.mfbx");
 				ballPath.add(ball);
 				ballPathShadow.add(ballShadow);
@@ -247,16 +245,20 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < NUM_OF_ANTS; i++)
 			{
 				// create ant geometry
-				ant = new Ant(i, Load3Dmodel("ant/aniAnt2.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), false);
+				ant = new Ant(i, Load3Dmodel("ant/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
 				GameState.getState().ants.add(ant);
+				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
+				GameState.getState().bigAnts.add(bigAnt);
+				GameState.getState().bigAnts.get(i).bigAnt();
+				
 			}
 			
 			// creates a list of paint balls
 			for (int i = 0; i < 20; i++) {
 				// add paint ball to list of paint balls
 				GameState.getState().exsisting_paint_balls.add(
-						new PaintBall(i,Load3Dmodel("paintball/paintball/ballRed.mfbx"),
-									  Load3Dmodel("paintball/splash/splashRed.mfbx"),
+						new PaintBall(i,Load3Dmodel("paintball/paintball/ballBlue.mfbx"),
+									  Load3Dmodel("paintball/splash/splashBlue.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx")));
 			}
 		} catch (Exception e) {
@@ -290,12 +292,17 @@ public class GameActivity extends ARViewActivity // implements
 		for ( int i = 0; i < NUM_OF_ANTS ; i++)
 		{
 			if(!GameState.getState().ants.get(i).isActive())
-
 			{
 				// if not already spawned, spawn at random 
 				GameState.getState().ants.get(i).spawnAnt();
 			}
 			
+			if(!GameState.getState().bigAnts.get(i).isActive())
+
+			{
+				// if not already spawned, spawn at random 
+				GameState.getState().bigAnts.get(i).spawnAnt();
+			}
 			
 			//if ant is hit move to tower else move at random 
 			if(GameState.getState().ants.get(i).getIsHit() == true)
@@ -304,6 +311,13 @@ public class GameActivity extends ARViewActivity // implements
 			}
 			else
 				GameState.getState().ants.get(i).randomMovement();
+			
+			if(GameState.getState().bigAnts.get(i).getIsHit() == true)
+			{
+				GameState.getState().bigAnts.get(i).movementToTower(new Vector3d(player.getPosition()));
+			}
+			else
+				GameState.getState().bigAnts.get(i).randomMovement();
 					
 
 			//Allocate a buffer and add OC and a byte array.

@@ -17,7 +17,7 @@ public class Ant extends Drawable
 	private int id;
 	
 	float angDiffLimit = (float)(5*Math.PI/180);
-	float speed = 1f;
+	float speed = 2f;
 	float angle = 0;
 	float randNr = 0;
 	int k = 0;
@@ -29,7 +29,7 @@ public class Ant extends Drawable
 		ant = geo;
 		marker = hitMarker;
 		isHit = hit;
-		setGeometryProperties(ant, 60f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f)); 
+		setGeometryProperties(ant, 50f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f)); 
 		setGeometryProperties(hitMarker, 0.2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
 		ant.setVisible(false);
 		marker.setVisible(false);
@@ -72,6 +72,11 @@ public class Ant extends Drawable
 		
 	}
 	
+	public void bigAnt()
+	{
+		ant.setScale(70f);
+	}
+	
 	/** Function to generate movement to the ants */
 	public void randomMovement()
 	{		
@@ -85,7 +90,7 @@ public class Ant extends Drawable
 		}
 		
 		//ant gets a new angle at random
-		if(randBetween(1, 10) == 1)
+		if(randBetween(1, 30) == 1)
 		{
 			randNr = randBetween2(angDiffLimit);
 			angle = ant.getRotation().getEulerAngleRadians().getZ() + randNr;
