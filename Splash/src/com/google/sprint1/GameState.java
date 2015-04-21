@@ -6,6 +6,11 @@ public class GameState {
 	
 	private static GameState instance = null;
 	
+	
+	// Timer for game round TODO sync between units playing the game
+	public long gameStartTime;
+	public long gameTimeLeft;
+	
 	public int myPlayerID = 0;
 	public ArrayList<PaintBall> exsisting_paint_balls;
 	public ArrayList<Player> players;
@@ -38,4 +43,13 @@ public class GameState {
 	public void addPlayer(Player p){
 		players.add(p);
 	}	
+	public void updateTime() {
+		// 3 min game round (5 min quit long)
+		gameTimeLeft = 3*60*1000 -(System.currentTimeMillis() - gameStartTime);
+	}
+	public String timeToString() {
+		String result;
+		result = ""+ (int) gameTimeLeft/60000 + ":" + (int) (gameTimeLeft%60000)/1000;
+		return result;
+	}
 }
