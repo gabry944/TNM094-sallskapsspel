@@ -142,7 +142,6 @@ public class MobileConnection {
 		
 		//ID assigned: 
 		buffer.putInt(mIPs.size()+1);
-		buffer.putInt(4*mIPs.size()+ 4);
 		for (int i = 0; i < mIPs.size(); i++)
 		{
 			byte[] byteAddress = mIPs.get(i).getAddress();
