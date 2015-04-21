@@ -245,7 +245,6 @@ public class GameActivity extends ARViewActivity // implements
 				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
 				GameState.getState().bigAnts.add(bigAnt);
 				GameState.getState().bigAnts.get(i).bigAnt();
-				
 			}
 			
 			// creates a list of paint balls
@@ -256,11 +255,11 @@ public class GameActivity extends ARViewActivity // implements
 									  Load3Dmodel("paintball/splash/splashBlue.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx")));
 			}
-		} catch (Exception e) {
+		} 
+		catch (Exception e) 
+		{
 			MetaioDebug.printStackTrace(Log.ERROR, e);
 		}
-		
-		
 	}
 
 	// function to set the properties for the geometry
