@@ -261,8 +261,10 @@ public class NetworkActivity extends Activity {
 
         }
 		
-		if(mService != null)
+		if(mBound){
 			unbindService(mServiceConnection);
+			mBound = false;
+		}
 		
 		super.onDestroy();
 	}

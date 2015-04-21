@@ -84,7 +84,7 @@ public class GameActivity extends ARViewActivity // implements
 	public static final String TAG = "GameActivity";
 
 	protected void onDestroy() {
-
+		Log.d(TAG, "i onDestroy i GameActivity");
 		// Unbind from service
 		if (mBound) {
 			unbindService(mServiceConnection);
@@ -97,10 +97,6 @@ public class GameActivity extends ARViewActivity // implements
 	@Override
 	protected void onStart() {
 		super.onStart();
-
-		// Bind to NetworkService
-		Intent intent = new Intent(this, NetworkService.class);
-		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		
 		//Create and show a DialogFragment with How-to-play instructions
 		FragmentManager fm = getSupportFragmentManager();		
@@ -123,6 +119,10 @@ public class GameActivity extends ARViewActivity // implements
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);		
+		
+		// Bind to NetworkService
+		Intent intent = new Intent(this, NetworkService.class);
+		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		
 		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		GameState.getState().ants = new ArrayList<Ant>(NUM_OF_ANTS);
