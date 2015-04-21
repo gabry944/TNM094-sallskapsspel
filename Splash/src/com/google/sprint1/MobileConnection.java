@@ -36,6 +36,8 @@ public class MobileConnection {
 	BlockingQueue<DataPackage> queue;
     private int QUEUE_CAPACITY = 32;
     
+    private boolean handshakeActive = false;
+    
 	public MobileConnection(Handler handler) {
 		mIPs = new ArrayList<InetAddress>();
 		mPeers = new ArrayList<Peer>();
@@ -49,7 +51,9 @@ public class MobileConnection {
 	public synchronized void connectToPeer(InetAddress address, int port) {
 		if (!(mIPs.contains(address)) && mServerSocket.getInetAddress() != address)
 		{
-			new Thread(new ConnectionThread(address)).start();
+			mIPs.add(address);
+			Thread con = new Thread(new ConnectionThread(address));
+			con.start();
 		}else{
 			Log.d(TAG,"Already connected to: " + address);
 		}
@@ -57,6 +61,7 @@ public class MobileConnection {
 
 	public void tearDown() {
 		try {
+			
 			mServerSocket.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -77,7 +82,7 @@ public class MobileConnection {
 	}
 	
 
-	/** Sends a serializable object to the sockets output stream */
+	/** Send data to the sockets output stream */
 	private synchronized void sendPackage(byte[] data, Peer peer) {
 		try {
 			OutputStream outStream = peer.getOutputStream();
@@ -131,9 +136,13 @@ public class MobileConnection {
 	private synchronized void sendIPList(Peer peer) throws IOException{
 		
 		ByteBuffer buffer;
-		buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE +  4*mIPs.size());
+		buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE +  4*mIPs.size() + 4);
 		buffer.putInt(4*mIPs.size()+ 4);
 		buffer.putChar(DataPackage.IP_LIST);
+		
+		//ID assigned: 
+		buffer.putInt(mIPs.size()+1);
+		buffer.putInt(4*mIPs.size()+ 4);
 		for (int i = 0; i < mIPs.size(); i++)
 		{
 			byte[] byteAddress = mIPs.get(i).getAddress();
@@ -268,7 +277,13 @@ public class MobileConnection {
 
 	private synchronized void resolveHandshake(byte[] data)
 	{
+		if (handshakeActive)
+			return;
+		
+		handshakeActive = true;
 		ByteBuffer buffer = ByteBuffer.wrap(data);
+		
+		GameState.getState().myPlayerID =buffer.getInt();
 		
 		byte[] byteIP = new byte[4];
 		while (buffer.hasRemaining())
@@ -281,7 +296,7 @@ public class MobileConnection {
 				e.printStackTrace();
 			}
 		}
-		GameState.getState().myPlayerID = mIPs.size();
+		
 		Log.d(TAG, "Assigned ID: " + GameState.getState().myPlayerID);
 	}
 }
