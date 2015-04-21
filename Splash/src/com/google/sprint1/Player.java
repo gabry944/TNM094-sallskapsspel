@@ -7,7 +7,8 @@ import com.metaio.sdk.jni.Vector3d;
 public class Player extends Drawable {
 
 	//public String ip;
-	private int score;
+	//private static int score;
+	public int score;
 	
 	public IGeometry towerGeometry;
 	public IGeometry slingshotGeometry;

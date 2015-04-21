@@ -12,11 +12,6 @@ public class GameState {
 	public ArrayList<Ant> ants;
 	public ArrayList<PowerUp> powerUps;
 	
-	public int pointsBluePlayer;
-	public int pointsGreenPlayer;
-	public int pointsRedPlayer;
-	public int pointsYellowPlayer;
-	
 	protected GameState() {
 		
 	}
@@ -42,14 +37,5 @@ public class GameState {
 	
 	public void addPlayer(Player p){
 		players.add(p);
-	}
-	
-	public void setPoints(int blue, int green, int red, int yellow)
-	{
-		pointsBluePlayer = blue;
-		pointsGreenPlayer = green;
-		pointsRedPlayer = red;
-		pointsYellowPlayer= yellow;
-	}
-	
+	}	
 }

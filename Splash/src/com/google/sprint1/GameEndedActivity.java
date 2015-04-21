@@ -18,10 +18,10 @@ public class GameEndedActivity extends Activity {
 			@Override
 			public void run() {
 				displayPoints = (TextView) findViewById(R.id.bluePlayer);
-				displayPoints.setText("Blå spelare: " + GameState.getState().pointsBluePlayer + "p");
+				displayPoints.setText("Blå spelare: " + GameState.getState().players.get(0).score + "p");
 				
 				displayPoints = (TextView) findViewById(R.id.greenPlayer);
-				displayPoints.setText("Grön spelare: " + GameState.getState().pointsGreenPlayer + "p");
+				displayPoints.setText("Grön spelare: " + GameState.getState().players.get(1).score + "p");
 			}
 		});
 	

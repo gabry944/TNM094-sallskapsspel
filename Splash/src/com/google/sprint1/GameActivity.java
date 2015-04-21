@@ -337,7 +337,6 @@ public class GameActivity extends ARViewActivity // implements
 		gameRunning = System.currentTimeMillis() - gameStart;
 		if (gameRunning >= 3*60*1000) // 3 min game round (5 min quit long)
 		{
-			GameState.getState().setPoints(bluePlayer.getScore(), greenPlayer.getScore(), redPlayer.getScore(), yellowPlayer.getScore());
 			Intent GameEnded = new Intent(this, GameEndedActivity.class);
 			startActivity(GameEnded);
 		}
