@@ -98,24 +98,7 @@ public class NetworkActivity extends Activity {
 				else if ((service = (NsdServiceInfo) msg.getData().get("found")) != null) {
 					
 					arraylist.add(service);
-					
-//					if(mBound == true){
-//						for(int i = 0;  i < arraylist.size(); i++){
-//							
-//							if(arraylist.get(i).getServiceName().equals("ARGame")){
-//								mNsdHelper.resolveService(arraylist.get(i));
-//								
-//								Log.d(TAG, "Buhuuuu");
-//								
-//								mService.mConnection.connectToPeer(
-//										arraylist.get(i).getHost(),
-//										arraylist.get(i).getPort());
-//							}
-//								
-//						
-//						}
-//							
-//					}
+			
 				}
 				
 				// If key is "lost", remove from adapter
