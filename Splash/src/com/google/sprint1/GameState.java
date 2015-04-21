@@ -6,16 +6,16 @@ public class GameState {
 	
 	private static GameState instance = null;
 	
+	// Timer for game round TODO sync between units playing the game
+	public long gameStartTime;
+	public long gameTimeLeft;
+	
 	public int myPlayerID = 0;
 	public ArrayList<PaintBall> exsisting_paint_balls;
 	public ArrayList<Player> players;
 	public ArrayList<Ant> ants;
+	public ArrayList<Ant> bigAnts;
 	public ArrayList<PowerUp> powerUps;
-	
-	public int pointsBluePlayer;
-	public int pointsGreenPlayer;
-	public int pointsRedPlayer;
-	public int pointsYellowPlayer;
 	
 	protected GameState() {
 		
@@ -34,22 +34,18 @@ public class GameState {
 		powerUps = new ArrayList<PowerUp>();
 		
 		players = new ArrayList<Player>();
-		/*players.add(new Player(1));
-		players.add(new Player(2));
-		players.add(new Player(3));
-		players.add(new Player(4));*/
 	}
 	
 	public void addPlayer(Player p){
 		players.add(p);
+	}	
+	public void updateTime() {
+		// 3 min game round (5 min quit long)
+		gameTimeLeft = 3*60*1000 -(System.currentTimeMillis() - gameStartTime);
 	}
-	
-	public void setPoints(int blue, int green, int red, int yellow)
-	{
-		pointsBluePlayer = blue;
-		pointsGreenPlayer = green;
-		pointsRedPlayer = red;
-		pointsYellowPlayer= yellow;
+	public String timeToString() {
+		String result;
+		result = ""+ (int) gameTimeLeft/60000 + ":" + (int) (gameTimeLeft%60000)/1000;
+		return result;
 	}
-	
 }

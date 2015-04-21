@@ -37,7 +37,7 @@ import com.metaio.tools.io.AssetsManager;
 public class GameActivity extends ARViewActivity // implements
 													// OnGesturePerformedListener
 {
-	private final int NUM_OF_ANTS = 10;
+	private final int NUM_OF_ANTS = 7;
 	
 	/* Variables for objects in the game */
 
@@ -51,6 +51,7 @@ public class GameActivity extends ARViewActivity // implements
 	GameState gameState;
 
 	Ant ant;
+	Ant bigAnt;
 	Aim aim;
 
 
@@ -79,10 +80,6 @@ public class GameActivity extends ARViewActivity // implements
 	// FPS specific variables
 	//private int frameCounter = 0;
 	//private double lastTime;
-	
-	// Timer for game round TODO sync between units playing the game
-	private long gameStart;
-	private long gameRunning;
 
 	public static final String TAG = "GameActivity";
 
@@ -105,9 +102,9 @@ public class GameActivity extends ARViewActivity // implements
 		Intent intent = new Intent(this, NetworkService.class);
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		
-		FragmentManager fm = getSupportFragmentManager();
-		
-		DFragment dFragment = new DFragment();
+		//Create and show a DialogFragment with How-to-play instructions
+		FragmentManager fm = getSupportFragmentManager();		
+		InstructionsDialog dFragment = new InstructionsDialog();
 		// Show DialogFragment
 		dFragment.show(fm, "Dialog Fragment");
 
@@ -129,6 +126,7 @@ public class GameActivity extends ARViewActivity // implements
 		
 		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		GameState.getState().ants = new ArrayList<Ant>(10);
+		GameState.getState().bigAnts = new ArrayList<Ant>(10);
 		
 
 		touchVec = new Vector3d(0f, 0f, 0f);
@@ -138,7 +136,7 @@ public class GameActivity extends ARViewActivity // implements
 		//player = GameState.getState().players.get(0);
 		
 
-		gameStart = System.currentTimeMillis();
+		GameState.getState().gameStartTime = System.currentTimeMillis();
 		
 		//Gesture handler
 		mGestureMask = GestureHandler.GESTURE_DRAG;
@@ -204,33 +202,26 @@ public class GameActivity extends ARViewActivity // implements
 			redPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));
 			yellowPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));
 			
-			//! make sure that init is called!
-			GameState.getState().addPlayer(bluePlayer);
-			//GameState.addPlayer(bluePlayer);
-			//GameState.players.add(bluePlayer);			
+			//! TODO make sure that init is called!
+			GameState.getState().addPlayer(bluePlayer);	
 			GameState.getState().addPlayer(greenPlayer);
 			GameState.getState().addPlayer(redPlayer);
 			GameState.getState().addPlayer(yellowPlayer);
 			
-			// TODO this should be chosen by Id of player or something like that
-			player = bluePlayer;
+			// the player this unit has is decided by the player id in game state
+			player = GameState.getState().players.get(GameState.getState().myPlayerID);
 			mGestureHandler.addObject(player.touchSphere, 1);
-
 
 			// Load powerUps
 			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aimPowerUp.mfbx"));
 			GameState.getState().powerUps.add(power);
-			
-			movBox = Load3Dmodel("movBox.mfbx");
-			geometryProperties(movBox, 4f, new Vector3d(0, 0, 100f), new Rotation(0f, 0f, 0f));
-			movBox.startAnimation("Take 001", true);
 			
 			// creates the aim path
 			ArrayList<IGeometry> ballPath = new ArrayList<IGeometry>(10);
 			ArrayList<IGeometry> ballPathShadow = new ArrayList<IGeometry>(10);			
 			for (int i = 0; i < 10; i++) 
 			{
-				ball = Load3Dmodel("paintball/paintball/ballRed.mfbx");
+				ball = Load3Dmodel("paintball/paintball/ballBlue.mfbx");
 				ballShadow = Load3Dmodel("paintball/paintballShadow.mfbx");
 				ballPath.add(ball);
 				ballPathShadow.add(ballShadow);
@@ -244,16 +235,20 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < NUM_OF_ANTS; i++)
 			{
 				// create ant geometry
-				ant = new Ant(i, Load3Dmodel("ant/aniAnt2.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), false);
+				ant = new Ant(i, Load3Dmodel("ant/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
 				GameState.getState().ants.add(ant);
+				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
+				GameState.getState().bigAnts.add(bigAnt);
+				GameState.getState().bigAnts.get(i).bigAnt();
+				
 			}
 			
 			// creates a list of paint balls
 			for (int i = 0; i < 20; i++) {
 				// add paint ball to list of paint balls
 				GameState.getState().exsisting_paint_balls.add(
-						new PaintBall(i,Load3Dmodel("paintball/paintball/ballRed.mfbx"),
-									  Load3Dmodel("paintball/splash/splashRed.mfbx"),
+						new PaintBall(i,Load3Dmodel("paintball/paintball/ballBlue.mfbx"),
+									  Load3Dmodel("paintball/splash/splashBlue.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx")));
 			}
 		} catch (Exception e) {
@@ -287,12 +282,17 @@ public class GameActivity extends ARViewActivity // implements
 		for ( int i = 0; i < NUM_OF_ANTS ; i++)
 		{
 			if(!GameState.getState().ants.get(i).isActive())
-
 			{
 				// if not already spawned, spawn at random 
 				GameState.getState().ants.get(i).spawnAnt();
 			}
 			
+			if(!GameState.getState().bigAnts.get(i).isActive())
+
+			{
+				// if not already spawned, spawn at random 
+				GameState.getState().bigAnts.get(i).spawnAnt();
+			}
 			
 			//if ant is hit move to tower else move at random 
 			if(GameState.getState().ants.get(i).getIsHit() == true)
@@ -301,6 +301,13 @@ public class GameActivity extends ARViewActivity // implements
 			}
 			else
 				GameState.getState().ants.get(i).randomMovement();
+			
+			if(GameState.getState().bigAnts.get(i).getIsHit() == true)
+			{
+				GameState.getState().bigAnts.get(i).movementToTower(new Vector3d(player.getPosition()));
+			}
+			else
+				GameState.getState().bigAnts.get(i).randomMovement();
 					
 
 			//Allocate a buffer and add OC and a byte array.
@@ -334,8 +341,8 @@ public class GameActivity extends ARViewActivity // implements
 		}
 		
 		//Update Gametime 
-		gameRunning = System.currentTimeMillis() - gameStart;
-		if (gameRunning >= 3*60*1000) // 3 min game round (5 min quit long)
+		GameState.getState().updateTime();
+		if (GameState.getState().gameTimeLeft <= 0) 
 		{
 			Intent GameEnded = new Intent(this, GameEndedActivity.class);
 			startActivity(GameEnded);
@@ -484,6 +491,9 @@ public class GameActivity extends ARViewActivity // implements
 			public void run() {
 				TextView displayPoints = (TextView) findViewById(R.id.myPoints);
 				displayPoints.setText("Score: " + player.getScore());
+				
+				TextView displayTime= (TextView) findViewById(R.id.timeLeft);
+				displayTime.setText(GameState.getState().timeToString());
 			}
 		});
 	}
