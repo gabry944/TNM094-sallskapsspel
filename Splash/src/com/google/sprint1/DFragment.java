@@ -1,5 +1,8 @@
 package com.google.sprint1;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -16,19 +19,30 @@ public class DFragment extends DialogFragment {
 		View rootView = inflater.inflate(R.layout.dialogfragment, container,
 				false);
 		
-		Dialog dialog = getDialog();
+		final Timer time = new Timer();
 		
 		//Close dialog on touch
 		rootView.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View rootView) {
 			getDialog().dismiss();
+			time.cancel();
 		}
 		});
 		
-		dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+	
+		//Timer that closes the dialog after 10 seconds 
+        time.schedule(new TimerTask() {
+             public void run() {
+                 getDialog().dismiss();
+                 time.cancel();
+             }
+        }, 10000);
 		
 		return rootView;
+		
+		
 	}
 }
 
