@@ -11,18 +11,7 @@
         android:background="@android:color/transparent"
         android:onClick="onExitButtonClick"
         android:src="@drawable/cancel" />
-          
-     <TextView
-        android:id="@+id/myPoints"
-         android:layout_width="150dp"
-         android:layout_height="66dp"
-         android:background="@null"
-         android:ems="10"
-         android:editable="true"
-         android:text="points:"
-         android:textColor="#19D119"
-         android:textSize="40dp"
-         android:visibility="visible" />
+     
 
     <Button
         android:id="@+id/sendData"
@@ -30,5 +19,30 @@
         android:layout_height="wrap_content"
         android:text="Send Data"
         android:onClick="onClickSendData" />
+    
+    <TextView
+        android:id="@+id/timeLeft"       
+        android:layout_gravity="right|bottom"
+        android:layout_width="184dp"
+        android:layout_height="66dp"
+        android:background="@null"
+        android:editable="true"
+        android:ems="10"
+        android:text="Time left"
+        android:textColor="#991199"
+        android:textSize="40sp"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/myPoints"
+        android:layout_width="184dp"
+        android:layout_height="66dp"
+        android:background="@null"
+        android:editable="true"
+        android:ems="10"
+        android:text="points:"
+        android:textColor="#19D119"
+        android:textSize="40sp"
+        android:visibility="visible" />
     
 </FrameLayout>

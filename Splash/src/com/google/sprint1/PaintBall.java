@@ -176,17 +176,17 @@ public class PaintBall extends Drawable
 			max = boxmax.getZ();
 		
 		// a false way to calculate collisions, take some extra buffer since not shore about rotation
-		if (geometry.getTranslation().getX() + max >
+		if (geometry.getTranslation().getX() + max+ 50f >
 		min * scale + obj.getTranslation().getX() - 50f
-		&& geometry.getTranslation().getX()	+ min <
+		&& geometry.getTranslation().getX()	+ min - 50f <
 		max * scale + obj.getTranslation().getX() + 50f
-		&& geometry.getTranslation().getY() + max > 
+		&& geometry.getTranslation().getY() + max + 50f > 
 		min * scale + obj.getTranslation().getY() - 50f
-		&& geometry.getTranslation().getY()	+ min < 
+		&& geometry.getTranslation().getY()	+ min - 50f < 
 		max * scale + obj.getTranslation().getY() + 50f
-		&& geometry.getTranslation().getZ()+ max > 
+		&& geometry.getTranslation().getZ()+ max  + 50f > 
 		min * scale + obj.getTranslation().getZ() - 50f
-		&& geometry.getTranslation().getZ()+ min < 
+		&& geometry.getTranslation().getZ()+ min  - 50f < 
 		max * scale + obj.getTranslation().getZ() + 50f)
 			return true;
 		else
