@@ -245,22 +245,46 @@ public class GameActivity extends ARViewActivity // implements
 				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
 				GameState.getState().bigAnts.add(bigAnt);
 				GameState.getState().bigAnts.get(i).bigAnt();
-				
 			}
 			
-			// creates a list of paint balls
-			for (int i = 0; i < 20; i++) {
+			// creates a list of paint blue balls that player 0 shoots
+			for (int i = 0; i < 5; i++) {
 				// add paint ball to list of paint balls
 				GameState.getState().exsisting_paint_balls.add(
 						new PaintBall(i,Load3Dmodel("paintball/paintball/ballBlue.mfbx"),
 									  Load3Dmodel("paintball/splash/splashBlue.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx")));
 			}
-		} catch (Exception e) {
+			// creates a list of paint blue balls that player 1 shoots
+			for (int i = 0; i < 5; i++) {
+				// add paint ball to list of paint balls
+				GameState.getState().exsisting_paint_balls.add(
+						new PaintBall(i,Load3Dmodel("paintball/paintball/ballGreen.mfbx"),
+									  Load3Dmodel("paintball/splash/splashGreeen.mfbx"),
+									  Load3Dmodel("paintball/paintballShadow.mfbx")));
+			}
+			// creates a list of paint blue balls that player 2 shoots
+			for (int i = 0; i < 5; i++) {
+				// add paint ball to list of paint balls
+				GameState.getState().exsisting_paint_balls.add(
+						new PaintBall(i,Load3Dmodel("paintball/paintball/ballRed.mfbx"),
+									  Load3Dmodel("paintball/splash/splashRed.mfbx"),
+									  Load3Dmodel("paintball/paintballShadow.mfbx")));
+			}
+			// creates a list of paint blue balls that player 3 shoots
+			for (int i = 0; i < 5; i++) {
+				// add paint ball to list of paint balls
+				GameState.getState().exsisting_paint_balls.add(
+						new PaintBall(i,Load3Dmodel("paintball/paintball/ballYellow.mfbx"),
+									  Load3Dmodel("paintball/splash/splashYellow.mfbx"),
+									  Load3Dmodel("paintball/paintballShadow.mfbx")));
+			}
+			
+		} 
+		catch (Exception e) 
+		{
 			MetaioDebug.printStackTrace(Log.ERROR, e);
 		}
-		
-		
 	}
 
 	// function to set the properties for the geometry
@@ -365,10 +389,12 @@ public class GameActivity extends ARViewActivity // implements
 
     private PaintBall getAvailableBall(int id)
     {
-    	for(PaintBall obj : GameState.getState().exsisting_paint_balls)
+    	PaintBall ball;
+    	for(int i=id*5; i < (id+1)*5;i++)
     	{
-    		if (!(obj.getGeometry().isVisible()))
-    			return obj;
+    		ball = GameState.getState().exsisting_paint_balls.get(i);
+    		if (!(ball.getGeometry().isVisible()))
+    			return ball;
     	}
     	
     	return null;
@@ -430,7 +456,7 @@ public class GameActivity extends ARViewActivity // implements
         		player.ballGeometry.setTranslation(new Vector3d(0f, 0f, 350f), true);
         		player.touchSphere.setTranslation(player.ballGeometry.getTranslation());
         		
-            	PaintBall ball = getAvailableBall(1);
+            	PaintBall ball = getAvailableBall(GameState.getState().myPlayerID);
         		if(ball != null)
         		{
             		Vector3d pos = player.getPosition();

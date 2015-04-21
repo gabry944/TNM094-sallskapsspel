@@ -40,7 +40,34 @@
         android:padding="10sp"
         android:text="@string/green_player"
         android:textColor="#50FF50"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:visibility="invisible" />
+    
+    <TextView
+        android:id="@+id/redPlayer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/greenPlayer"
+        android:gravity="center"
+        android:padding="10sp"
+        android:text="@string/red_player"
+        android:textColor="#50FF50"
+        android:textSize="30sp" 
+        android:visibility="invisible"/>"
+        
+    <TextView
+        android:id="@+id/yellowPlayer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/redPlayer"
+        android:gravity="center"
+        android:padding="10sp"
+        android:text="@string/yellow_player"
+        android:textColor="#50FF50"
+        android:textSize="30sp" 
+        android:visibility="invisible" />"
 
     <Button
         android:id="@+id/returnButtom"
