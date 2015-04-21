@@ -29,6 +29,7 @@ public class MobileConnection {
 	private List<InetAddress> mIPs;
 	private List<Peer> mPeers;
 	
+	private InetAddress mIP;
 	private static final String TAG = "MobileConnection";
 	public static final int SERVER_PORT = 8196;
 	
@@ -100,35 +101,50 @@ public class MobileConnection {
 	private void handshake(Socket socket)
 	{
 		try {
-			//Send back list with other peers
-			Peer peer = new Peer(socket);
-			Log.d(TAG, peer.getAdress() +" connected.");
-			
-			ByteBuffer buffer;
-			for (int i = 0; i < mIPs.size(); i++)
+			//Check if already connected
+			if (!mIPs.contains(socket.getInetAddress()))
 			{
-				byte[] byteAddress = mIPs.get(i).getAddress();
+				Peer peer = new Peer(socket);
+				Log.d(TAG, peer.getAdress() +" connected.");
+				Log.d(TAG, "SIZE OF MIPS: " + mIPs.size());
 				
-				buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + byteAddress.length);	
-				buffer.putInt(byteAddress.length);
-				buffer.putChar(DataPackage.IP_LIST);
-				buffer.put(byteAddress);
-				Log.d(TAG, "Created IP to send with size: " + byteAddress.length);
-				peer.getOutputStream().write(buffer.array());
-				peer.getOutputStream().flush();
-				buffer.clear();
-			}
-			
-			Log.d(TAG, "Sent IP list");
-			new Thread(new ListenerThread(peer)).start();
+				//Send back list with other peers
+				sendIPList(peer);
 
-			//Add this peer to the list
-			mPeers.add(peer);
-			mIPs.add(peer.getAdress());
+				new Thread(new ListenerThread(peer)).start();
+
+				//Add this peer to the list
+				mPeers.add(peer);
+				mIPs.add(peer.getAdress());
+
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+	}
+	/** 
+	 * Sends back a list of peers to connect to
+	 * @param peer 
+	 * @throws IOException 
+	 */
+	private synchronized void sendIPList(Peer peer) throws IOException{
+		
+		ByteBuffer buffer;
+		buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE +  4*mIPs.size());
+		buffer.putInt(4*mIPs.size()+ 4);
+		buffer.putChar(DataPackage.IP_LIST);
+		for (int i = 0; i < mIPs.size(); i++)
+		{
+			byte[] byteAddress = mIPs.get(i).getAddress();
+			buffer.put(byteAddress);
+			Log.d(TAG, "Created IP to send with size: " + byteAddress.length);
+		}
+		peer.getOutputStream().write(buffer.array());
+		peer.getOutputStream().flush();
+		buffer.clear();
+		
+		Log.d(TAG, "Sent IP list");
 	}
 	/**
 	 * Handle the object found in the outputstream and sends it to the correct place
@@ -145,13 +161,8 @@ public class MobileConnection {
 				updateAnt(data.getData());
 				break;
 		case DataPackage.IP_LIST:
-			try {
-				Log.d(TAG, "Recieved from other peer: " + InetAddress.getByAddress(data.getData()).toString());
-				connectToPeer(InetAddress.getByAddress(data.getData()), SERVER_PORT);
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				resolveHandshake(data.getData());
+				break;
 		
 		default:
 			break;
@@ -171,6 +182,7 @@ public class MobileConnection {
 
 			try {
 				mServerSocket = new ServerSocket(SERVER_PORT);
+				mIP = mServerSocket.getInetAddress();
 				Log.d(TAG, "ServerSocket Created, waiting for connections.");
 				while (!Thread.currentThread().isInterrupted()) {
 					Socket socket = mServerSocket.accept();
@@ -219,10 +231,11 @@ public class MobileConnection {
 				Socket socket = new Socket(address, SERVER_PORT);
 
 				Peer peer = new Peer(socket);
-				mPeers.add(peer);
-				mIPs.add(address);
-
 				new Thread(new ListenerThread(peer)).start();
+				
+				mPeers.add(peer);
+				mIPs.add(peer.getAdress());
+				
 				Log.d(TAG, "Connected to: " + address);
 			} catch (IOException e) {
 				Log.e(TAG,"Error when connecting.", e);
@@ -249,5 +262,23 @@ public class MobileConnection {
 		Vector3d pos = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
 		//GameState.getState().ants.get(id).setPosition(pos);
 	}
-	
+
+	private synchronized void resolveHandshake(byte[] data)
+	{
+		ByteBuffer buffer = ByteBuffer.wrap(data);
+		
+		byte[] byteIP = new byte[4];
+		while (buffer.hasRemaining())
+		{
+			try {
+				buffer.get(byteIP);
+				connectToPeer(InetAddress.getByAddress(byteIP), SERVER_PORT);
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		GameState.getState().myPlayerID = mIPs.size();
+		Log.d(TAG, "Assigned ID: " + GameState.getState().myPlayerID);
+	}
 }

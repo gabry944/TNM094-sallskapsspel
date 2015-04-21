@@ -2,14 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background3"
+    android:background="@drawable/background4"
     tools:context="${relativePackage}.${activityClass}" >
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="14dp"
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/end_result"
@@ -25,7 +27,19 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/blue_player"
-        android:textColor="#5989FF"
+        android:textColor="#70BBFF"
+        android:textSize="30dp" />
+
+    <TextView
+        android:id="@+id/greenPlayer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/bluePlayer"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/green_player"
+        android:textColor="#50FF50"
         android:textSize="30dp" />
 
 </RelativeLayout>

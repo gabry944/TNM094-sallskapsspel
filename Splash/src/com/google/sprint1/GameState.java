@@ -6,12 +6,17 @@ public class GameState {
 	
 	private static GameState instance = null;
 	
-	
+	public int myPlayerID = 0;
 	public ArrayList<PaintBall> exsisting_paint_balls;
 	public ArrayList<Player> players;
 	public ArrayList<Ant> ants;
 	public ArrayList<Ant> bigAnts;
 	public ArrayList<PowerUp> powerUps;
+	
+	public int pointsBluePlayer;
+	public int pointsGreenPlayer;
+	public int pointsRedPlayer;
+	public int pointsYellowPlayer;
 	
 	protected GameState() {
 		
@@ -30,10 +35,22 @@ public class GameState {
 		powerUps = new ArrayList<PowerUp>();
 		
 		players = new ArrayList<Player>();
-		players.add(new Player(1));
+		/*players.add(new Player(1));
 		players.add(new Player(2));
 		players.add(new Player(3));
-		players.add(new Player(4));
+		players.add(new Player(4));*/
+	}
+	
+	public void addPlayer(Player p){
+		players.add(p);
+	}
+	
+	public void setPoints(int blue, int green, int red, int yellow)
+	{
+		pointsBluePlayer = blue;
+		pointsGreenPlayer = green;
+		pointsRedPlayer = red;
+		pointsYellowPlayer= yellow;
 	}
 	
 }

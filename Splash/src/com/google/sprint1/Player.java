@@ -7,7 +7,8 @@ import com.metaio.sdk.jni.Vector3d;
 public class Player extends Drawable {
 
 	//public String ip;
-	private static int score;
+	//private static int score;
+	public int score;
 	
 	public IGeometry towerGeometry;
 	public IGeometry slingshotGeometry;
@@ -15,13 +16,6 @@ public class Player extends Drawable {
 	public IGeometry touchSphere;
 
 	public boolean superPower; 
-
-	private Vector3d startPosPlayer1 = new Vector3d(-600f, -450f, 165f);
-	//private Vector3d startPosPlayer1 = new Vector3d(-650f, -520f, 250f);
-	private Vector3d startPosPlayer2 = new Vector3d(-600f, 450f, 165f);
-	private Vector3d startPosPlayer3 = new Vector3d(600f, -450f, 165f);
-	private Vector3d startPosPlayer4 = new Vector3d(600f, 450f, 165f);
-	
 	
 	public Player(IGeometry towerGeo,IGeometry slingshotGeo,IGeometry ballGeo, Vector3d startPosPlayer, IGeometry invisibleBall)
 	{
@@ -49,12 +43,12 @@ public class Player extends Drawable {
 		
 	}
 	
-	public static void increaseScore()
+	public void increaseScore()
 	{
 		score++;
 	}
 	
-	public static int getScore()
+	public int getScore()
 	{
 		return score;
 	}
@@ -63,29 +57,4 @@ public class Player extends Drawable {
 	{
 		return startPosition;
 	}
-	
-	public Player(int id)
-	{
-		if (id == 1)
-		{
-			startPosition = new Vector3d(startPosPlayer1);
-		}
-		
-		if (id == 2)
-		{
-			startPosition = new Vector3d(startPosPlayer2);
-		}
-		
-		if (id == 3)
-		{
-			startPosition = new Vector3d(startPosPlayer3);
-		}
-		
-		if (id == 4)
-		{
-			startPosition = new Vector3d(startPosPlayer4);
-		}
-			
-	}
-
 }

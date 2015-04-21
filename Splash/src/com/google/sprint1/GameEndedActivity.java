@@ -13,11 +13,15 @@ public class GameEndedActivity extends Activity {
 		
 		//Necessary to run on UI thread to be able to edit the TextView
 		runOnUiThread(new Runnable() {
+			TextView displayPoints;
 
 			@Override
 			public void run() {
-				TextView displayPoints = (TextView) findViewById(R.id.bluePlayer);
-				displayPoints.setText("Blå spelare: " + Player.getScore());
+				displayPoints = (TextView) findViewById(R.id.bluePlayer);
+				displayPoints.setText("Blå spelare: " + GameState.getState().players.get(0).score + "p");
+				
+				displayPoints = (TextView) findViewById(R.id.greenPlayer);
+				displayPoints.setText("Grön spelare: " + GameState.getState().players.get(1).score + "p");
 			}
 		});
 	
