@@ -80,10 +80,6 @@ public class GameActivity extends ARViewActivity // implements
 	// FPS specific variables
 	//private int frameCounter = 0;
 	//private double lastTime;
-	
-	// Timer for game round TODO sync between units playing the game
-	private long gameStart;
-	private long gameRunning;
 
 	public static final String TAG = "GameActivity";
 
@@ -106,9 +102,9 @@ public class GameActivity extends ARViewActivity // implements
 		Intent intent = new Intent(this, NetworkService.class);
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		
-		FragmentManager fm = getSupportFragmentManager();
-		
-		DFragment dFragment = new DFragment();
+		//Create and show a DialogFragment with How-to-play instructions
+		FragmentManager fm = getSupportFragmentManager();		
+		InstructionsDialog dFragment = new InstructionsDialog();
 		// Show DialogFragment
 		dFragment.show(fm, "Dialog Fragment");
 
@@ -140,7 +136,7 @@ public class GameActivity extends ARViewActivity // implements
 		//player = GameState.getState().players.get(0);
 		
 
-		gameStart = System.currentTimeMillis();
+		GameState.getState().gameStartTime = System.currentTimeMillis();
 		
 		//Gesture handler
 		mGestureMask = GestureHandler.GESTURE_DRAG;
@@ -211,18 +207,15 @@ public class GameActivity extends ARViewActivity // implements
 			redPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));
 			yellowPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));
 			
-			//! make sure that init is called!
-			GameState.getState().addPlayer(bluePlayer);
-			//GameState.addPlayer(bluePlayer);
-			//GameState.players.add(bluePlayer);			
+			//! TODO make sure that init is called!
+			GameState.getState().addPlayer(bluePlayer);	
 			GameState.getState().addPlayer(greenPlayer);
 			GameState.getState().addPlayer(redPlayer);
 			GameState.getState().addPlayer(yellowPlayer);
 			
-			// TODO this should be chosen by Id of player or something like that
-			player = bluePlayer;
+			// the player this unit has is decided by the player id in game state
+			player = GameState.getState().players.get(GameState.getState().myPlayerID);
 			mGestureHandler.addObject(player.touchSphere, 1);
-
 
 			// Load powerUps
 			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aimPowerUp.mfbx"));
@@ -353,8 +346,8 @@ public class GameActivity extends ARViewActivity // implements
 		}
 		
 		//Update Gametime 
-		gameRunning = System.currentTimeMillis() - gameStart;
-		if (gameRunning >= 3*60*1000) // 3 min game round (5 min quit long)
+		GameState.getState().updateTime();
+		if (GameState.getState().gameTimeLeft <= 0) 
 		{
 			Intent GameEnded = new Intent(this, GameEndedActivity.class);
 			startActivity(GameEnded);
@@ -503,6 +496,9 @@ public class GameActivity extends ARViewActivity // implements
 			public void run() {
 				TextView displayPoints = (TextView) findViewById(R.id.myPoints);
 				displayPoints.setText("Score: " + player.getScore());
+				
+				TextView displayTime= (TextView) findViewById(R.id.timeLeft);
+				displayTime.setText(GameState.getState().timeToString());
 			}
 		});
 	}
