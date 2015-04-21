@@ -6,7 +6,6 @@ public class GameState {
 	
 	private static GameState instance = null;
 	
-	
 	// Timer for game round TODO sync between units playing the game
 	public long gameStartTime;
 	public long gameTimeLeft;
@@ -15,6 +14,7 @@ public class GameState {
 	public ArrayList<PaintBall> exsisting_paint_balls;
 	public ArrayList<Player> players;
 	public ArrayList<Ant> ants;
+	public ArrayList<Ant> bigAnts;
 	public ArrayList<PowerUp> powerUps;
 	
 	protected GameState() {
@@ -34,10 +34,6 @@ public class GameState {
 		powerUps = new ArrayList<PowerUp>();
 		
 		players = new ArrayList<Player>();
-		/*players.add(new Player(1));
-		players.add(new Player(2));
-		players.add(new Player(3));
-		players.add(new Player(4));*/
 	}
 	
 	public void addPlayer(Player p){

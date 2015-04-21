@@ -101,40 +101,50 @@ public class MobileConnection {
 	private void handshake(Socket socket)
 	{
 		try {
-			//Send back list with other peers
-			Peer peer = new Peer(socket);
-			Log.d(TAG, peer.getAdress() +" connected.");
-			Log.d(TAG, "SIZE OF MIPS: " + mIPs.size());
-			ByteBuffer buffer;
-
-			//Data sent in following order: your ID - InetAddress
-			buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + 4*mIPs.size()+ 4);
-			buffer.putInt(4*mIPs.size()+ 4);
-			buffer.putChar(DataPackage.IP_LIST);
-			buffer.putInt(mIPs.size()+1);
-			for (int i = 0; i < mIPs.size(); i++)
+			//Check if already connected
+			if (!mIPs.contains(socket.getInetAddress()))
 			{
-				byte[] byteAddress = mIPs.get(i).getAddress();
-				buffer.put(byteAddress);
-				Log.d(TAG, "Created IP to send with size: " + byteAddress.length);
+				Peer peer = new Peer(socket);
+				Log.d(TAG, peer.getAdress() +" connected.");
+				Log.d(TAG, "SIZE OF MIPS: " + mIPs.size());
 				
-			}
-			peer.getOutputStream().write(buffer.array());
-			peer.getOutputStream().flush();
-			buffer.clear();
-			
-			Log.d(TAG, "Sent IP list");
-		
-			if (!(mIPs.contains(peer.getAdress())))
-					new Thread(new ListenerThread(peer)).start();
+				//Send back list with other peers
+				sendIPList(peer);
 
-			//Add this peer to the list
-			mPeers.add(peer);
-			mIPs.add(peer.getAdress());
+				new Thread(new ListenerThread(peer)).start();
+
+				//Add this peer to the list
+				mPeers.add(peer);
+				mIPs.add(peer.getAdress());
+
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+	}
+	/** 
+	 * Sends back a list of peers to connect to
+	 * @param peer 
+	 * @throws IOException 
+	 */
+	private synchronized void sendIPList(Peer peer) throws IOException{
+		
+		ByteBuffer buffer;
+		buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE +  4*mIPs.size());
+		buffer.putInt(4*mIPs.size()+ 4);
+		buffer.putChar(DataPackage.IP_LIST);
+		for (int i = 0; i < mIPs.size(); i++)
+		{
+			byte[] byteAddress = mIPs.get(i).getAddress();
+			buffer.put(byteAddress);
+			Log.d(TAG, "Created IP to send with size: " + byteAddress.length);
+		}
+		peer.getOutputStream().write(buffer.array());
+		peer.getOutputStream().flush();
+		buffer.clear();
+		
+		Log.d(TAG, "Sent IP list");
 	}
 	/**
 	 * Handle the object found in the outputstream and sends it to the correct place
@@ -256,10 +266,9 @@ public class MobileConnection {
 	private synchronized void resolveHandshake(byte[] data)
 	{
 		ByteBuffer buffer = ByteBuffer.wrap(data);
-		GameState.getState().myPlayerID = buffer.getInt();
-		Log.d(TAG, "Assigned ID: " + GameState.getState().myPlayerID);
+		
 		byte[] byteIP = new byte[4];
-		for (int i = 0; i < GameState.getState().myPlayerID-1; i++)
+		while (buffer.hasRemaining())
 		{
 			try {
 				buffer.get(byteIP);
@@ -269,6 +278,7 @@ public class MobileConnection {
 				e.printStackTrace();
 			}
 		}
-		
+		GameState.getState().myPlayerID = mIPs.size();
+		Log.d(TAG, "Assigned ID: " + GameState.getState().myPlayerID);
 	}
 }
