@@ -247,14 +247,39 @@ public class GameActivity extends ARViewActivity // implements
 				GameState.getState().bigAnts.get(i).bigAnt();
 			}
 			
-			// creates a list of paint balls
-			for (int i = 0; i < 20; i++) {
+			// creates a list of paint blue balls that player 0 shoots
+			for (int i = 0; i < 5; i++) {
 				// add paint ball to list of paint balls
 				GameState.getState().exsisting_paint_balls.add(
 						new PaintBall(i,Load3Dmodel("paintball/paintball/ballBlue.mfbx"),
 									  Load3Dmodel("paintball/splash/splashBlue.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx")));
 			}
+			// creates a list of paint blue balls that player 1 shoots
+			for (int i = 0; i < 5; i++) {
+				// add paint ball to list of paint balls
+				GameState.getState().exsisting_paint_balls.add(
+						new PaintBall(i,Load3Dmodel("paintball/paintball/ballGreen.mfbx"),
+									  Load3Dmodel("paintball/splash/splashGreeen.mfbx"),
+									  Load3Dmodel("paintball/paintballShadow.mfbx")));
+			}
+			// creates a list of paint blue balls that player 2 shoots
+			for (int i = 0; i < 5; i++) {
+				// add paint ball to list of paint balls
+				GameState.getState().exsisting_paint_balls.add(
+						new PaintBall(i,Load3Dmodel("paintball/paintball/ballRed.mfbx"),
+									  Load3Dmodel("paintball/splash/splashRed.mfbx"),
+									  Load3Dmodel("paintball/paintballShadow.mfbx")));
+			}
+			// creates a list of paint blue balls that player 3 shoots
+			for (int i = 0; i < 5; i++) {
+				// add paint ball to list of paint balls
+				GameState.getState().exsisting_paint_balls.add(
+						new PaintBall(i,Load3Dmodel("paintball/paintball/ballYellow.mfbx"),
+									  Load3Dmodel("paintball/splash/splashYellow.mfbx"),
+									  Load3Dmodel("paintball/paintballShadow.mfbx")));
+			}
+			
 		} 
 		catch (Exception e) 
 		{
