@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
 
 import android.os.Handler;
@@ -165,8 +166,8 @@ public class MobileConnection {
 		case DataPackage.BALL_FIRED: 
 				fireBall(data.getData());
 				break;
-			case DataPackage.ANT: 
-				updateAnt(data.getData());
+			case DataPackage.ANT_POS_UPDATE: 
+				updateAntPos(data.getData());
 				break;
 		case DataPackage.IP_LIST:
 				resolveHandshake(data.getData());
@@ -265,16 +266,16 @@ public class MobileConnection {
 		GameState.getState().exsisting_paint_balls.get(id).fire(vel, pos);
 	}
 	
-	private synchronized void updateAnt(byte[] data)
+	private synchronized void updateAntPos(byte[] data)
 	{
 		
 		ByteBuffer buffer = ByteBuffer.wrap(data);
 		int id = buffer.getInt();
-		short visibility = buffer.getShort();
-		
 		Vector3d pos = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
+		Rotation eulerRot = new Rotation(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
 		GameState.getState().ants.get(id).spawnAnt();
 		GameState.getState().ants.get(id).setPosition(pos);
+		GameState.getState().ants.get(id).setRotation(eulerRot);
 	}
 
 	private synchronized void resolveHandshake(byte[] data)

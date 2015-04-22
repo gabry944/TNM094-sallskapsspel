@@ -181,6 +181,18 @@ public class Ant extends Drawable
 		return ant.getTranslation();
 	}
 	
+	//function to get ants rotation
+	public Rotation getRotation()
+	{
+		return ant.getRotation();
+	}
+	
+	//function to set rotation for ant
+	public void setRotation(Rotation rot)
+	{
+		ant.setRotation(rot);
+	}
+		
 	//returns the ants id
 	public int getId()
 	{
@@ -197,6 +209,9 @@ public class Ant extends Drawable
 			return false;
 	}
 	
+	public void setActive(boolean active){
+		ant.setVisible(active);
+	}
 	
 	/** calculate a random number between arg start and arg end */
 	public static float randBetween(float start, float end)

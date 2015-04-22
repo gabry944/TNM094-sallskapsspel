@@ -343,23 +343,26 @@ public class GameActivity extends ARViewActivity // implements
 			else
 				GameState.getState().bigAnts.get(i).randomMovement();
 					
+			if(GameState.getState().ants.get(i).isActive())
+			{
+				//Allocate a buffer and add OC and a byte array.
+	    		ByteBuffer buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + 4*7);
+	    		//amount of bytes
+	    		buffer.putInt(4*7);
+	    		//operation code
+	    		buffer.putChar(DataPackage.ANT_POS_UPDATE);
+	    		//data 
+	    		buffer.putInt(GameState.getState().ants.get(i).getId());
+	    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getX());
+	    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getY());
+	    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getZ());
+	    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getX());
+	    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getY());
+	    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getZ());
+	    		
+				mService.mConnection.sendData(buffer.array());
 
-			
-			//Allocate a buffer and add OC and a byte array.
-    		ByteBuffer buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + 4*4 + 2 );
-    		//amount of bytes
-    		buffer.putInt(4*4 + 2);
-    		//operation code
-    		buffer.putChar(DataPackage.ANT);
-    		//data 
-    		short visibility = (short) ((GameState.getState().ants.get(i).isActive()) ? 1 : 0);
-    		buffer.putInt(GameState.getState().ants.get(i).getId());
-    		buffer.putShort(visibility);
-    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getX());
-    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getY());
-    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getZ());
-    		
-			mService.mConnection.sendData(buffer.array());
+			}
 		}
 		
 		//for the one giant Ant
