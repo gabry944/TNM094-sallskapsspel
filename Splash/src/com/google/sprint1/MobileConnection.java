@@ -77,7 +77,7 @@ public class MobileConnection {
 			for(int i = 0; i < mPeers.size(); i++)
 				sendPackage(data, mPeers.get(i));
 		}else{
-			Log.d(TAG, "Cannot send data. Not connected to any peers.");
+			//Log.d(TAG, "Cannot send data. Not connected to any peers.");
 		}
 	}
 	
@@ -270,8 +270,11 @@ public class MobileConnection {
 		
 		ByteBuffer buffer = ByteBuffer.wrap(data);
 		int id = buffer.getInt();
+		short visibility = buffer.getShort();
+		
 		Vector3d pos = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
-		//GameState.getState().ants.get(id).setPosition(pos);
+		GameState.getState().ants.get(id).spawnAnt();
+		GameState.getState().ants.get(id).setPosition(pos);
 	}
 
 	private synchronized void resolveHandshake(byte[] data)

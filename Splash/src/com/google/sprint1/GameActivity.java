@@ -37,7 +37,7 @@ import com.metaio.tools.io.AssetsManager;
 public class GameActivity extends ARViewActivity // implements
 													// OnGesturePerformedListener
 {
-	public final static int NUM_OF_ANTS = 7;
+	public final static int NUM_OF_ANTS = 3;
 	
 	/* Variables for objects in the game */
 
@@ -284,7 +284,7 @@ public class GameActivity extends ARViewActivity // implements
 		if(GameState.getState().powerUps.get(0).isHit())
 			aim.setPowerUp(true);
 		//spawn ant at random and move ants
-		for ( int i = 0; i < NUM_OF_ANTS ; i++)
+		for ( int i = GameState.getState().myPlayerID*5; i < (GameState.getState().myPlayerID*5+1) || i< NUM_OF_ANTS ; i++)
 		{
 			if(!GameState.getState().ants.get(i).isActive())
 			{
@@ -316,18 +316,20 @@ public class GameActivity extends ARViewActivity // implements
 					
 
 			//Allocate a buffer and add OC and a byte array.
-    		ByteBuffer buffer = ByteBuffer.allocate(6 + 4*4);
+    		ByteBuffer buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + 4*4 + 2 );
     		//amount of bytes
-    		buffer.putInt(4*4);
+    		buffer.putInt(4*4 + 2);
     		//operation code
     		buffer.putChar(DataPackage.ANT);
     		//data 
+    		short visibility = (short) ((GameState.getState().ants.get(i).isActive()) ? 1 : 0);
     		buffer.putInt(GameState.getState().ants.get(i).getId());
+    		buffer.putShort(visibility);
     		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getX());
     		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getY());
     		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getZ());
     		
-			//mService.mConnection.sendData(buffer.array());
+			mService.mConnection.sendData(buffer.array());
 		}
 		
 		//Update powerup(s)
