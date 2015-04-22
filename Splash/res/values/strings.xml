@@ -3,7 +3,7 @@
 
     <string name="app_name">Sprint1_metaio</string>
     <string name="hello_world">Virtuellt sällskapsspel</string>
-    <string name="action_settings">Spelinställningar</string>
+    <string name="action_settings">Settings</string>
 
     <!-- Behöver bytas varje gång vi byter app namn (app ID) -->
     <string name="metaioSDKSignature">SFfoqzgN+TONhKGN0eq9O0W2yX67KmbRKfXutYN+Yf8=</string>
@@ -23,6 +23,6 @@
     <string name="magenta_player">Rosa spelare</string>
     <string name="network_button_host">Host game</string>
     <string name="network_text_host">....or host a game</string>
-    
+    <string name="play_again">Play again</string>
 
 </resources>
