@@ -476,7 +476,7 @@ public class GameActivity extends ARViewActivity // implements
                 		buffer.putInt(7*4);
                 		//operation code
                 		buffer.putChar(DataPackage.BALL_FIRED);
-                		//data 
+                		//data id - vel - pos
                 		buffer.putInt(ball.getId());
                 		buffer.putFloat(vel.getX());
                 		buffer.putFloat(vel.getY());
@@ -485,7 +485,10 @@ public class GameActivity extends ARViewActivity // implements
                 		buffer.putFloat(pos.getY());
                 		buffer.putFloat(pos.getZ());
                 		
+                		//Send it off to the network
             			mService.mConnection.sendData(buffer.array());
+            			
+            			//Fire the ball locally
             			ball.fire(vel, pos); 
         			}
         		}

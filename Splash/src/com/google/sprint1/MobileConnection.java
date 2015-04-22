@@ -30,12 +30,8 @@ public class MobileConnection {
 	private List<InetAddress> mIPs;
 	private List<Peer> mPeers;
 	
-	private InetAddress mIP;
 	private static final String TAG = "MobileConnection";
 	public static final int SERVER_PORT = 8196;
-	
-	BlockingQueue<DataPackage> queue;
-    private int QUEUE_CAPACITY = 32;
     
     private boolean handshakeActive = false;
     
@@ -43,13 +39,15 @@ public class MobileConnection {
 		mIPs = new ArrayList<InetAddress>();
 		mPeers = new ArrayList<Peer>();
 
-		queue = new ArrayBlockingQueue<DataPackage>(QUEUE_CAPACITY);
-			
 		//Start a ServerThread
 		new Thread(new ServerThread()).start();
 	}
 
-	public synchronized void connectToPeer(InetAddress address, int port) {
+	/**
+	 * Connects to the given InetAdress and port. 
+	 * @param address InetAddress to connect to.
+	 */
+	public synchronized void connectToPeer(InetAddress address) {
 		if (!(mIPs.contains(address)) && mServerSocket.getInetAddress() != address)
 		{
 			mIPs.add(address);
@@ -60,6 +58,10 @@ public class MobileConnection {
 		}
 	}
 
+	/**
+	 * tearDown is called when the server is supposed to shut down.
+	 * NOT FULLY IMPLEMENTED.
+	 */
 	public void tearDown() {
 		try {
 			
@@ -68,9 +70,13 @@ public class MobileConnection {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 
+	/**
+	 * Sends data to ALL peers on the network. Simply calls
+	 * sendPackage for each peer in mPeers.
+	 * @param data Data to send. 
+	 */
 	public synchronized void sendData(byte[] data)
 	{
 		if(!mPeers.isEmpty())
@@ -83,8 +89,12 @@ public class MobileConnection {
 	}
 	
 
-	/** Send data to the sockets output stream */
-	private synchronized void sendPackage(byte[] data, Peer peer) {
+	/** 
+	 * Sends a byte array to the peer using the peers outputstream. 
+	 * @param data Byte Array with the data to send.
+	 * @param peer The peer to send to.
+	 */
+	public synchronized void sendPackage(byte[] data, Peer peer) {
 		try {
 			OutputStream outStream = peer.getOutputStream();
 			outStream.write(data);
@@ -99,7 +109,8 @@ public class MobileConnection {
 		}
 	}
 	
-	/** Handshake is called when the serversocket accepts (finds) another peer
+	/** 
+	 * Handshake is called when the serversocket accepts (finds) another peer
 	 * it will add the Peer to the peerlist and start to listen to it. 
 	 * It also sends a list to all other peers it is connected to so the new peer can connect to them aswell
 	 * @param socket
@@ -130,8 +141,8 @@ public class MobileConnection {
 		
 	}
 	/** 
-	 * Sends back a list of peers to connect to
-	 * @param peer 
+	 * Sends back a list of peers to connect to.
+	 * @param peer The peer recieving the handshake.
 	 * @throws IOException 
 	 */
 	private synchronized void sendIPList(Peer peer) throws IOException{
@@ -155,8 +166,11 @@ public class MobileConnection {
 		
 		Log.d(TAG, "Sent IP list");
 	}
+	
 	/**
-	 * Handle the object found in the outputstream and sends it to the correct place
+	 * Handle the object found in the outputstream and sends it to the correct place.
+	 * Where depends on the Operation code. Each different case has an own function
+	 * to update data. 
 	 * @param o
 	 */
 	private synchronized void handleData(DataPackage data)
@@ -176,11 +190,14 @@ public class MobileConnection {
 		default:
 			break;
 		}
-		
-		
 	}
 	
-	/** One ServerThread will run listening for new connections. */
+	/**
+	 * One ServerThread will run listening to new connections. When a connection is accepted
+	 * it will run handshake() to send an initial package (with ips).
+	 * @author Pontus
+	 *
+	 */
 	class ServerThread implements Runnable {
 		public ServerThread()
 		{
@@ -191,7 +208,7 @@ public class MobileConnection {
 
 			try {
 				mServerSocket = new ServerSocket(SERVER_PORT);
-				mIP = mServerSocket.getInetAddress();
+				mServerSocket.getInetAddress();
 				Log.d(TAG, "ServerSocket Created, waiting for connections.");
 				while (!Thread.currentThread().isInterrupted()) {
 					Socket socket = mServerSocket.accept();
@@ -208,7 +225,12 @@ public class MobileConnection {
 	}
 	
 	
-	/** One ListenerThread is opened for each peer. It reads the inputStream continuously for data */
+	/**
+	 * One ListenerThread is opened for each peer. It reads the inputStream continuously for data and
+	 * sends the data off to handleData when it is recieved. 
+	 * @author Pontus
+	 *
+	 */
 	private class ListenerThread implements Runnable{
 		
 		private final String TAG = "ListenerThread";
@@ -227,6 +249,14 @@ public class MobileConnection {
 		}
 	}
 	
+	/** 
+	 * ConnectionThread class is a Thread that is used to connect to other peers.
+	 * It creates a ListenerThread to listen and adds the Peer to mPeers and 
+	 * the address to mIPs. The listener thread will most likely recieve a handshake
+	 * shortly after connecting.  
+	 * @author Pontus
+	 *
+	 */
 	private class ConnectionThread implements Runnable{
 		
 		private InetAddress address;
@@ -257,6 +287,10 @@ public class MobileConnection {
 		}
 	}
 	//FUNCTIONS FOR UPDATING GAME STATE
+	/**
+	 * Function for dealing with BALL_FIRED OP. Fires the ball with the given velocity.
+	 * @param data
+	 */
 	private synchronized void fireBall(byte[] data)
 	{ 	
 		ByteBuffer buffer = ByteBuffer.wrap(data);
@@ -266,6 +300,11 @@ public class MobileConnection {
 		GameState.getState().exsisting_paint_balls.get(id).fire(vel, pos);
 	}
 	
+	/**
+	 * Deals with the data with ANT_POS_UPDATE OP. Updates the position and rotation of the ant 
+	 * and activates it if it is disabled. 
+	 * @param data 
+	 */
 	private synchronized void updateAntPos(byte[] data)
 	{
 		
@@ -273,13 +312,23 @@ public class MobileConnection {
 		int id = buffer.getInt();
 		Vector3d pos = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
 		Rotation eulerRot = new Rotation(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
-		GameState.getState().ants.get(id).spawnAnt();
+		if (!GameState.getState().ants.get(id).isActive())
+			GameState.getState().ants.get(id).setActive(true);
+		
 		GameState.getState().ants.get(id).setPosition(pos);
 		GameState.getState().ants.get(id).setRotation(eulerRot);
 	}
 
+	/**
+	 * Function that deals with the data package sent from the server (or in this case host) in handshake.
+	 * It recieves a list of IPS to connect to and assigns an ID to the player.
+	 * ID is determined by calculating the amount of other peers in the network.
+	 * @param data
+	 */
 	private synchronized void resolveHandshake(byte[] data)
 	{
+		//Check if handshake already took place to prevent multiple assigns of ID
+		//TODO: Should probably find a better solution for this. 
 		if (handshakeActive)
 			return;
 		
@@ -288,12 +337,14 @@ public class MobileConnection {
 		
 		GameState.getState().myPlayerID =buffer.getInt();
 		
+		//We are assuming IPv4 so each address is 4 bytes. 
 		byte[] byteIP = new byte[4];
+		//Loops through the different IPS.
 		while (buffer.hasRemaining())
 		{
 			try {
 				buffer.get(byteIP);
-				connectToPeer(InetAddress.getByAddress(byteIP), SERVER_PORT);
+				connectToPeer(InetAddress.getByAddress(byteIP));
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
