@@ -316,35 +316,39 @@ public class GameActivity extends ARViewActivity // implements
 		if(GameState.getState().powerUps.get(0).isHit())
 			aim.setPowerUp(true);
 		//spawn ant at random and move ants
-		for ( int i = GameState.getState().myPlayerID*5; i < (GameState.getState().myPlayerID*5+1) || i< NUM_OF_ANTS ; i++)
+		if(GameState.getState().myPlayerID == 0)
 		{
-			GameState.getState().ants.get(i).update();
-			GameState.getState().bigAnts.get(i).update();
-			
-			//send position and rotation to other players
-			//TODO: Move to Ant class?
-			if(GameState.getState().ants.get(i).isActive())
+			for ( int i = 0; i <  NUM_OF_ANTS ; i++)
 			{
-				//Allocate a buffer and add OC and a byte array.
-	    		ByteBuffer buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + 4*7);
-	    		//amount of bytes
-	    		buffer.putInt(4*7);
-	    		//operation code
-	    		buffer.putChar(DataPackage.ANT_POS_UPDATE);
-	    		//data: id - position - rotation
-	    		buffer.putInt(GameState.getState().ants.get(i).getId());
-	    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getX());
-	    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getY());
-	    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getZ());
-	    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getX());
-	    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getY());
-	    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getZ());
-	    		
-				mService.mConnection.sendData(buffer.array());
+				GameState.getState().ants.get(i).update();
+				GameState.getState().bigAnts.get(i).update();
+				
+				//send position and rotation to other players
+				//TODO: Move to Ant class?
+				if(GameState.getState().ants.get(i).isActive())
+				{
+					//Allocate a buffer and add OC and a byte array.
+		    		ByteBuffer buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + 4*7);
+		    		//amount of bytes
+		    		buffer.putInt(4*7);
+		    		//operation code
+		    		buffer.putChar(DataPackage.ANT_POS_UPDATE);
+		    		//data: id - position - rotation
+		    		buffer.putInt(GameState.getState().ants.get(i).getId());
+		    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getX());
+		    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getY());
+		    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getZ());
+		    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getX());
+		    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getY());
+		    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getZ());
+		    		
+					mService.mConnection.sendData(buffer.array());
 
+				}
 			}
+
 		}
-		//GIANT ANT
+				//GIANT ANT
 		GameState.getState().giantAnts.get(0).update();
 		
 		//Update powerup(s)
