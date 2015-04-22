@@ -52,9 +52,9 @@ public class NetworkActivity extends Activity {
 
 	public static final String TAG = "NetworkActivity";
 
-	ArrayAdapter<NsdServiceInfo> listAdapter;
-	ArrayAdapter<Player> playerListAdapter;
-	ArrayList<NsdServiceInfo> arraylist;
+	private ArrayAdapter<NsdServiceInfo> listAdapter;
+	private ArrayList<NsdServiceInfo> serviceList;
+	private ArrayList<String> serviceNameList;
 	
 	ListView serviceListView;
 	
@@ -72,18 +72,18 @@ public class NetworkActivity extends Activity {
 		Intent intent = new Intent(this, NetworkService.class);
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		
-		serviceListView = (ListView) findViewById(R.id.serviceListView);
-		
+		serviceListView = (ListView) findViewById(R.id.serviceListView);		
 
 		/* Start game */
 		startGame = new AssetsExtracter();
 		
 		//ArrayList to store all services
-		arraylist = new ArrayList<NsdServiceInfo>();
+		serviceList = new ArrayList<NsdServiceInfo>();
+		serviceNameList = new ArrayList<String>();
 
 		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
 				android.R.layout.simple_list_item_1,
-				arraylist);
+				serviceList);
 
 		mNSDHandler = new Handler() {
 			@Override
@@ -100,16 +100,18 @@ public class NetworkActivity extends Activity {
 				// If key is "found", add to the adapter
 				else if ((service = (NsdServiceInfo) msg.getData().get("found")) != null) {
 					
-					arraylist.add(service);
+					serviceList.add(service);
+					serviceNameList.add(service.getServiceName());
 			
 				}
 				
 				// If key is "lost", remove from adapter
 				else if ((service = (NsdServiceInfo) msg.getData().get("lost")) != null) {
 					
-					for(int i = 0; i < arraylist.size(); i++){
-						if(arraylist.get(i).getServiceName().equals(service.getServiceName()))
-							arraylist.remove(i);
+					for(int i = 0; i < serviceList.size(); i++){
+						if(serviceList.get(i).getServiceName().equals(service.getServiceName()))
+							serviceList.remove(i);
+							serviceNameList.remove(i);
 					}
 					
 				}
