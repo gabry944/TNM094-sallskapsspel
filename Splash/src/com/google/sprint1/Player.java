@@ -14,7 +14,7 @@ public class Player extends Drawable {
 	public IGeometry slingshotGeometry;
 	public IGeometry ballGeometry;
 	public IGeometry touchSphere;
-	private IGeometry marker;
+	public IGeometry marker;
 
 	public boolean superPower; 
 	
@@ -47,28 +47,33 @@ public class Player extends Drawable {
 		
 	}
 	
+	//increase the score with points depending on the ant being hit
 	public void increaseScore(int points)
 	{
 		score = score + points;;
 	}
 	
+	//return player score
 	public int getScore()
 	{
 		return score;
 	}
 
+	//return player tower position
 	public Vector3d getPosition()
 	{
 		return startPosition;
 	}
 	
+	//displays a marker over the ant when being hit
 	public void setMarker(Vector3d pos)
 	{
 		marker.setTranslation(new Vector3d(pos.getX(), pos.getY(), 50f));
 		marker.setVisible(true);
-		marker.startAnimation("Take 001", true);
+		//marker.startAnimation("Take 001", true);
 	}
 	
+	//remove marker over ant when it reached the tower
 	public void removeMarker()
 	{
 		marker.setVisible(false);
