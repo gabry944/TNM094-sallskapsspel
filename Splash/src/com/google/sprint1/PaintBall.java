@@ -12,14 +12,16 @@ public class PaintBall extends Drawable
 	private IGeometry splashGeometry;
 	private IGeometry paintballShadow;
 	private int id; 
+	private int playerId;
 	private boolean isActive;
 
-	public PaintBall(int id, IGeometry geo, IGeometry splGeo, IGeometry pbShad) {
+	public PaintBall(int id, IGeometry geo, IGeometry splGeo, IGeometry pbShad, int playerID) {
 		super();
 		this.id = id;
 		geometry = geo;
 		splashGeometry = splGeo;
 		paintballShadow = pbShad;
+		playerId = playerID;
 		
 		startPosition= new Vector3d(0.0f,0.0f,0.0f);
 		startVelocity= new Vector3d(0.0f,0.0f,0.0f);
@@ -34,6 +36,12 @@ public class PaintBall extends Drawable
 		isActive = false;
 		
 		}
+	
+	//return the id of the player who ownes the paintball
+	public int getPlayerId()
+	{
+		return playerId;
+	}
 		
 	public IGeometry getGeometry()
 	{
@@ -79,18 +87,28 @@ public class PaintBall extends Drawable
 			if (checkCollision(GameState.getState().ants.get(i).getGeometry())) { 
 				//GameState.getState().ants.get(i).ant.setRotation(new Rotation( (float) (3 * Math.PI / 4), 0f, 0f), true);
 				
-				GameState.getState().ants.get(i).setIsHit(true);
+				GameState.getState().ants.get(i).setIsHit(true, getPlayerId());
 				disable();
 			}
 		}
 		
-		//Check for collision with ants
+		//Check for collision with big ants
 		for(int i = 0; i < GameActivity.getNrOfAnts() ; i++)
 		{
 			if (checkCollision(GameState.getState().bigAnts.get(i).getGeometry())) { 
 				//GameState.getState().ants.get(i).ant.setRotation(new Rotation( (float) (3 * Math.PI / 4), 0f, 0f), true);
 				
-				GameState.getState().bigAnts.get(i).setIsHit(true);
+				GameState.getState().bigAnts.get(i).setIsHit(true, getPlayerId());
+				disable();
+			}
+		}
+		
+		//Check for collision with giant ants
+		for(int i = 0; i < 1 ; i++)
+		{
+			if (checkCollision(GameState.getState().bigAnts.get(i).getGeometry())) { 
+				
+				GameState.getState().bigAnts.get(i).setIsHit(true, getPlayerId());
 				disable();
 			}
 		}

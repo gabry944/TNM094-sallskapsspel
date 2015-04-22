@@ -14,10 +14,11 @@ public class Player extends Drawable {
 	public IGeometry slingshotGeometry;
 	public IGeometry ballGeometry;
 	public IGeometry touchSphere;
+	private IGeometry marker;
 
 	public boolean superPower; 
 	
-	public Player(IGeometry towerGeo,IGeometry slingshotGeo,IGeometry ballGeo, Vector3d startPosPlayer, IGeometry invisibleBall)
+	public Player(IGeometry towerGeo,IGeometry slingshotGeo,IGeometry ballGeo, Vector3d startPosPlayer, IGeometry invisibleBall, IGeometry Marker)
 	{
 		score = 0;
 		superPower = false;
@@ -26,6 +27,7 @@ public class Player extends Drawable {
 		ballGeometry = ballGeo;
 		startPosition = startPosPlayer;
 		touchSphere = invisibleBall; 
+		marker = Marker;
 		
 		//setGeometryProperties(towerGeometry, 3f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
 		setGeometryProperties(towerGeometry, 3f, new Vector3d(startPosition.getX(), startPosition.getY(), 0f), new Rotation(0f, 0f, 0f));
@@ -35,6 +37,8 @@ public class Player extends Drawable {
 		setGeometryProperties(ballGeometry, 2f, startPosition, new Rotation(0f, 0f, 0f));
 		//setGeometryProperties(touchSphere, 6f, new Vector3d(-650f, -520f, 250f), new Rotation(0f, 0f, 0f));
 		setGeometryProperties(touchSphere, 6f, startPosition, new Rotation(0f, 0f, 0f));
+		setGeometryProperties(marker, 0.2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+		marker.setVisible(false);
 		
 		//touchSphere.setTransparency(1);// set to fully transparant
 		//touchSphere.setTransparency(0);
@@ -56,5 +60,18 @@ public class Player extends Drawable {
 	public Vector3d getPosition()
 	{
 		return startPosition;
+	}
+	
+	public void setMarker(Vector3d pos)
+	{
+		marker.setTranslation(new Vector3d(pos.getX(), pos.getY(), 50f));
+		marker.setVisible(true);
+		marker.startAnimation("Take 001", true);
+	}
+	
+	public void removeMarker()
+	{
+		marker.setVisible(false);
+		marker.startAnimation("Take 001", false);
 	}
 }

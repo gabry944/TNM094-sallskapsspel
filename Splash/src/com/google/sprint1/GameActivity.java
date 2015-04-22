@@ -204,10 +204,10 @@ public class GameActivity extends ARViewActivity // implements
 			
 			//creates the tower	
 			
-			bluePlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));
-			greenPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));	
-			redPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));
-			yellowPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"));
+			bluePlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"),  Load3Dmodel("ant/markers/boxBlue.mfbx"));
+			greenPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"));	
+			redPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"));
+			yellowPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 			
 			//! TODO make sure that init is called!
 			GameState.getState().addPlayer(bluePlayer);	
@@ -242,13 +242,13 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < NUM_OF_ANTS; i++)
 			{
 				// create ant geometry
-				ant = new Ant(i, Load3Dmodel("ant/smallAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), 1);
+				ant = new Ant(i, Load3Dmodel("ant/smallAnt/ant.mfbx"), 1);
 				GameState.getState().ants.add(ant);
-				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), 2);
+				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), 2);
 				GameState.getState().bigAnts.add(bigAnt);
 				GameState.getState().bigAnts.get(i).bigAnt();
 			}
-			giantAnt = new Ant(0, Load3Dmodel("ant/giantAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), 3);
+			giantAnt = new Ant(0, Load3Dmodel("ant/giantAnt/ant.mfbx"), 3);
 			GameState.getState().giantAnts.add(giantAnt);
 			GameState.getState().giantAnts.get(0).giantAnt();
 			
@@ -258,7 +258,7 @@ public class GameActivity extends ARViewActivity // implements
 				GameState.getState().exsisting_paint_balls.add(
 						new PaintBall(i,Load3Dmodel("paintball/paintball/ballBlue.mfbx"),
 									  Load3Dmodel("paintball/splash/splashBlue.mfbx"),
-									  Load3Dmodel("paintball/paintballShadow.mfbx")));
+									  Load3Dmodel("paintball/paintballShadow.mfbx"), 0));
 			}
 			// creates a list of paint blue balls that player 1 shoots
 			for (int i = 0; i < 5; i++) {
@@ -266,7 +266,7 @@ public class GameActivity extends ARViewActivity // implements
 				GameState.getState().exsisting_paint_balls.add(
 						new PaintBall(i,Load3Dmodel("paintball/paintball/ballGreen.mfbx"),
 									  Load3Dmodel("paintball/splash/splashGreeen.mfbx"),
-									  Load3Dmodel("paintball/paintballShadow.mfbx")));
+									  Load3Dmodel("paintball/paintballShadow.mfbx"), 1));
 			}
 			// creates a list of paint blue balls that player 2 shoots
 			for (int i = 0; i < 5; i++) {
@@ -274,7 +274,7 @@ public class GameActivity extends ARViewActivity // implements
 				GameState.getState().exsisting_paint_balls.add(
 						new PaintBall(i,Load3Dmodel("paintball/paintball/ballRed.mfbx"),
 									  Load3Dmodel("paintball/splash/splashRed.mfbx"),
-									  Load3Dmodel("paintball/paintballShadow.mfbx")));
+									  Load3Dmodel("paintball/paintballShadow.mfbx"), 2));
 			}
 			// creates a list of paint blue balls that player 3 shoots
 			for (int i = 0; i < 5; i++) {
@@ -282,7 +282,7 @@ public class GameActivity extends ARViewActivity // implements
 				GameState.getState().exsisting_paint_balls.add(
 						new PaintBall(i,Load3Dmodel("paintball/paintball/ballYellow.mfbx"),
 									  Load3Dmodel("paintball/splash/splashYellow.mfbx"),
-									  Load3Dmodel("paintball/paintballShadow.mfbx")));
+									  Load3Dmodel("paintball/paintballShadow.mfbx"), 3));
 			}
 			
 		} 

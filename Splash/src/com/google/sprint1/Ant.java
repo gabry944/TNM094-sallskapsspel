@@ -10,12 +10,12 @@ public class Ant extends Drawable
 {
 	public static final String TAG = "Ant";
 	private IGeometry ant;
-	private IGeometry marker;
 	private boolean isHit;
 	private Vector3d diffVec;
 	private float memory;
 	private int id;
 	private int type;
+	private int ownedByPlayer;
 	
 	float angDiffLimit = (float)(5*Math.PI/180);
 	float speed = 2f;
@@ -24,17 +24,16 @@ public class Ant extends Drawable
 	int k = 0;
 	
 	/** constructor ant */
-	public Ant(int id, IGeometry geo, IGeometry hitMarker, int antType) {
+	public Ant(int Id, IGeometry geo, int antType) {
 		super();
-		this.id = id;
+		id = Id;
 		ant = geo;
 		type = antType;		//1 = small ant, 2 = big ant, 3 = giant ant
-		marker = hitMarker;
+		ownedByPlayer = -1;	
 		isHit = false;
 		setGeometryProperties(ant, 50f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f)); 
-		setGeometryProperties(hitMarker, 0.2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+
 		ant.setVisible(false);
-		marker.setVisible(false);
 		diffVec = new Vector3d(0f, 0f, 0f);
 		memory = 0f;
 	}
@@ -43,6 +42,18 @@ public class Ant extends Drawable
 	public int getType()
 	{
 		return type;
+	}
+	
+	//return which player the ant has been hit by
+	public int getOwnedByPlayer()
+	{
+		return ownedByPlayer;
+	}
+	
+	//set which player hit the ant
+	public void setOwnedByPlayer(int id)
+	{
+		ownedByPlayer = id;
 	}
 	
 	//return ant geometry
@@ -61,12 +72,18 @@ public class Ant extends Drawable
 	}
 	
 	// set the ant to hit 
-	public void setIsHit(boolean hit)
+	public void setIsHit(boolean hit, int id)
 	{
 		if(hit == true)
+		{
+			setOwnedByPlayer(id);
 			isHit = true;
+		}
 		else
+		{
 			isHit =  false;
+			setOwnedByPlayer(id);
+		}
 	}
 	
 	/** function to spawn the ants at random time and random position */
@@ -136,8 +153,9 @@ public class Ant extends Drawable
 	/** Makes the ant go to the tower owned by the player who hit the ant */
 	public void movementToTower(Vector3d pos)
 	{
-		pos.setZ(0f);	
+		pos.setZ(0f);
 		
+		GameState.getState().players.get(ownedByPlayer).setMarker(pos);
 		diffVec = ant.getTranslation().subtract(pos);
 		//Log.d(TAG, "pos = " + pos);
 		
@@ -150,20 +168,16 @@ public class Ant extends Drawable
 		ant.setRotation( new Rotation( 0f, 0f, angle + (float)(Math.PI*3/2)));  // (float)(Math.PI*3/2)
 		ant.setTranslation(ant.getTranslation().subtract((diffVec.getNormalized()).multiply(speed)));
 		
-		marker.setTranslation(new Vector3d(ant.getTranslation().getX(), ant.getTranslation().getY(), 50f));
-		marker.setVisible(true);
-		marker.startAnimation("Take 001", true);
 		
 		//when ant reached tower
 		if(diffVec.getX() < 2f && diffVec.getX() > -2f  && diffVec.getY() < 2f && diffVec.getY() > -2f)
 		{
 			int points = getType();
+			GameState.getState().players.get(ownedByPlayer).removeMarker();
 			//Player.increaseScore();
-			GameState.getState().players.get(0).increaseScore(points);
+			GameState.getState().players.get(getOwnedByPlayer()).increaseScore(points);
 			ant.setVisible(false);
-			marker.setVisible(false);
-			marker.startAnimation("Take 001", false);
-			setIsHit(false);
+			setIsHit(false, -1);
 			//player.point();
 			
 		}
