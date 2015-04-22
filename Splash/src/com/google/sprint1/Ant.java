@@ -15,6 +15,7 @@ public class Ant extends Drawable
 	private Vector3d diffVec;
 	private float memory;
 	private int id;
+	private int type;
 	
 	float angDiffLimit = (float)(5*Math.PI/180);
 	float speed = 2f;
@@ -23,12 +24,13 @@ public class Ant extends Drawable
 	int k = 0;
 	
 	/** constructor ant */
-	public Ant(int id, IGeometry geo, IGeometry hitMarker, boolean hit) {
+	public Ant(int id, IGeometry geo, IGeometry hitMarker, int antType) {
 		super();
 		this.id = id;
 		ant = geo;
+		type = antType;		//1 = small ant, 2 = big ant, 3 = giant ant
 		marker = hitMarker;
-		isHit = hit;
+		isHit = false;
 		setGeometryProperties(ant, 50f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f)); 
 		setGeometryProperties(hitMarker, 0.2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
 		ant.setVisible(false);
@@ -37,11 +39,19 @@ public class Ant extends Drawable
 		memory = 0f;
 	}
 	
+	//return the type of the ant
+	public int getType()
+	{
+		return type;
+	}
+	
+	//return ant geometry
 	public IGeometry getGeometry()
 	{
 		return ant;
 	}
 	
+	//return if the ant is hit
 	public boolean getIsHit()
 	{
 		if(isHit == true)
@@ -50,6 +60,7 @@ public class Ant extends Drawable
 			return false;
 	}
 	
+	// set the ant to hit 
 	public void setIsHit(boolean hit)
 	{
 		if(hit == true)
@@ -72,9 +83,16 @@ public class Ant extends Drawable
 		
 	}
 	
+	//function to enlarge ants to big ants
 	public void bigAnt()
 	{
-		ant.setScale(75f);
+		ant.setScale(80f);
+	}
+
+	//function to enlarge ants to giant ants
+	public void giantAnt()
+	{
+		ant.setScale(130f);
 	}
 	
 	/** Function to generate movement to the ants */
@@ -139,8 +157,9 @@ public class Ant extends Drawable
 		//when ant reached tower
 		if(diffVec.getX() < 2f && diffVec.getX() > -2f  && diffVec.getY() < 2f && diffVec.getY() > -2f)
 		{
+			int points = getType();
 			//Player.increaseScore();
-			GameState.getState().players.get(0).increaseScore();
+			GameState.getState().players.get(0).increaseScore(points);
 			ant.setVisible(false);
 			marker.setVisible(false);
 			marker.startAnimation("Take 001", false);
@@ -150,16 +169,19 @@ public class Ant extends Drawable
 		}
 	}
 	
+	//function to set position for ant
 	public void setPosition(Vector3d pos)
 	{
 		ant.setTranslation(pos);
 	}
+	
+	//function to get ants position
 	public Vector3d getPosition()
 	{
 		return ant.getTranslation();
 	}
 	
-	
+	//returns the ants id
 	public int getId()
 	{
 		return id;

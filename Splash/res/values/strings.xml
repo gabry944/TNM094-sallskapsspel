@@ -3,23 +3,24 @@
 
     <string name="app_name">Sprint1_metaio</string>
     <string name="hello_world">Virtuellt sällskapsspel</string>
-    <string name="action_settings">Spelinställningar</string>
+    <string name="action_settings">Settings</string>
 
     <!-- Behöver bytas varje gång vi byter app namn (app ID) -->
     <string name="metaioSDKSignature">SFfoqzgN+TONhKGN0eq9O0W2yX67KmbRKfXutYN+Yf8=</string>
     <string name="title_activity_game">GameActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="title_activity_network">NetworkActivity</string>
-    <string name="network">Hitta andra spelare</string>
-    <string name="startaSpel">Starta spel</string>
-    <string name="Huvudmeny">Huvudmeny</string>
-    <string name="Spelmusik">Spelmusik</string>
+    <string name="network">Find Other Players</string>
+    <string name="startaSpel">Start game</string>
+    <string name="Huvudmeny">Main menu</string>
+    <string name="Spelmusik">music</string>
     <string name="title_activity_game_ended">GameEndedActivity</string>
-    <string name="end_result">Resultat:</string>
-    <string name="red_player">Röd spelare: </string>
-    <string name="blue_player">Blå spelare</string>
-    <string name="green_player">Grön spelare</string>
-    <string name="yellow_player">Gul spelare</string>
-    <string name="magenta_player">Rosa spelare</string>
+    <string name="end_result">Result:</string>
+    <string name="red_player">Red player</string>
+    <string name="blue_player">Blue player</string>
+    <string name="green_player">Green player</string>
+    <string name="yellow_player">Yellow player</string>
+    <string name="magenta_player">Magenta player</string>
+    <string name="play_again">Play again</string>
 
 </resources>
