@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 public class DataPackage implements Serializable{
 	
 	public static final char BALL_FIRED = 'A';
-	public static final char ANT = 'B';
+	public static final char ANT_POS_UPDATE = 'B';
 	public static final char IP_LIST = 'c';
 	public static final char INVALID = 'I';
 	

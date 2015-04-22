@@ -43,9 +43,9 @@ public class Player extends Drawable {
 		
 	}
 	
-	public void increaseScore()
+	public void increaseScore(int points)
 	{
-		score++;
+		score = score + points;;
 	}
 	
 	public int getScore()

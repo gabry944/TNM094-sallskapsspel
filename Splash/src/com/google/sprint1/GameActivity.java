@@ -37,7 +37,7 @@ import com.metaio.tools.io.AssetsManager;
 public class GameActivity extends ARViewActivity // implements
 													// OnGesturePerformedListener
 {
-	public final static int NUM_OF_ANTS = 7;
+	public final static int NUM_OF_ANTS = 3;
 	
 	/* Variables for objects in the game */
 
@@ -50,6 +50,7 @@ public class GameActivity extends ARViewActivity // implements
 
 	GameState gameState;
 
+	Ant giantAnt;
 	Ant ant;
 	Ant bigAnt;
 	Aim aim;
@@ -127,6 +128,7 @@ public class GameActivity extends ARViewActivity // implements
 		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		GameState.getState().ants = new ArrayList<Ant>(NUM_OF_ANTS);
 		GameState.getState().bigAnts = new ArrayList<Ant>(NUM_OF_ANTS);
+		GameState.getState().giantAnts = new ArrayList<Ant>(1);
 		
 
 		touchVec = new Vector3d(0f, 0f, 0f);
@@ -240,12 +242,15 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < NUM_OF_ANTS; i++)
 			{
 				// create ant geometry
-				ant = new Ant(i, Load3Dmodel("ant/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
+				ant = new Ant(i, Load3Dmodel("ant/smallAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), 1);
 				GameState.getState().ants.add(ant);
-				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
+				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), 2);
 				GameState.getState().bigAnts.add(bigAnt);
 				GameState.getState().bigAnts.get(i).bigAnt();
 			}
+			giantAnt = new Ant(0, Load3Dmodel("ant/giantAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), 3);
+			GameState.getState().giantAnts.add(giantAnt);
+			GameState.getState().giantAnts.get(0).giantAnt();
 			
 			// creates a list of paint blue balls that player 0 shoots
 			for (int i = 0; i < 5; i++) {
@@ -308,7 +313,7 @@ public class GameActivity extends ARViewActivity // implements
 		if(GameState.getState().powerUps.get(0).isHit())
 			aim.setPowerUp(true);
 		//spawn ant at random and move ants
-		for ( int i = 0; i < NUM_OF_ANTS ; i++)
+		for ( int i = GameState.getState().myPlayerID*5; i < (GameState.getState().myPlayerID*5+1) || i< NUM_OF_ANTS ; i++)
 		{
 			if(!GameState.getState().ants.get(i).isActive())
 			{
@@ -338,22 +343,43 @@ public class GameActivity extends ARViewActivity // implements
 			else
 				GameState.getState().bigAnts.get(i).randomMovement();
 					
+			if(GameState.getState().ants.get(i).isActive())
+			{
+				//Allocate a buffer and add OC and a byte array.
+	    		ByteBuffer buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + 4*7);
+	    		//amount of bytes
+	    		buffer.putInt(4*7);
+	    		//operation code
+	    		buffer.putChar(DataPackage.ANT_POS_UPDATE);
+	    		//data 
+	    		buffer.putInt(GameState.getState().ants.get(i).getId());
+	    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getX());
+	    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getY());
+	    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getZ());
+	    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getX());
+	    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getY());
+	    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getZ());
+	    		
+				mService.mConnection.sendData(buffer.array());
 
-			//Allocate a buffer and add OC and a byte array.
-    		ByteBuffer buffer = ByteBuffer.allocate(6 + 4*4);
-    		//amount of bytes
-    		buffer.putInt(4*4);
-    		//operation code
-    		buffer.putChar(DataPackage.ANT);
-    		//data 
-    		buffer.putInt(GameState.getState().ants.get(i).getId());
-    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getX());
-    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getY());
-    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getZ());
-    		
-			//mService.mConnection.sendData(buffer.array());
+			}
 		}
 		
+		//for the one giant Ant
+		if(!GameState.getState().giantAnts.get(0).isActive())
+
+		{
+			// if not already spawned, spawn at random 
+			GameState.getState().giantAnts.get(0).spawnAnt();
+		}
+		
+		if(GameState.getState().giantAnts.get(0).getIsHit() == true)
+		{
+			GameState.getState().giantAnts.get(0).movementToTower(new Vector3d(player.getPosition()));
+		}
+		else
+			GameState.getState().giantAnts.get(0).randomMovement();
+				
 		//Update powerup(s)
 		for (int i = 0; i < GameState.getState().powerUps.size(); i++)
 		{

@@ -16,6 +16,7 @@ public class GameState {
 	public ArrayList<Player> players;
 	public ArrayList<Ant> ants;
 	public ArrayList<Ant> bigAnts;
+	public ArrayList<Ant> giantAnts;
 	public ArrayList<PowerUp> powerUps;
 	
 	protected GameState() {
