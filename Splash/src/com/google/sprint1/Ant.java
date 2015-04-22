@@ -167,7 +167,7 @@ public class Ant extends Drawable
 		
 		//random movement of the ant until being hit 
 		ant.setTranslation(movement);
-		ant.setRotation(new Rotation(0f, 0f, angle + (float)(Math.PI*3/2) ));  //(float)(Math.PI*3/2)
+		ant.setRotation(new Rotation(0f, 0f, angle + (float)(Math.PI*3/2) ));  
 
 	}	
 	
@@ -176,7 +176,7 @@ public class Ant extends Drawable
 	{
 		pos.setZ(0f);
 		
-		GameState.getState().players.get(ownedByPlayer).setMarker(pos);
+		GameState.getState().players.get(ownedByPlayer).setMarker(ant.getTranslation());
 		diffVec = ant.getTranslation().subtract(pos);
 		//Log.d(TAG, "pos = " + pos);
 		
@@ -186,7 +186,7 @@ public class Ant extends Drawable
 		else
 			angle = (float)(Math.atan(diffVec.getY()/diffVec.getX()) + Math.PI);
 		
-		ant.setRotation( new Rotation( 0f, 0f, angle + (float)(Math.PI*3/2)));  // (float)(Math.PI*3/2)
+		ant.setRotation( new Rotation( 0f, 0f, angle + (float)(Math.PI*3/2))); 
 		ant.setTranslation(ant.getTranslation().subtract((diffVec.getNormalized()).multiply(speed)));
 		
 		
@@ -196,7 +196,7 @@ public class Ant extends Drawable
 			int points = getType();
 			GameState.getState().players.get(ownedByPlayer).removeMarker();
 			//Player.increaseScore();
-			GameState.getState().players.get(getOwnedByPlayer()).increaseScore(points);
+			GameState.getState().players.get(ownedByPlayer).increaseScore(points);
 			ant.setVisible(false);
 			setIsHit(false, -1);
 			//player.point();
@@ -244,7 +244,8 @@ public class Ant extends Drawable
 			return false;
 	}
 	
-	public void setActive(boolean active){
+	public void setActive(boolean active)
+	{
 		ant.setVisible(active);
 	}
 	

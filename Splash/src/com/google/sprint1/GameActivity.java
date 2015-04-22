@@ -348,6 +348,14 @@ public class GameActivity extends ARViewActivity // implements
 			}
 
 		}
+		
+		//for the one giant Ant
+		if(!GameState.getState().giantAnts.get(0).isActive())
+		{
+			// if not already spawned, spawn at random 
+			GameState.getState().giantAnts.get(0).spawnAnt();
+
+		}
 				//GIANT ANT
 		GameState.getState().giantAnts.get(0).update();
 		
