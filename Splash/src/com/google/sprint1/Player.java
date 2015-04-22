@@ -36,7 +36,7 @@ public class Player extends Drawable {
 		//setGeometryProperties(touchSphere, 6f, new Vector3d(-650f, -520f, 250f), new Rotation(0f, 0f, 0f));
 		setGeometryProperties(touchSphere, 6f, startPosition, new Rotation(0f, 0f, 0f));
 		
-		//touchSphere.setTransparency(1);// set to fully transparant
+		touchSphere.setTransparency(1);// set to fully transparant
 		//touchSphere.setTransparency(0);
 		//touchSphere.setVisible(false);
 		//touchSphere.setOcclusionMode(true);

@@ -21,21 +21,21 @@ public class GameEndedActivity extends Activity {
 			public void run() 
 			{
 				displayPoints = (TextView) findViewById(R.id.bluePlayer);
-				displayPoints.setText(R.string.blue_player + ": " + GameState.getState().players.get(0).score + "p");
+				displayPoints.setText(getResources().getString(R.string.blue_player) + ": " + GameState.getState().players.get(0).score + "p");
 				if(GameState.getState().nrOfPlayers >= 2)
 				{
 					displayPoints = (TextView) findViewById(R.id.greenPlayer);
-					displayPoints.setText(R.string.green_player + ": " + GameState.getState().players.get(1).score + "p");
+					displayPoints.setText(getResources().getString(R.string.green_player) + ": " + GameState.getState().players.get(1).score + "p");
 					displayPoints.setVisibility(0);//set visible
 					if(GameState.getState().nrOfPlayers >= 3)
 					{
 						displayPoints = (TextView) findViewById(R.id.redPlayer);
-						displayPoints.setText(R.string.red_player + ": " + GameState.getState().players.get(2).score + "p");
+						displayPoints.setText(getResources().getString(R.string.red_player) + ": " + GameState.getState().players.get(2).score + "p");
 						displayPoints.setVisibility(0);// set visible
 						if(GameState.getState().nrOfPlayers >= 4)
 						{
 							displayPoints = (TextView) findViewById(R.id.yellowPlayer);
-							displayPoints.setText(R.string.red_player + ": " + GameState.getState().players.get(3).score + "p");
+							displayPoints.setText(getResources().getString(R.string.yellow_player) + ": " + GameState.getState().players.get(3).score + "p");
 							displayPoints.setVisibility(0);//set visible
 						}
 					}
