@@ -178,7 +178,6 @@ public class Ant extends Drawable
 		
 		GameState.getState().players.get(ownedByPlayer).setMarker(ant.getTranslation());
 		diffVec = ant.getTranslation().subtract(pos);
-		//Log.d(TAG, "pos = " + pos);
 		
 		// check since atan(y/x) == atan(-y/-x)
 		if(diffVec.getX() < 0f)
