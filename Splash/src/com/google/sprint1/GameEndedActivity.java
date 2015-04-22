@@ -21,21 +21,21 @@ public class GameEndedActivity extends Activity {
 			public void run() 
 			{
 				displayPoints = (TextView) findViewById(R.id.bluePlayer);
-				displayPoints.setText("Blå spelare: " + GameState.getState().players.get(0).score + "p");
+				displayPoints.setText(R.string.blue_player + ": " + GameState.getState().players.get(0).score + "p");
 				if(GameState.getState().nrOfPlayers >= 2)
 				{
 					displayPoints = (TextView) findViewById(R.id.greenPlayer);
-					displayPoints.setText("Grön spelare: " + GameState.getState().players.get(1).score + "p");
+					displayPoints.setText(R.string.green_player + ": " + GameState.getState().players.get(1).score + "p");
 					displayPoints.setVisibility(0);//set visible
 					if(GameState.getState().nrOfPlayers >= 3)
 					{
 						displayPoints = (TextView) findViewById(R.id.redPlayer);
-						displayPoints.setText("Röd spelare: " + GameState.getState().players.get(2).score + "p");
+						displayPoints.setText(R.string.red_player + ": " + GameState.getState().players.get(2).score + "p");
 						displayPoints.setVisibility(0);// set visible
 						if(GameState.getState().nrOfPlayers >= 4)
 						{
 							displayPoints = (TextView) findViewById(R.id.yellowPlayer);
-							displayPoints.setText("Gul spelare: " + GameState.getState().players.get(3).score + "p");
+							displayPoints.setText(R.string.red_player + ": " + GameState.getState().players.get(3).score + "p");
 							displayPoints.setVisibility(0);//set visible
 						}
 					}
