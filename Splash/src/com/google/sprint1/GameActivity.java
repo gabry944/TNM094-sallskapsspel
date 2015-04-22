@@ -50,6 +50,7 @@ public class GameActivity extends ARViewActivity // implements
 
 	GameState gameState;
 
+	Ant giantAnt;
 	Ant ant;
 	Ant bigAnt;
 	Aim aim;
@@ -127,6 +128,7 @@ public class GameActivity extends ARViewActivity // implements
 		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		GameState.getState().ants = new ArrayList<Ant>(NUM_OF_ANTS);
 		GameState.getState().bigAnts = new ArrayList<Ant>(NUM_OF_ANTS);
+		GameState.getState().giantAnts = new ArrayList<Ant>(1);
 		
 
 		touchVec = new Vector3d(0f, 0f, 0f);
@@ -240,12 +242,15 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < NUM_OF_ANTS; i++)
 			{
 				// create ant geometry
-				ant = new Ant(i, Load3Dmodel("ant/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
+				ant = new Ant(i, Load3Dmodel("ant/smallAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
 				GameState.getState().ants.add(ant);
 				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
 				GameState.getState().bigAnts.add(bigAnt);
 				GameState.getState().bigAnts.get(i).bigAnt();
 			}
+			giantAnt = new Ant(0, Load3Dmodel("ant/giantAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
+			GameState.getState().giantAnts.add(giantAnt);
+			GameState.getState().giantAnts.get(0).giantAnt();
 			
 			// creates a list of paint blue balls that player 0 shoots
 			for (int i = 0; i < 5; i++) {
@@ -339,6 +344,7 @@ public class GameActivity extends ARViewActivity // implements
 				GameState.getState().bigAnts.get(i).randomMovement();
 					
 
+			
 			//Allocate a buffer and add OC and a byte array.
     		ByteBuffer buffer = ByteBuffer.allocate(6 + 4*4);
     		//amount of bytes
@@ -354,6 +360,21 @@ public class GameActivity extends ARViewActivity // implements
 			//mService.mConnection.sendData(buffer.array());
 		}
 		
+		//for the one giant Ant
+		if(!GameState.getState().giantAnts.get(0).isActive())
+
+		{
+			// if not already spawned, spawn at random 
+			GameState.getState().giantAnts.get(0).spawnAnt();
+		}
+		
+		if(GameState.getState().giantAnts.get(0).getIsHit() == true)
+		{
+			GameState.getState().giantAnts.get(0).movementToTower(new Vector3d(player.getPosition()));
+		}
+		else
+			GameState.getState().giantAnts.get(0).randomMovement();
+				
 		//Update powerup(s)
 		for (int i = 0; i < GameState.getState().powerUps.size(); i++)
 		{
