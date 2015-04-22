@@ -245,13 +245,13 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < NUM_OF_ANTS; i++)
 			{
 				// create ant geometry
-				ant = new Ant(i, Load3Dmodel("ant/smallAnt/ant.mfbx"), 1);
+				ant = new Ant(i, Load3Dmodel("ant/smallAnt/ant.mfbx"), Ant.SMALL_ANT);
 				GameState.getState().ants.add(ant);
-				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), 2);
+				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), Ant.BIG_ANT);
 				GameState.getState().bigAnts.add(bigAnt);
 				GameState.getState().bigAnts.get(i).bigAnt();
 			}
-			giantAnt = new Ant(0, Load3Dmodel("ant/giantAnt/ant.mfbx"), 3);
+			giantAnt = new Ant(0, Load3Dmodel("ant/giantAnt/ant.mfbx"), Ant.GIANT_ANT);
 			GameState.getState().giantAnts.add(giantAnt);
 			GameState.getState().giantAnts.get(0).giantAnt();
 			
@@ -318,34 +318,11 @@ public class GameActivity extends ARViewActivity // implements
 		//spawn ant at random and move ants
 		for ( int i = GameState.getState().myPlayerID*5; i < (GameState.getState().myPlayerID*5+1) || i< NUM_OF_ANTS ; i++)
 		{
-			if(!GameState.getState().ants.get(i).isActive())
-			{
-				// if not already spawned, spawn at random 
-				GameState.getState().ants.get(i).spawnAnt();
-			}
+			GameState.getState().ants.get(i).update();
+			GameState.getState().bigAnts.get(i).update();
 			
-			if(!GameState.getState().bigAnts.get(i).isActive())
-
-			{
-				// if not already spawned, spawn at random 
-				GameState.getState().bigAnts.get(i).spawnAnt();
-			}
-			
-			//if ant is hit move to tower else move at random 
-			if(GameState.getState().ants.get(i).getIsHit() == true)
-			{
-				GameState.getState().ants.get(i).movementToTower(new Vector3d(player.getPosition()));
-			}
-			else
-				GameState.getState().ants.get(i).randomMovement();
-			
-			if(GameState.getState().bigAnts.get(i).getIsHit() == true)
-			{
-				GameState.getState().bigAnts.get(i).movementToTower(new Vector3d(player.getPosition()));
-			}
-			else
-				GameState.getState().bigAnts.get(i).randomMovement();
-					
+			//send position and rotation to other players
+			//TODO: Move to Ant class?
 			if(GameState.getState().ants.get(i).isActive())
 			{
 				//Allocate a buffer and add OC and a byte array.
@@ -367,22 +344,9 @@ public class GameActivity extends ARViewActivity // implements
 
 			}
 		}
+		//GIANT ANT
+		GameState.getState().giantAnts.get(0).update();
 		
-		//for the one giant Ant
-		if(!GameState.getState().giantAnts.get(0).isActive())
-
-		{
-			// if not already spawned, spawn at random 
-			GameState.getState().giantAnts.get(0).spawnAnt();
-		}
-		
-		if(GameState.getState().giantAnts.get(0).getIsHit() == true)
-		{
-			GameState.getState().giantAnts.get(0).movementToTower(new Vector3d(player.getPosition()));
-		}
-		else
-			GameState.getState().giantAnts.get(0).randomMovement();
-				
 		//Update powerup(s)
 		for (int i = 0; i < GameState.getState().powerUps.size(); i++)
 		{

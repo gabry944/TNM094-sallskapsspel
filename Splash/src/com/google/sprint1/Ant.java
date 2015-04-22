@@ -9,6 +9,10 @@ import com.metaio.sdk.jni.Vector3d;
 public class Ant extends Drawable
 {
 	public static final String TAG = "Ant";
+	public static final int SMALL_ANT = 1;
+	public static final int BIG_ANT = 2;
+	public static final int GIANT_ANT = 3;
+	
 	private IGeometry ant;
 	private boolean isHit;
 	private Vector3d diffVec;
@@ -112,6 +116,23 @@ public class Ant extends Drawable
 		ant.setScale(130f);
 	}
 	
+	public void update()
+	{
+		if(!isActive())
+		{
+			// if not already spawned, spawn at random 
+			spawnAnt();
+		}
+		else{
+			if (isHit){ 
+				//if ant is hit move to tower else move at random 
+				movementToTower(GameState.getState().players.get(ownedByPlayer).getPosition());
+			}else{
+				randomMovement(); 
+			}
+			
+		}
+	}
 	/** Function to generate movement to the ants */
 	public void randomMovement()
 	{		
