@@ -242,13 +242,13 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < NUM_OF_ANTS; i++)
 			{
 				// create ant geometry
-				ant = new Ant(i, Load3Dmodel("ant/smallAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
+				ant = new Ant(i, Load3Dmodel("ant/smallAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), 1);
 				GameState.getState().ants.add(ant);
-				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
+				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), 2);
 				GameState.getState().bigAnts.add(bigAnt);
 				GameState.getState().bigAnts.get(i).bigAnt();
 			}
-			giantAnt = new Ant(0, Load3Dmodel("ant/giantAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), false);
+			giantAnt = new Ant(0, Load3Dmodel("ant/giantAnt/ant.mfbx"), Load3Dmodel("ant/markers/boxBlue.mfbx"), 3);
 			GameState.getState().giantAnts.add(giantAnt);
 			GameState.getState().giantAnts.get(0).giantAnt();
 			
