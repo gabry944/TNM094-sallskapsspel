@@ -1,27 +1,18 @@
 package com.google.sprint1;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
 
 import android.os.Handler;
-import android.provider.ContactsContract.Contacts.Data;
 import android.util.Log;
 
 public class MobileConnection {

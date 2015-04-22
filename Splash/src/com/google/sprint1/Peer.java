@@ -2,18 +2,22 @@ package com.google.sprint1;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
 import android.util.Log;
 
+/**
+ * Peer is a class containing socket information, IP, and
+ * access to the input and outputstream of a Peer. 
+ * @author Pontus
+ *
+ */
 public class Peer {
 	
 	private static final String TAG = "Peer";
-	
+
 	private Socket mSocket;
 	private InetAddress mIP;
 	private OutputStream mOutStream;

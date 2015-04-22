@@ -2,12 +2,13 @@ package com.google.sprint1;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 
-
+import android.util.Log;
 
 public class DataPackage{
+	public static final String TAG = "DataPackage";
+	
 	//Different Operation Codes
 	public static final char BALL_FIRED = 'A';
 	public static final char ANT_POS_UPDATE = 'B';
@@ -29,7 +30,12 @@ public class DataPackage{
 		this.data = data;
 	}
 	
-	
+	/**
+	 * Creates a Datapackage by listening to an inputstream. 
+	 * First reads the size and the operation code and then
+	 * reads the rest of the data as a byte array. 
+	 * @param instream
+	 */
 	DataPackage(InputStream instream)
 	{
 		try {
@@ -47,15 +53,23 @@ public class DataPackage{
 			}
 				
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			Log.e(TAG, "Error when creating DataPackage.");
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Get the data as a byte array.
+	 * @return data as a byte array.
+	 */
 	public byte[] getData(){
 		return data;
 	}
 	
+	/** 
+	 * Get the operation code.
+	 * @return operation code as a char. 
+	 */
 	public char getOperationCode(){
 		return operationCode;
 	}
