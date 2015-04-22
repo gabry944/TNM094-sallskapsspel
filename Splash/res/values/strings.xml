@@ -10,7 +10,7 @@
     <string name="title_activity_game">GameActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="title_activity_network">NetworkActivity</string>
-    <string name="network">Hitta andra spelare</string>
+    <string name="network_text_connect">Connect to an available game</string>
     <string name="startaSpel">Starta spel</string>
     <string name="Huvudmeny">Huvudmeny</string>
     <string name="Spelmusik">Spelmusik</string>
@@ -21,5 +21,8 @@
     <string name="green_player">Grön spelare</string>
     <string name="yellow_player">Gul spelare</string>
     <string name="magenta_player">Rosa spelare</string>
+    <string name="network_button_host">Host game</string>
+    <string name="network_text_host">....or host a game</string>
+    
 
 </resources>
