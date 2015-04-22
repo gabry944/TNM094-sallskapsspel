@@ -331,7 +331,7 @@ public class GameActivity extends ARViewActivity // implements
 	    		buffer.putInt(4*7);
 	    		//operation code
 	    		buffer.putChar(DataPackage.ANT_POS_UPDATE);
-	    		//data 
+	    		//data: id - position - rotation
 	    		buffer.putInt(GameState.getState().ants.get(i).getId());
 	    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getX());
 	    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getY());
