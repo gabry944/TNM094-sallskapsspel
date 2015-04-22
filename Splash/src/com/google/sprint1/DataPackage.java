@@ -7,13 +7,15 @@ import java.nio.ByteBuffer;
 
 
 
-public class DataPackage implements Serializable{
-	
+public class DataPackage{
+	//Different Operation Codes
 	public static final char BALL_FIRED = 'A';
 	public static final char ANT_POS_UPDATE = 'B';
 	public static final char IP_LIST = 'c';
 	public static final char INVALID = 'I';
 	
+	//Buffer head is the first bytes of every package sent.
+	//Contains Amount of data (in bytes) and operation code (in that order)
 	public static final int BUFFER_HEAD_SIZE = 6;
 	private byte[] bufferHead = new byte[BUFFER_HEAD_SIZE];
 	private byte[] data;
@@ -58,8 +60,7 @@ public class DataPackage implements Serializable{
 		return operationCode;
 	}
 	
-	
 	public String toString(){
-		return "NOT IMPLEMENTED";
+		return "Operation Code: " + operationCode + " (check DataPackage for what it reprensents)." + "Data size: " + data.length;
 	}
 }

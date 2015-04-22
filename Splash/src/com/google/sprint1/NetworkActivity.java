@@ -159,8 +159,7 @@ public class NetworkActivity extends Activity {
 																	+ service
 																			.getServiceName());
 													mService.mConnection.connectToPeer(
-															service.getHost(),
-															service.getPort());
+															service.getHost());
 												} else {
 													Log.d(TAG,
 															"No service to connect to!");
