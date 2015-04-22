@@ -25,7 +25,7 @@ public class NsdHelper {
 	public String mServiceName = "";
 
 	public boolean serviceResolved = false;
-
+	public boolean serviceRegistered;
 	NsdServiceInfo mService;
 	
 	/**Constructor */
@@ -35,6 +35,7 @@ public class NsdHelper {
 		mUpdateHandler = handler;
 		mNsdManager = (NsdManager) context
 				.getSystemService(Context.NSD_SERVICE);
+		serviceRegistered = false;
 	}
 	
 	/**Initialize various listeners for the NsdHelper */
@@ -144,6 +145,7 @@ public class NsdHelper {
 			public void onServiceRegistered(NsdServiceInfo NsdServiceInfo) {
 				Log.d(TAG, "Service registered: " + NsdServiceInfo);
 				mServiceName = NsdServiceInfo.getServiceName();
+				serviceRegistered = true;
 			}
 
 			@Override
@@ -158,7 +160,7 @@ public class NsdHelper {
 
 				Log.d(TAG,
 						"Service unregistered: " + serviceInfo.getServiceName());
-
+				serviceRegistered = false;
 			}
 
 			@Override
@@ -223,5 +225,9 @@ public class NsdHelper {
 	public void unregisterService(){
 		mNsdManager.unregisterService(mRegistrationListener);
 		Log.d(TAG, "NsdHelper: unregister service");
+	}
+	
+	public boolean getRegistrationState(){
+		return serviceRegistered;
 	}
 }

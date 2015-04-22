@@ -88,6 +88,7 @@ public class PaintBall extends Drawable
 				//GameState.getState().ants.get(i).ant.setRotation(new Rotation( (float) (3 * Math.PI / 4), 0f, 0f), true);
 				
 				GameState.getState().ants.get(i).setIsHit(true, getPlayerId());
+
 				disable();
 			}
 		}

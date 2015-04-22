@@ -46,6 +46,9 @@ public class NetworkActivity extends Activity {
 	public NetworkService mService;
 	public NsdHelper mNsdHelper;
 	private boolean mBound = false;
+	
+	//Variable that indicates if user is host
+	private boolean isHost = false;
 
 	public static final String TAG = "NetworkActivity";
 
@@ -197,6 +200,18 @@ public class NetworkActivity extends Activity {
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}
+	
+	/** Called when the user clicks the Host Game button */
+	public void hostGame(View view){
+		
+		//If user is not already host and the registration state is false,
+		//register/host a game
+		if(!isHost && !mNsdHelper.getRegistrationState())
+			mNsdHelper.registerService(MobileConnection.SERVER_PORT);
+		
+		//if(mNsdHelper.getRegistrationState())
+			isHost = true;
+	}
 
 	/** Called when the user clicks the Send Data button */
 	public void sendData(View view) {
@@ -209,16 +224,18 @@ public class NetworkActivity extends Activity {
 	protected void onPause() {
 		
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-		// If mNsdHelper is other than null it will be teared down.
-		// This is done to unregister from the network and stop the
-		// service discovery.
 		
-
+		//Stops service discovery if mNsdHelper is still initialized.
 		if (mNsdHelper != null) {
 			mNsdHelper.stopDiscovery();
+		}
+		
+		//Unregister if the registration state is true.
+		if(mNsdHelper.getRegistrationState()){
 			mNsdHelper.unregisterService();
-			mNsdHelper = null;
         }
+		
+		mNsdHelper = null;
 
 		
 		super.onPause();
@@ -232,16 +249,22 @@ public class NetworkActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		
+		//If mNsdHelper is null(which happens if activity return after call to 
+		//onPause() it will create a new NsdHelper and initialize it.
 		if(mNsdHelper == null){
 			mNsdHelper = new NsdHelper(this, mNSDHandler);
 			mNsdHelper.initializeNsd();
 		}
 		
+		//Starts service discovery when when starting activity for the first
+		//or when returing from a paused state.
 		if (mNsdHelper != null) {
-			mNsdHelper.discoverServices();
-			mNsdHelper.registerService(MobileConnection.SERVER_PORT);
-            
+			mNsdHelper.discoverServices();            
         }
+		
+		//Checks if the user is a host and register a service accordingly.
+		if(isHost)
+			mNsdHelper.registerService(MobileConnection.SERVER_PORT);
 
 	}
 
@@ -252,15 +275,18 @@ public class NetworkActivity extends Activity {
 	protected void onDestroy() {
 
 		// Check if mNsdHelper is not null(will throw NullPointerException
-		// otherwise). Unregister from network and stops the discovery.
-
+		// otherwise) and stops service discovery.
 		if (mNsdHelper != null) {
 			mNsdHelper.stopDiscovery();
-			mNsdHelper.unregisterService();
-	
-
         }
 		
+		//Checks state of mNsdHelper, isHost and registration state to prevent 
+		//crash.
+		if(mNsdHelper != null && isHost && mNsdHelper.getRegistrationState()){
+			mNsdHelper.unregisterService();
+		}
+		
+		//Unbinds from network service.
 		if(mBound){
 			unbindService(mServiceConnection);
 			mBound = false;
