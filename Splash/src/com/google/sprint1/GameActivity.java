@@ -204,10 +204,10 @@ public class GameActivity extends ARViewActivity // implements
 			
 			//creates the tower				
 
-			bluePlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 150f), Load3Dmodel("tower/invisibleBall.mfbx"),  Load3Dmodel("ant/markers/boxBlue.mfbx"));
-			greenPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 150f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"));	
-			redPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 150f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"));
-			yellowPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 150f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
+			bluePlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 250f), Load3Dmodel("tower/invisibleBall.mfbx"),  Load3Dmodel("ant/markers/boxBlue.mfbx"));
+			greenPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 250f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"));	
+			redPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 250f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"));
+			yellowPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 250f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 
 
 //			anthill = Load3Dmodel("anthill/anthill.mfbx");
