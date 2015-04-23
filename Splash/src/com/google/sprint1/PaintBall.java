@@ -76,15 +76,16 @@ public class PaintBall extends Drawable
 			paintballShadow.setTranslation(new Vector3d(geometry.getTranslation().getX(),
 					  									geometry.getTranslation().getY(),
 					  									0f));
-		}
-		// checks for collision with ground 	
-		if(geometry.getTranslation().getZ() <= 0f)
-		{	
-			disable();
-		}
-		if(getPlayerId() == GameState.getState().myPlayerID)
-			checkCollisions();
 		
+			if(getPlayerId() == GameState.getState().myPlayerID)
+				checkCollisions();
+			
+			// checks for collision with ground 	
+			if(geometry.getTranslation().getZ() <= 0f)
+			{	
+				disable();
+			}
+		}	
 	}
 	
 	private void checkCollisions(){
@@ -92,7 +93,7 @@ public class PaintBall extends Drawable
 		//Check for collision with ants
 		for(int i = 0; i < GameActivity.getNrOfAnts() ; i++)
 		{
-			if (checkCollision(GameState.getState().ants.get(i).getGeometry())) { 
+			if (isActive() && checkCollision(GameState.getState().ants.get(i).getGeometry())) { 
 				//GameState.getState().ants.get(i).ant.setRotation(new Rotation( (float) (3 * Math.PI / 4), 0f, 0f), true);
 				
 				connection.sendData(NetDataHandler.antHit(i, getPlayerId(), getId()));
