@@ -12,6 +12,9 @@ public class GameState {
 	
 	public int myPlayerID = 0;
 	public int nrOfPlayers = 1;
+	
+	public MobileConnection connection;
+	
 	public ArrayList<PaintBall> exsisting_paint_balls;
 	public ArrayList<Player> players;
 	public ArrayList<Ant> ants;

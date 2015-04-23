@@ -52,7 +52,6 @@
         android:layout_alignLeft="@+id/button2"
         android:layout_alignRight="@+id/button1"
         android:layout_below="@+id/textView1" >
-
     </ListView>
 
     <Button

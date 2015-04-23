@@ -14,9 +14,13 @@ public class PaintBall extends Drawable
 	private int id; 
 	private int playerId;
 	private boolean isActive;
-
+	private final MobileConnection connection;
+	
 	public PaintBall(int id, IGeometry geo, IGeometry splGeo, IGeometry pbShad, int playerID) {
 		super();
+	
+		connection = GameState.getState().connection;
+		
 		this.id = id;
 		geometry = geo;
 		splashGeometry = splGeo;
@@ -73,13 +77,16 @@ public class PaintBall extends Drawable
 					  									geometry.getTranslation().getY(),
 					  									0f));
 		}
-			
 		// checks for collision with ground 	
 		if(geometry.getTranslation().getZ() <= 0f)
 		{	
 			disable();
 		}
+		checkCollisions();
 		
+	}
+	
+	private void checkCollisions(){
 		
 		//Check for collision with ants
 		for(int i = 0; i < GameActivity.getNrOfAnts() ; i++)
@@ -87,8 +94,9 @@ public class PaintBall extends Drawable
 			if (checkCollision(GameState.getState().ants.get(i).getGeometry())) { 
 				//GameState.getState().ants.get(i).ant.setRotation(new Rotation( (float) (3 * Math.PI / 4), 0f, 0f), true);
 				
+				connection.sendData(NetDataHandler.antHit(i, getPlayerId(), getId()));
 				GameState.getState().ants.get(i).setIsHit(true, getPlayerId());
-
+				
 				disable();
 			}
 		}
@@ -100,9 +108,7 @@ public class PaintBall extends Drawable
 				GameState.getState().powerUps.get(i).setHit();
 			}
 		}
-		
 	}
-	
 	/** Check if paintball is current active */
 	public boolean isActive()
 	{

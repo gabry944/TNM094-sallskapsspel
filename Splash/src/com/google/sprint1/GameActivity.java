@@ -51,9 +51,6 @@ public class GameActivity extends ARViewActivity // implements
 
 	GameState gameState;
 
-	Ant giantAnt;
-	Ant ant;
-	Ant bigAnt;
 	Aim aim;
 
 
@@ -197,6 +194,7 @@ public class GameActivity extends ARViewActivity // implements
 			MetaioDebug.log("Tracking data loaded: " + result);
 
 			GameState.getState().nrOfPlayers = 1 + mService.mConnection.getNumberOfConnections();
+			GameState.getState().connection = mService.mConnection;
 			/** Load Object */
 			
 			//create ground plane
@@ -329,30 +327,18 @@ public class GameActivity extends ARViewActivity // implements
 		//spawn ant at random and move ants
 		if(GameState.getState().myPlayerID == 0)
 		{
+			Ant ant;
 			for ( int i = 0; i <  GameState.getState().ants.size(); i++)
 			{
-				GameState.getState().ants.get(i).update();
-				
+				ant = GameState.getState().ants.get(i); 
+				ant.update();
 				//send position and rotation to other players
 				//TODO: Move to Ant class?
-				if(GameState.getState().ants.get(i).isActive())
+				if(ant.isActive())
 				{
-					//Allocate a buffer and add OC and a byte array.
-		    		ByteBuffer buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + 4*7);
-		    		//amount of bytes
-		    		buffer.putInt(4*7);
-		    		//operation code
-		    		buffer.putChar(DataPackage.ANT_POS_UPDATE);
-		    		//data: id - position - rotation
-		    		buffer.putInt(GameState.getState().ants.get(i).getId());
-		    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getX());
-		    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getY());
-		    		buffer.putFloat(GameState.getState().ants.get(i).getPosition().getZ());
-		    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getX());
-		    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getY());
-		    		buffer.putFloat(GameState.getState().ants.get(i).getRotation().getEulerAngleRadians().getZ());
-		    		
-					mService.mConnection.sendData(buffer.array());
+					mService.mConnection.sendData(NetDataHandler.antPos(ant.getId(),
+																		ant.getPosition(),
+																		ant.getRotation()));
 
 				}
 			}
@@ -472,24 +458,9 @@ public class GameActivity extends ARViewActivity // implements
         			//check if touched outside sphere -> do nothing
         			if(!(Math.abs(touchVec.getX()) < 0.1f))
         			{
-        				//Allocate a buffer and add OC and a byte array.
-                		ByteBuffer buffer = ByteBuffer.allocate(6 + 4*7);
-                		//amount of bytes
-                		buffer.putInt(7*4);
-                		//operation code
-                		buffer.putChar(DataPackage.BALL_FIRED);
-                		//data id - vel - pos
-                		buffer.putInt(ball.getId());
-                		buffer.putFloat(vel.getX());
-                		buffer.putFloat(vel.getY());
-                		buffer.putFloat(vel.getZ());
-                		buffer.putFloat(pos.getX());
-                		buffer.putFloat(pos.getY());
-                		buffer.putFloat(pos.getZ());
-                		
                 		//Send it off to the network
-            			mService.mConnection.sendData(buffer.array());
-            			
+            			mService.mConnection.sendData(NetDataHandler.ballFired(ball.getId(), vel, pos));
+            		
             			//Fire the ball locally
             			ball.fire(vel, pos); 
         			}

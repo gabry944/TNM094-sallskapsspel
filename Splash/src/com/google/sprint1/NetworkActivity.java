@@ -85,7 +85,7 @@ public class NetworkActivity extends Activity {
 		//The listAdapter only holds the name of the services and not the total
 		//NsdServiceInfo items.
 		listAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1,
+				R.layout.custom_list_for_services,
 				serviceNameList);
 
 		mNSDHandler = new Handler() {

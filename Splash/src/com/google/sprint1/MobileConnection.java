@@ -148,7 +148,7 @@ public class MobileConnection {
 		ByteBuffer buffer;
 		buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE +  4*mIPs.size() + 4);
 		buffer.putInt(4*mIPs.size()+ 4);
-		buffer.putChar(DataPackage.IP_LIST);
+		buffer.putShort(DataPackage.IP_LIST);
 		
 		//ID assigned: 
 		buffer.putInt(mIPs.size()+1);
@@ -181,6 +181,8 @@ public class MobileConnection {
 			case DataPackage.ANT_POS_UPDATE: 
 				updateAntPos(data.getData());
 				break;
+			case DataPackage.ANT_HIT:
+				antHit(data.getData());
 		case DataPackage.IP_LIST:
 				resolveHandshake(data.getData());
 				break;
@@ -316,7 +318,21 @@ public class MobileConnection {
 		GameState.getState().ants.get(id).setPosition(pos);
 		GameState.getState().ants.get(id).setRotation(eulerRot);
 	}
-
+	
+	/**
+	 * Deals with the data with ANT_HIT OP.
+	 * @param data Data from stream. 
+	 */
+	private synchronized void antHit(byte[] data)
+	{
+		
+		ByteBuffer buffer = ByteBuffer.wrap(data);
+		int antId = buffer.getInt();
+		int playerId = buffer.getInt();
+		int ballId = buffer.getInt();
+		GameState.getState().ants.get(antId).setIsHit(true, playerId);
+		GameState.getState().exsisting_paint_balls.get(ballId).disable();
+	}
 	/**
 	 * Function that deals with the data package sent from the server (or in this case host) in handshake.
 	 * It recieves a list of IPS to connect to and assigns an ID to the player.

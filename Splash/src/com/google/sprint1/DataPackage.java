@@ -10,10 +10,11 @@ public class DataPackage{
 	public static final String TAG = "DataPackage";
 	
 	//Different Operation Codes
-	public static final char BALL_FIRED = 'A';
-	public static final char ANT_POS_UPDATE = 'B';
-	public static final char IP_LIST = 'c';
-	public static final char INVALID = 'I';
+	public static final short BALL_FIRED = 0;
+	public static final short ANT_POS_UPDATE = 1;
+	public static final short IP_LIST = 2;
+	public static final short INVALID = 3;
+	public static final short ANT_HIT = 4;
 	
 	//Buffer head is the first bytes of every package sent.
 	//Contains Amount of data (in bytes) and operation code (in that order)
@@ -21,10 +22,10 @@ public class DataPackage{
 	private byte[] bufferHead = new byte[BUFFER_HEAD_SIZE];
 	private byte[] data;
 	
-	char operationCode;
+	short operationCode;
 	
 
-	DataPackage(char OC, byte[] data)
+	DataPackage(short OC, byte[] data)
 	{
 		operationCode = OC;
 		this.data = data;
@@ -43,7 +44,7 @@ public class DataPackage{
 			instream.read(bufferHead);
 			ByteBuffer buffer = ByteBuffer.wrap(bufferHead);
 			int bytesToRead = buffer.getInt();
-			operationCode = buffer.getChar();
+			operationCode = buffer.getShort();
 			if(bytesToRead > 0) 
 			{
 				data = new byte[bytesToRead];
@@ -70,7 +71,7 @@ public class DataPackage{
 	 * Get the operation code.
 	 * @return operation code as a char. 
 	 */
-	public char getOperationCode(){
+	public short getOperationCode(){
 		return operationCode;
 	}
 	
