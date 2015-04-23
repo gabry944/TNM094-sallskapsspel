@@ -408,9 +408,9 @@ public class GameActivity extends ARViewActivity // implements
     	//coordinates between tower and "slangbella"
 		player.ballGeometry.setTranslation(player.touchSphere.getTranslation());
 		
-		touchVec = new Vector3d(-(player.ballGeometry.getTranslation().getX()-player.towerGeometry.getTranslation().getX()),
-									-(player.ballGeometry.getTranslation().getY()-player.towerGeometry.getTranslation().getY()),
-									0f);   
+		touchVec.setX(-(player.ballGeometry.getTranslation().getX()-player.towerGeometry.getTranslation().getX()));
+		touchVec.setY(-(player.ballGeometry.getTranslation().getY()-player.towerGeometry.getTranslation().getY()));
+		touchVec.setZ(0f);   
 		
 
 		// Math.sin(Math.PI/6) angle PI/6 = 30' => sin(pi/6) = 0.5 && Math.cos(Math.PI/6) angle PI/6 = 30' => cos(pi/6) = 0.5
