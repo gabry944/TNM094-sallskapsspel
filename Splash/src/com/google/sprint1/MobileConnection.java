@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
 
@@ -176,13 +177,15 @@ public class MobileConnection {
 		switch (data.getOperationCode())
 		{
 		case DataPackage.BALL_FIRED: 
-				fireBall(data.getData());
-				break;
-			case DataPackage.ANT_POS_UPDATE: 
-				updateAntPos(data.getData());
-				break;
-			case DataPackage.ANT_HIT:
-				antHit(data.getData());
+			fireBall(data.getData());
+			break;
+		case DataPackage.ANT_POS_UPDATE: 
+			updateAntPos(data.getData());
+			break;
+		case DataPackage.ANT_HIT:
+			antHit(data.getData());
+		case DataPackage.ANT_REACHED_TOWER:
+			antReachedTower(data.getData());
 		case DataPackage.IP_LIST:
 				resolveHandshake(data.getData());
 				break;
@@ -325,13 +328,28 @@ public class MobileConnection {
 	 */
 	private synchronized void antHit(byte[] data)
 	{
-		
 		ByteBuffer buffer = ByteBuffer.wrap(data);
 		int antId = buffer.getInt();
 		int playerId = buffer.getInt();
 		int ballId = buffer.getInt();
 		GameState.getState().ants.get(antId).setIsHit(true, playerId);
 		GameState.getState().exsisting_paint_balls.get(ballId).disable();
+	}
+	
+	/**
+	 * Deals with the data with ANT_HIT OP.
+	 * @param data Data from stream. 
+	 */
+	private synchronized void antReachedTower(byte[] data)
+	{
+		ByteBuffer buffer = ByteBuffer.wrap(data);
+		int antId = buffer.getInt();
+		int playerId = buffer.getInt();
+
+		Ant ant = GameState.getState().ants.get(antId);
+		GameState.getState().players.get(playerId).removeMarker();
+		GameState.getState().players.get(playerId).increaseScore(ant.getType());
+		ant.setActive(false);
 	}
 	/**
 	 * Function that deals with the data package sent from the server (or in this case host) in handshake.
