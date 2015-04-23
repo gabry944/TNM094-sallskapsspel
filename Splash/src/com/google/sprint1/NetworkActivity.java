@@ -70,6 +70,7 @@ public class NetworkActivity extends Activity {
 		Intent intent = new Intent(this, NetworkService.class);
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		
+		// TODO  E/AndroidRuntime(17132): java.lang.RuntimeException: Unable to start activity ComponentInfo{com.google.sprint1/com.google.sprint1.NetworkActivity}: java.lang.ClassCastException: android.widget.TextView cannot be cast to android.widget.ListView
 		serviceListView = (ListView) findViewById(R.id.serviceListView);		
 		
 		//ArrayList to store all services
