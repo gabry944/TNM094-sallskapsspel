@@ -198,6 +198,7 @@ public class Ant extends Drawable
 			GameState.getState().players.get(ownedByPlayer).removeMarker();
 			GameState.getState().players.get(ownedByPlayer).increaseScore(points);
 			connection.sendData(NetDataHandler.antReachedTower(getId(), ownedByPlayer));
+			Log.d(TAG, "Ant  " + getId() +" reached player " + ownedByPlayer);
 			setActive(false);
 			//player.point();
 			

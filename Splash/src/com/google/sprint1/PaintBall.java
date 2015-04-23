@@ -1,5 +1,7 @@
 package com.google.sprint1;
 
+import android.util.Log;
+
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
@@ -95,7 +97,7 @@ public class PaintBall extends Drawable
 		{
 			if (isActive() && checkCollision(GameState.getState().ants.get(i).getGeometry())) { 
 				//GameState.getState().ants.get(i).ant.setRotation(new Rotation( (float) (3 * Math.PI / 4), 0f, 0f), true);
-				
+				Log.d(TAG, "Collision with ant " + i +" by player " + getPlayerId());
 				connection.sendData(NetDataHandler.antHit(i, getPlayerId(), getId()));
 				GameState.getState().ants.get(i).setIsHit(true, getPlayerId());
 				

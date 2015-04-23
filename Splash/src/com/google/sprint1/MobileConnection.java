@@ -332,6 +332,7 @@ public class MobileConnection {
 		int antId = buffer.getInt();
 		int playerId = buffer.getInt();
 		int ballId = buffer.getInt();
+		Log.d(TAG, "Collision with ant " + antId +" by player " + playerId);
 		GameState.getState().ants.get(antId).setIsHit(true, playerId);
 		GameState.getState().exsisting_paint_balls.get(ballId).disable();
 	}
@@ -349,6 +350,7 @@ public class MobileConnection {
 		Ant ant = GameState.getState().ants.get(antId);
 		GameState.getState().players.get(playerId).removeMarker();
 		GameState.getState().players.get(playerId).increaseScore(ant.getType());
+		Log.d(TAG, "Ant  " + antId +" reached player " + playerId);
 		ant.setActive(false);
 	}
 	/**
