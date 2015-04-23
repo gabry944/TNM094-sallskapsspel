@@ -42,7 +42,7 @@ public class MobileConnection {
 	public synchronized void connectToPeer(InetAddress address) {
 		if (!(mIPs.contains(address)) && mServerSocket.getInetAddress() != address)
 		{
-			mIPs.add(address);
+			Log.d(TAG, "Connecting to: " + address);
 			Thread con = new Thread(new ConnectionThread(address));
 			con.start();
 		}else{
