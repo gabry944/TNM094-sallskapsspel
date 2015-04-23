@@ -265,7 +265,7 @@ public class GameActivity extends ARViewActivity // implements
 			for (int i = 0; i < 5; i++) {
 				// add paint ball to list of paint balls
 				GameState.getState().exsisting_paint_balls.add(
-						new PaintBall(i,Load3Dmodel("paintball/paintball/ballBlue.mfbx"),
+						new PaintBall(Load3Dmodel("paintball/paintball/ballBlue.mfbx"),
 									  Load3Dmodel("paintball/splash/splashBlue.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 0));
 			}
@@ -273,7 +273,7 @@ public class GameActivity extends ARViewActivity // implements
 			for (int i = 0; i < 5; i++) {
 				// add paint ball to list of paint balls
 				GameState.getState().exsisting_paint_balls.add(
-						new PaintBall(i,Load3Dmodel("paintball/paintball/ballGreen.mfbx"),
+						new PaintBall(Load3Dmodel("paintball/paintball/ballGreen.mfbx"),
 									  Load3Dmodel("paintball/splash/splashGreen.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 1));
 			}
@@ -281,7 +281,7 @@ public class GameActivity extends ARViewActivity // implements
 			for (int i = 0; i < 5; i++) {
 				// add paint ball to list of paint balls
 				GameState.getState().exsisting_paint_balls.add(
-						new PaintBall(i,Load3Dmodel("paintball/paintball/ballRed.mfbx"),
+						new PaintBall(Load3Dmodel("paintball/paintball/ballRed.mfbx"),
 									  Load3Dmodel("paintball/splash/splashRed.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 2));
 			}
@@ -289,7 +289,7 @@ public class GameActivity extends ARViewActivity // implements
 			for (int i = 0; i < 5; i++) {
 				// add paint ball to list of paint balls
 				GameState.getState().exsisting_paint_balls.add(
-						new PaintBall(i,Load3Dmodel("paintball/paintball/ballYellow.mfbx"),
+						new PaintBall(Load3Dmodel("paintball/paintball/ballYellow.mfbx"),
 									  Load3Dmodel("paintball/splash/splashYellow.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 3));
 			}

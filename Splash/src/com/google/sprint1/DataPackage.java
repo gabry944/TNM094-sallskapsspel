@@ -55,6 +55,7 @@ public class DataPackage{
 			}
 				
 		} catch (IOException e) {
+			operationCode = INVALID;
 			Log.e(TAG, "Error when creating DataPackage.");
 			e.printStackTrace();
 		}

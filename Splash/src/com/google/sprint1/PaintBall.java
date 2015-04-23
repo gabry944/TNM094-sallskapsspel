@@ -10,6 +10,8 @@ public class PaintBall extends Drawable
 {
 	public static final String TAG = "PaintBall";
 	
+	public static int numberOfBalls = 0;
+	
 	private IGeometry geometry; 
 	private IGeometry splashGeometry;
 	private IGeometry paintballShadow;
@@ -18,12 +20,14 @@ public class PaintBall extends Drawable
 	private boolean isActive;
 	private final MobileConnection connection;
 	
-	public PaintBall(int id, IGeometry geo, IGeometry splGeo, IGeometry pbShad, int playerID) {
+	public PaintBall(IGeometry geo, IGeometry splGeo, IGeometry pbShad, int playerID) {
 		super();
 	
 		connection = GameState.getState().connection;
 		
-		this.id = id;
+		this.id = numberOfBalls;
+		numberOfBalls++;
+		
 		geometry = geo;
 		splashGeometry = splGeo;
 		paintballShadow = pbShad;
