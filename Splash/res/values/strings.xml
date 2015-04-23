@@ -14,6 +14,7 @@
     <string name="startaSpel">Starta spel</string>
     <string name="Huvudmeny">Huvudmeny</string>
     <string name="Spelmusik">Spelmusik</string>
+    <string name="Lobby">Lobby</string>
     <string name="title_activity_game_ended">GameEndedActivity</string>
     <string name="end_result">Resultat:</string>
     <string name="red_player">Röd spelare: </string>

@@ -29,7 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 /**
- * Activity to handle the screen between mainmenu and the gamescreen
+ * Activity to handle the screen between network and the gamescreen
  * 
  * where players should connect to each other before entering gamemode.
  * 
@@ -48,7 +48,7 @@ public class LobbyActivity extends Activity {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-		setContentView(R.layout.activity_network);
+		setContentView(R.layout.activity_lobby);
 		
 		/* Start game */
 		startGame = new AssetsExtracter();
@@ -63,8 +63,8 @@ public class LobbyActivity extends Activity {
 	}
 
 	/** Called when the user clicks the mainMenu button (huvudmeny) */
-	public void mainMenu(View view) {
-		Intent intentmenu = new Intent(this, MainActivity.class);
+	public void Lobby(View view) {
+		Intent intentmenu = new Intent(this, NetworkActivity.class);
 		startActivity(intentmenu);
 	}
 
