@@ -34,7 +34,8 @@ public class InstructionsDialog extends DialogFragment {
 		rootView.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View rootView) {
-			getDialog().dismiss();
+			if (getDialog() != null)
+       		 getDialog().dismiss();
 			time.cancel();
 		}
 		});
@@ -45,7 +46,8 @@ public class InstructionsDialog extends DialogFragment {
 		//Timer that closes the dialog after 10 seconds 
         time.schedule(new TimerTask() {
              public void run() {
-                 getDialog().dismiss();
+            	 if (getDialog() != null)
+            		 getDialog().dismiss();
                  time.cancel();
              }
         }, 10000);
