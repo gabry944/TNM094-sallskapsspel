@@ -82,7 +82,8 @@ public class PaintBall extends Drawable
 		{	
 			disable();
 		}
-		checkCollisions();
+		if(getPlayerId() == GameState.getState().myPlayerID)
+			checkCollisions();
 		
 	}
 	
