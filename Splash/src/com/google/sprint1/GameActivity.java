@@ -82,7 +82,8 @@ public class GameActivity extends ARViewActivity // implements
 	//private double lastTime;
 
 	public static final String TAG = "GameActivity";
-
+	
+	@Override
 	protected void onDestroy() {
 		Log.d(TAG, "i onDestroy i GameActivity");
 		// Unbind from service
