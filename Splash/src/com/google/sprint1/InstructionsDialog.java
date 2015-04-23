@@ -1,6 +1,7 @@
 package com.google.sprint1;
 
 import java.util.Timer;
+
 import java.util.TimerTask;
 
 import android.app.Dialog;
@@ -11,6 +12,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+
+/**
+ * Class to handle the dialog for the instructions, the dialog will dismiss after 10 seconds 
+ * 
+ * or on touch.
+ * 
+ * 
+ */
  
 public class InstructionsDialog extends DialogFragment {
 	@Override
@@ -30,6 +39,7 @@ public class InstructionsDialog extends DialogFragment {
 		}
 		});
 		
+		//No dialog title
 		getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 	
 		//Timer that closes the dialog after 10 seconds 
