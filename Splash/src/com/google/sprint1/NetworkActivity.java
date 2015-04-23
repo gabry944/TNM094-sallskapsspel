@@ -201,11 +201,10 @@ public class NetworkActivity extends Activity {
 
 	}
 
-	/** Called when the user clicks the start Game button (starta spel) */
+	/** Called when the user clicks the lobby button */
 	public void startGame(View view) {
-		// In order to start the game we need to extract our assets to the
-		// metaio SDK
-		startGame.execute(0); // Starts the assetsExtracter class
+		Intent intentlobby = new Intent(this, LobbyActivity.class);
+		startActivity(intentlobby);
 	}
 
 	/** Called when the user clicks the mainMenu button (huvudmeny) */
