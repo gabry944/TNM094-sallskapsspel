@@ -13,6 +13,8 @@ public class Ant extends Drawable
 	public static final int BIG_ANT = 2;
 	public static final int GIANT_ANT = 3;
 	
+	private static int numberOfAnts;
+	
 	private IGeometry ant;
 	private boolean isHit;
 	private Vector3d diffVec;
@@ -28,15 +30,22 @@ public class Ant extends Drawable
 	int k = 0;
 	
 	/** constructor ant */
-	public Ant(int Id, IGeometry geo, int antType) {
+	public Ant(IGeometry geo, int antType) {
 		super();
-		id = Id;
+		id = numberOfAnts;
+		numberOfAnts++;
+		
 		ant = geo;
 		type = antType;		//1 = small ant, 2 = big ant, 3 = giant ant
 		ownedByPlayer = -1;	
 		isHit = false;
 		setGeometryProperties(ant, 50f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f)); 
-
+		
+		if (type == BIG_ANT)
+			ant.setScale(80f);
+		else if(type == GIANT_ANT)
+			ant.setScale(130f);
+		
 		ant.setVisible(false);
 		diffVec = new Vector3d(0f, 0f, 0f);
 		memory = 0f;
@@ -102,18 +111,6 @@ public class Ant extends Drawable
 			ant.setRotation(new Rotation(randBetween(0f , 6.28f), randBetween(0f , 6.28f), (float)(Math.PI*3/2)));
 		}
 		
-	}
-	
-	//function to enlarge ants to big ants
-	public void bigAnt()
-	{
-		ant.setScale(80f);
-	}
-
-	//function to enlarge ants to giant ants
-	public void giantAnt()
-	{
-		ant.setScale(130f);
 	}
 	
 	public void update()

@@ -64,6 +64,13 @@ public class MobileConnection {
 	}
 
 	/**
+	 * Returns the number of peers connected.
+	 * @return number of peers connected.
+	 */
+	public int getNumberOfConnections(){
+		return mIPs.size();
+	}
+	/**
 	 * Sends data to ALL peers on the network. Simply calls
 	 * sendPackage for each peer in mPeers.
 	 * @param data Data to send. 
