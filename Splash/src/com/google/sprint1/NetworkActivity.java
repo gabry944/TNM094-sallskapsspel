@@ -52,7 +52,7 @@ public class NetworkActivity extends Activity {
 
 	public static final String TAG = "NetworkActivity";
 
-	private ArrayAdapter<NsdServiceInfo> listAdapter;
+	private ArrayAdapter<String> listAdapter;
 	private ArrayList<NsdServiceInfo> serviceList;
 	private ArrayList<String> serviceNameList;
 	
@@ -81,9 +81,9 @@ public class NetworkActivity extends Activity {
 		serviceList = new ArrayList<NsdServiceInfo>();
 		serviceNameList = new ArrayList<String>();
 
-		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
+		listAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1,
-				serviceList);
+				serviceNameList);
 
 		mNSDHandler = new Handler() {
 			@Override
@@ -111,6 +111,7 @@ public class NetworkActivity extends Activity {
 					for(int i = 0; i < serviceList.size(); i++){
 						if(serviceList.get(i).getServiceName().equals(service.getServiceName()))
 							serviceList.remove(i);
+						if(serviceNameList.get(i).equals(service.getServiceName()))
 							serviceNameList.remove(i);
 					}
 					
@@ -141,16 +142,23 @@ public class NetworkActivity extends Activity {
 
 						builder.setMessage(
 								"Connect to "
-										+ listAdapter.getItem(pos)
-												.getServiceName() + "?")
+										+ listAdapter.getItem(pos) + "?")
 								.setTitle("Connect")
 								.setPositiveButton(R.string.BTN_OK,
 										new DialogInterface.OnClickListener() {
 											public void onClick(
 													DialogInterface dialog,
 													int which) {
-												NsdServiceInfo service = listAdapter
-														.getItem(pos);
+												NsdServiceInfo service = null;
+												
+												for(int i = 0; i < serviceList.size(); i++){
+													if(listAdapter.getItem(pos).equals(serviceList.get(i).getServiceName())){
+														service = serviceList.get(i);
+													}
+													
+												}
+//												NsdServiceInfo service = listAdapter
+//														.getItem(pos);
 												service = mNsdHelper
 														.resolveService(service);
 												if (service != null) {
