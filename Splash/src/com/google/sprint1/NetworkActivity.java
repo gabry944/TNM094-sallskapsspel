@@ -52,7 +52,7 @@ public class NetworkActivity extends Activity {
 
 	public static final String TAG = "NetworkActivity";
 
-	private ArrayAdapter<NsdServiceInfo> listAdapter;
+	private ArrayAdapter<String> listAdapter;
 	private ArrayList<NsdServiceInfo> serviceList;
 	private ArrayList<String> serviceNameList;
 	
@@ -79,11 +79,14 @@ public class NetworkActivity extends Activity {
 		
 		//ArrayList to store all services
 		serviceList = new ArrayList<NsdServiceInfo>();
+		//ArrayList to store all names of services
 		serviceNameList = new ArrayList<String>();
 
-		listAdapter = new ArrayAdapter<NsdServiceInfo>(this,
+		//The listAdapter only holds the name of the services and not the total
+		//NsdServiceInfo items.
+		listAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1,
-				serviceList);
+				serviceNameList);
 
 		mNSDHandler = new Handler() {
 			@Override
@@ -97,7 +100,7 @@ public class NetworkActivity extends Activity {
 				if (msg.what == 1) {
 					listAdapter.clear();
 				}
-				// If key is "found", add to the adapter
+				// If key is "found", add NsdServiceInfo to serviceList and service name to serviceNameList.
 				else if ((service = (NsdServiceInfo) msg.getData().get("found")) != null) {
 					
 					serviceList.add(service);
@@ -105,12 +108,13 @@ public class NetworkActivity extends Activity {
 			
 				}
 				
-				// If key is "lost", remove from adapter
+				// If key is "lost", remove from serviceList and serviceNameList
 				else if ((service = (NsdServiceInfo) msg.getData().get("lost")) != null) {
 					
 					for(int i = 0; i < serviceList.size(); i++){
 						if(serviceList.get(i).getServiceName().equals(service.getServiceName()))
 							serviceList.remove(i);
+						if(serviceNameList.get(i).equals(service.getServiceName()))
 							serviceNameList.remove(i);
 					}
 					
@@ -141,16 +145,24 @@ public class NetworkActivity extends Activity {
 
 						builder.setMessage(
 								"Connect to "
-										+ listAdapter.getItem(pos)
-												.getServiceName() + "?")
+										+ listAdapter.getItem(pos) + "?")
 								.setTitle("Connect")
 								.setPositiveButton(R.string.BTN_OK,
 										new DialogInterface.OnClickListener() {
 											public void onClick(
 													DialogInterface dialog,
 													int which) {
-												NsdServiceInfo service = listAdapter
-														.getItem(pos);
+												NsdServiceInfo service = null;
+												
+												//If a service name is clicked and the OK button is pressed,
+												//a loop will compare all names in the listAdapter with the names from 
+												//the serviceList. If they are the same, the correct service to connect
+												//to is found
+												for(int i = 0; i < serviceList.size(); i++){
+													if(listAdapter.getItem(pos).equals(serviceList.get(i).getServiceName())){
+														service = serviceList.get(i);
+													}
+												}
 												service = mNsdHelper
 														.resolveService(service);
 												if (service != null) {
