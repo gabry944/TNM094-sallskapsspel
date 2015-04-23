@@ -79,8 +79,11 @@ public class NetworkActivity extends Activity {
 		
 		//ArrayList to store all services
 		serviceList = new ArrayList<NsdServiceInfo>();
+		//ArrayList to store all names of services
 		serviceNameList = new ArrayList<String>();
 
+		//The listAdapter only holds the name of the services and not the total
+		//NsdServiceInfo items.
 		listAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1,
 				serviceNameList);
@@ -97,7 +100,7 @@ public class NetworkActivity extends Activity {
 				if (msg.what == 1) {
 					listAdapter.clear();
 				}
-				// If key is "found", add to the adapter
+				// If key is "found", add NsdServiceInfo to serviceList and service name to serviceNameList.
 				else if ((service = (NsdServiceInfo) msg.getData().get("found")) != null) {
 					
 					serviceList.add(service);
@@ -105,7 +108,7 @@ public class NetworkActivity extends Activity {
 			
 				}
 				
-				// If key is "lost", remove from adapter
+				// If key is "lost", remove from serviceList and serviceNameList
 				else if ((service = (NsdServiceInfo) msg.getData().get("lost")) != null) {
 					
 					for(int i = 0; i < serviceList.size(); i++){
@@ -151,14 +154,15 @@ public class NetworkActivity extends Activity {
 													int which) {
 												NsdServiceInfo service = null;
 												
+												//If a service name is clicked and the OK button is pressed,
+												//a loop will compare all names in the listAdapter with the names from 
+												//the serviceList. If they are the same, the correct service to connect
+												//to is found
 												for(int i = 0; i < serviceList.size(); i++){
 													if(listAdapter.getItem(pos).equals(serviceList.get(i).getServiceName())){
 														service = serviceList.get(i);
 													}
-													
 												}
-//												NsdServiceInfo service = listAdapter
-//														.getItem(pos);
 												service = mNsdHelper
 														.resolveService(service);
 												if (service != null) {
