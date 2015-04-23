@@ -302,7 +302,8 @@ public class MobileConnection {
 		int id = buffer.getInt();
 		Vector3d vel = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
 		Vector3d pos = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
-		GameState.getState().exsisting_paint_balls.get(id).fire(vel, pos);
+		if(id < 20)
+			GameState.getState().exsisting_paint_balls.get(id).fire(vel, pos);
 	}
 	
 	/**
