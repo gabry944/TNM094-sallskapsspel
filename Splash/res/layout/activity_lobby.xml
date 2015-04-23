@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="@string/network_text_connect"
+        android:text="@string/lobby_text_connect"
         android:textColor="#19D119"
         android:textSize="20sp" />
 
