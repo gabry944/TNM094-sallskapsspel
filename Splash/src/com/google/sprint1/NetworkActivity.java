@@ -38,8 +38,6 @@ import android.widget.ListView;
 
 public class NetworkActivity extends Activity {
 
-	private AssetsExtracter startGame; // a variable used to start the
-										// AssetExtraxter class
 	Handler mNSDHandler;
 	
 	// Variables for Network Service handling
@@ -73,9 +71,6 @@ public class NetworkActivity extends Activity {
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		
 		serviceListView = (ListView) findViewById(R.id.serviceListView);		
-
-		/* Start game */
-		startGame = new AssetsExtracter();
 		
 		//ArrayList to store all services
 		serviceList = new ArrayList<NsdServiceInfo>();
@@ -114,6 +109,8 @@ public class NetworkActivity extends Activity {
 					for(int i = 0; i < serviceList.size(); i++){
 						if(serviceList.get(i).getServiceName().equals(service.getServiceName()))
 							serviceList.remove(i);
+					}
+					for(int i = 0; i < serviceNameList.size(); i++){
 						if(serviceNameList.get(i).equals(service.getServiceName()))
 							serviceNameList.remove(i);
 					}
@@ -205,7 +202,8 @@ public class NetworkActivity extends Activity {
 	public void startGame(View view) {
 		// In order to start the game we need to extract our assets to the
 		// metaio SDK
-		startGame.execute(0); // Starts the assetsExtracter class
+		Intent intentlobby = new Intent(this, LobbyActivity.class);
+		startActivity(intentlobby);	
 	}
 
 	/** Called when the user clicks the mainMenu button (huvudmeny) */
@@ -306,44 +304,6 @@ public class NetworkActivity extends Activity {
 		}
 		
 		super.onDestroy();
-	}
-
-	/**
-	 * This task extracts all the assets to an external or internal location to
-	 * make them accessible to Metaio SDK.
-	 */
-	private class AssetsExtracter extends AsyncTask<Integer, Integer, Boolean> {
-		/** Extract all assets to make them accessible to Metaio SDK */
-		@Override
-		protected Boolean doInBackground(Integer... params) {
-			try {
-				// Extract all assets except Menu. Overwrite existing files for
-				// debug build only.
-				final String[] ignoreList = { "Menu", "webkit", "sounds",
-						"images", "webkitsec" };
-				AssetsManager.extractAllAssets(getApplicationContext(), "",
-						ignoreList, BuildConfig.DEBUG);
-				// AssetsManager.extractAllAssets(getApplicationContext(),
-				// BuildConfig.DEBUG);
-			} catch (IOException e) {
-				MetaioDebug.printStackTrace(Log.ERROR, e);
-				return false;
-			}
-
-			return true;
-		}
-
-		/** when extraction is done, we load the game activity */
-		@Override
-		protected void onPostExecute(Boolean result) {
-			if (result) {
-				Intent intent = new Intent(getApplicationContext(),
-						GameActivity.class);
-				startActivity(intent);
-			}
-			finish();
-		}
-
 	}
 
 	/** Defines callbacks for service binding, passed to bindService() */
