@@ -169,6 +169,7 @@ public class NetworkActivity extends Activity {
 																			.getServiceName());
 													mService.mConnection.connectToPeer(
 															service.getHost());
+													//TODO : Go to Lobby
 												} else {
 													Log.d(TAG,
 															"No service to connect to!");
@@ -222,12 +223,7 @@ public class NetworkActivity extends Activity {
 		
 		//if(mNsdHelper.getRegistrationState())
 			isHost = true;
-	}
-
-	/** Called when the user clicks the Send Data button */
-	public void sendData(View view) {
-		TestClass test = new TestClass(5, "hej");
-		//mService.mConnection.sendData(test);
+		//TODO : Go to Lobby, stay registered!
 	}
 
 	/** Called when user minimize the window or clicks home button */
@@ -248,7 +244,6 @@ public class NetworkActivity extends Activity {
 		
 		mNsdHelper = null;
 
-		
 		super.onPause();
 	}
 
