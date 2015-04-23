@@ -59,6 +59,7 @@ public class GameActivity extends ARViewActivity // implements
 	//private IGeometry touchSphere;
 
 	private IGeometry groundPlane;
+	private IGeometry anthill;
 	
 	//Gesture handler
 	private GestureHandlerAndroid mGestureHandler;
@@ -198,16 +199,19 @@ public class GameActivity extends ARViewActivity // implements
 			
 			//create ground plane
 			
-			groundPlane = Load3Dmodel("groundPlane/plane2.mfbx");
+			groundPlane = Load3Dmodel("groundPlane/grassplane2.mfbx");
 			geometryProperties(groundPlane, 25f, new Vector3d(0f, 0f, -15f), new Rotation(0f, 0f, 0f));
 			
-			//creates the tower	
-			bluePlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"),  Load3Dmodel("ant/markers/boxBlue.mfbx"));
-			greenPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"));	
-			redPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"));
-			yellowPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
+			//creates the tower				
+
+			bluePlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 250f), Load3Dmodel("tower/invisibleBall.mfbx"),  Load3Dmodel("ant/markers/boxBlue.mfbx"));
+			greenPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 250f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"));	
+			redPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 250f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"));
+			yellowPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 250f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 
 
+//			anthill = Load3Dmodel("anthill/anthill.mfbx");
+//			geometryProperties(anthill, 8f, new Vector3d(100f, 100f, 0f), new Rotation(0f, 0f, 0f));
 			
 			//! TODO make sure that init is called!
 			GameState.getState().addPlayer(bluePlayer);	
@@ -440,14 +444,15 @@ public class GameActivity extends ARViewActivity // implements
             	aim.deactivate();
             	
             	// move slingshot to original position
-        		player.ballGeometry.setTranslation(player.towerGeometry.getTranslation());
-        		player.ballGeometry.setTranslation(new Vector3d(0f, 0f, 350f), true);
+        		player.ballGeometry.setTranslation(player.getPosition());
+
         		player.touchSphere.setTranslation(player.ballGeometry.getTranslation());
         		
             	PaintBall ball = getAvailableBall(GameState.getState().myPlayerID);
         		if(ball != null)
         		{
             		Vector3d pos = player.getPosition();
+            		Log.d(TAG, "pos = " + pos);
             		
         			
         			//check if touched outside sphere -> do nothing

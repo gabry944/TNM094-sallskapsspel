@@ -171,10 +171,11 @@ public class Ant extends Drawable
 	/** Makes the ant go to the tower owned by the player who hit the ant */
 	public void movementToTower(Vector3d pos)
 	{
-		pos.setZ(0f);
+		//pos.setZ(0f);
 		
 		GameState.getState().players.get(ownedByPlayer).setMarker(ant.getTranslation());
 		diffVec = ant.getTranslation().subtract(pos);
+		diffVec.setZ(0f);
 		
 		// check since atan(y/x) == atan(-y/-x)
 		if(diffVec.getX() < 0f)

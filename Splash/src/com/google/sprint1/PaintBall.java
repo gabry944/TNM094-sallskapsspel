@@ -82,7 +82,8 @@ public class PaintBall extends Drawable
 		{	
 			disable();
 		}
-		checkCollisions();
+		if(getPlayerId() == GameState.getState().myPlayerID)
+			checkCollisions();
 		
 	}
 	
@@ -100,7 +101,7 @@ public class PaintBall extends Drawable
 				disable();
 			}
 		}
-		
+
 		for (int i = 0; i < GameState.getState().powerUps.size(); i++)
 		{
 			if (checkCollision(GameState.getState().powerUps.get(i).getGeometry()) && isActive == true) {
@@ -116,7 +117,8 @@ public class PaintBall extends Drawable
 	}
 	
 	/** Fire the ball */
-	public void fire(Vector3d vel, Vector3d pos){
+	public void fire(Vector3d vel, Vector3d pos)
+	{
 		geometry.setTranslation(pos);
 		startPosition = pos;
 		startVelocity = vel;
@@ -131,13 +133,13 @@ public class PaintBall extends Drawable
 	public void disable(){
 		splashGeometry.setTranslation(geometry.getTranslation());
 		startTime = 0;		
-		geometry.setTranslation(new Vector3d(0f,0f,0f));
 		splashGeometry.setVisible(true);
 		geometry.setVisible(false);
 		paintballShadow.setVisible(false);
 		isActive = false;
-		startPosition = new Vector3d(0.0f, 0.0f, 0.0f);
+		//startPosition = new Vector3d(0.0f, 0.0f, 0.0f);
 		startVelocity = new Vector3d(0.0f, 0.0f, 0.0f);
+		geometry.setTranslation(startPosition);
 	}
 	
 	/** move an object depending on physics calculated with Euler model*/
