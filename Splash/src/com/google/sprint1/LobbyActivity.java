@@ -62,7 +62,7 @@ public class LobbyActivity extends Activity {
 		startGame.execute(0); // Starts the assetsExtracter class
 	}
 
-	/** Called when the user clicks the mainMenu button (huvudmeny) */
+	/** Called when the user clicks the Lobby button (huvudmeny) */
 	public void Lobby(View view) {
 		Intent intentmenu = new Intent(this, NetworkActivity.class);
 		startActivity(intentmenu);
@@ -78,7 +78,7 @@ public class LobbyActivity extends Activity {
 	}
 
 	/**
-	 * Called when after onStart() when a new instance of NetworkActivity is
+	 * Called when after onStart() when a new instance of LobbyActivity is
 	 * started and when ever the user enters the activity from a paused state
 	 */
 	@Override

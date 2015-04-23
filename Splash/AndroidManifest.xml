@@ -83,6 +83,15 @@
                 android:value="com.google.sprint1.MainActivity" />
         </activity>
         <activity
+            android:name=".LobbyActivity"
+            android:screenOrientation="landscape"
+            android:label="@string/title_activity_lobby"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.google.sprint1.MainActivity" />
+        </activity>
+        <activity
             android:name=".GameEndedActivity"
             android:screenOrientation="landscape"
             android:label="@string/title_activity_game_ended" >
