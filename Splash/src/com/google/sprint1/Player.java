@@ -15,6 +15,7 @@ public class Player extends Drawable {
 	public IGeometry ballGeometry;
 	public IGeometry touchSphere;
 	public IGeometry marker;
+	//private Vector3d startPosition;
 
 	public boolean superPower; 
 	
@@ -30,7 +31,8 @@ public class Player extends Drawable {
 		marker = Marker;
 		
 		//setGeometryProperties(towerGeometry, 3f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
-		setGeometryProperties(towerGeometry, 3f, new Vector3d(startPosition.getX(), startPosition.getY(), 0f), new Rotation(0f, 0f, 0f));
+		//setGeometryProperties(towerGeometry, 3f, new Vector3d(startPosition.getX(), startPosition.getY(), 0f), new Rotation(0f, 0f, 0f));
+		setGeometryProperties(towerGeo, 8f, new Vector3d(startPosition.getX(), startPosition.getY(), 0f), new Rotation(0f, 0f, 0f));
 		//setGeometryProperties(slingshotGeometry, 2f, new Vector3d(-685f, -485f, 250f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
 		setGeometryProperties(slingshotGeometry, 2f, new Vector3d(startPosition.getX()-35f, startPosition.getY() + 35f, startPosition.getZ() -100f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
 		//setGeometryProperties(ballGeometry, 2f, new Vector3d(-650f, -520f, 350f), new Rotation(0f, 0f, 0f));
@@ -77,6 +79,6 @@ public class Player extends Drawable {
 	public void removeMarker()
 	{
 		marker.setVisible(false);
-		marker.startAnimation("Take 001", false);
+		//marker.startAnimation("Take 001", false);
 	}
 }
