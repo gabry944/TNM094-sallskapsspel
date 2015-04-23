@@ -54,7 +54,7 @@ public class Player extends Drawable {
 	//increase the score with points depending on the ant being hit
 	public void increaseScore(int points)
 	{
-		score = score + points;;
+		score = score + points;
 	}
 	
 	//return player score

@@ -23,6 +23,8 @@ public class Ant extends Drawable
 	private int type;
 	private int ownedByPlayer;
 	
+	private final MobileConnection connection;
+	
 	float angDiffLimit = (float)(5*Math.PI/180);
 	float speed = 2f;
 	float angle = 0;
@@ -34,6 +36,8 @@ public class Ant extends Drawable
 		super();
 		id = numberOfAnts;
 		numberOfAnts++;
+		
+		connection = GameState.getState().connection;
 		
 		ant = geo;
 		type = antType;		//1 = small ant, 2 = big ant, 3 = giant ant
@@ -192,14 +196,14 @@ public class Ant extends Drawable
 		{
 			int points = getType();
 			GameState.getState().players.get(ownedByPlayer).removeMarker();
-			//Player.increaseScore();
 			GameState.getState().players.get(ownedByPlayer).increaseScore(points);
-			ant.setVisible(false);
-			setIsHit(false, -1);
+			setActive(false);
+			connection.sendData(NetDataHandler.antReachedTower(getId(), ownedByPlayer));
 			//player.point();
 			
 		}
 	}
+	
 	
 	//function to set position for ant
 	public void setPosition(Vector3d pos)
@@ -244,6 +248,8 @@ public class Ant extends Drawable
 	public void setActive(boolean active)
 	{
 		ant.setVisible(active);
+		if (!active)
+			setIsHit(false, -1);
 	}
 	
 	/** calculate a random number between arg start and arg end */

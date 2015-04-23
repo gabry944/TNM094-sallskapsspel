@@ -15,6 +15,7 @@ public class DataPackage{
 	public static final short IP_LIST = 2;
 	public static final short INVALID = 3;
 	public static final short ANT_HIT = 4;
+	public static final short ANT_REACHED_TOWER = 5;
 	
 	//Buffer head is the first bytes of every package sent.
 	//Contains Amount of data (in bytes) and operation code (in that order)
