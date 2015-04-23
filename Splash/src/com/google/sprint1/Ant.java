@@ -210,6 +210,10 @@ public class Ant extends Drawable
 	public void setPosition(Vector3d pos)
 	{
 		ant.setTranslation(pos);
+		if(isHit)
+		{
+			GameState.getState().players.get(ownedByPlayer).setMarker(ant.getTranslation());
+		}
 	}
 	
 	//function to get ants position

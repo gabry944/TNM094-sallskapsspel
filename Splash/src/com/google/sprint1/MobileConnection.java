@@ -189,8 +189,8 @@ public class MobileConnection {
 			antReachedTower(data.getData());
 			break;
 		case DataPackage.IP_LIST:
-				resolveHandshake(data.getData());
-				break;
+			resolveHandshake(data.getData());
+			break;
 		
 		default:
 			break;
