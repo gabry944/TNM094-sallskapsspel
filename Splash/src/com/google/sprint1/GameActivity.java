@@ -37,7 +37,8 @@ import com.metaio.tools.io.AssetsManager;
 public class GameActivity extends ARViewActivity // implements
 													// OnGesturePerformedListener
 {
-	public final static int NUM_OF_ANTS = 3;
+	// Number of small ants - big ants - giant ants
+	public final static int NUM_OF_ANTS[] = {7, 3, 1};
 	
 	/* Variables for objects in the game */
 
@@ -126,9 +127,7 @@ public class GameActivity extends ARViewActivity // implements
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		
 		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
-		GameState.getState().ants = new ArrayList<Ant>(NUM_OF_ANTS);
-		GameState.getState().bigAnts = new ArrayList<Ant>(NUM_OF_ANTS);
-		GameState.getState().giantAnts = new ArrayList<Ant>(1);
+		GameState.getState().ants = new ArrayList<Ant>(NUM_OF_ANTS[0] + NUM_OF_ANTS[1] + NUM_OF_ANTS[2]);
 		
 
 		touchVec = new Vector3d(0f, 0f, 0f);
@@ -242,18 +241,26 @@ public class GameActivity extends ARViewActivity // implements
 			
 
 			// creates a list of ants 
-			for(int i = 0; i < NUM_OF_ANTS; i++)
+			Ant ant;
+			//Small Ants
+			for(int i = 0; i < NUM_OF_ANTS[0]; i++)
 			{
 				// create ant geometry
-				ant = new Ant(i, Load3Dmodel("ant/smallAnt/ant.mfbx"), Ant.SMALL_ANT);
+				ant = new Ant(Load3Dmodel("ant/smallAnt/ant.mfbx"), Ant.SMALL_ANT);
 				GameState.getState().ants.add(ant);
-				bigAnt = new Ant(i, Load3Dmodel("ant/bigAnt/ant.mfbx"), Ant.BIG_ANT);
-				GameState.getState().bigAnts.add(bigAnt);
-				GameState.getState().bigAnts.get(i).bigAnt();
 			}
-			giantAnt = new Ant(0, Load3Dmodel("ant/giantAnt/ant.mfbx"), Ant.GIANT_ANT);
-			GameState.getState().giantAnts.add(giantAnt);
-			GameState.getState().giantAnts.get(0).giantAnt();
+			//Big ants
+			for(int i = 0; i< NUM_OF_ANTS[1]; i++)
+			{
+				ant = new Ant(Load3Dmodel("ant/bigAnt/ant.mfbx"), Ant.BIG_ANT);
+				GameState.getState().ants.add(ant);	
+			}
+			//Giant ants
+			for(int i = 0; i < NUM_OF_ANTS[2]; i++)
+			{
+				ant = new Ant(Load3Dmodel("ant/giantAnt/ant.mfbx"), Ant.GIANT_ANT);
+				GameState.getState().ants.add(ant);	
+			}
 			
 			// creates a list of paint blue balls that player 0 shoots
 			for (int i = 0; i < 5; i++) {
@@ -268,7 +275,7 @@ public class GameActivity extends ARViewActivity // implements
 				// add paint ball to list of paint balls
 				GameState.getState().exsisting_paint_balls.add(
 						new PaintBall(i,Load3Dmodel("paintball/paintball/ballGreen.mfbx"),
-									  Load3Dmodel("paintball/splash/splashGreeen.mfbx"),
+									  Load3Dmodel("paintball/splash/splashGreen.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 1));
 			}
 			// creates a list of paint blue balls that player 2 shoots
@@ -318,10 +325,9 @@ public class GameActivity extends ARViewActivity // implements
 		//spawn ant at random and move ants
 		if(GameState.getState().myPlayerID == 0)
 		{
-			for ( int i = 0; i <  NUM_OF_ANTS ; i++)
+			for ( int i = 0; i <  GameState.getState().ants.size(); i++)
 			{
 				GameState.getState().ants.get(i).update();
-				GameState.getState().bigAnts.get(i).update();
 				
 				//send position and rotation to other players
 				//TODO: Move to Ant class?
@@ -348,17 +354,8 @@ public class GameActivity extends ARViewActivity // implements
 			}
 
 		}
-		
-		//for the one giant Ant
-		if(!GameState.getState().giantAnts.get(0).isActive())
-		{
-			// if not already spawned, spawn at random 
-			GameState.getState().giantAnts.get(0).spawnAnt();
 
-		}
-				//GIANT ANT
-		GameState.getState().giantAnts.get(0).update();
-		
+
 		//Update powerup(s)
 		for (int i = 0; i < GameState.getState().powerUps.size(); i++)
 		{
@@ -539,7 +536,7 @@ public class GameActivity extends ARViewActivity // implements
 	
 	public static int getNrOfAnts()
 	{
-		return NUM_OF_ANTS;
+		return GameState.getState().ants.size();
 	}
 		
 	/**Updates Fps each frame and display it to user once every second*/ 
