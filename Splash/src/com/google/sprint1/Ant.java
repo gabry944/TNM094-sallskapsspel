@@ -34,7 +34,7 @@ public class Ant extends Drawable
 		super();
 		id = numberOfAnts;
 		numberOfAnts++;
-		Log.d(TAG, "Ant ID: " + id);
+		
 		ant = geo;
 		type = antType;		//1 = small ant, 2 = big ant, 3 = giant ant
 		ownedByPlayer = -1;	
@@ -111,18 +111,6 @@ public class Ant extends Drawable
 			ant.setRotation(new Rotation(randBetween(0f , 6.28f), randBetween(0f , 6.28f), (float)(Math.PI*3/2)));
 		}
 		
-	}
-	
-	//function to enlarge ants to big ants
-	public void bigAnt()
-	{
-		ant.setScale(80f);
-	}
-
-	//function to enlarge ants to giant ants
-	public void giantAnt()
-	{
-		ant.setScale(130f);
 	}
 	
 	public void update()

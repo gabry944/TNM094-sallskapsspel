@@ -126,6 +126,7 @@ public class GameActivity extends ARViewActivity // implements
 		Intent intent = new Intent(this, NetworkService.class);
 		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		
+		
 		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		GameState.getState().ants = new ArrayList<Ant>(NUM_OF_ANTS[0] + NUM_OF_ANTS[1] + NUM_OF_ANTS[2]);
 		
@@ -194,6 +195,7 @@ public class GameActivity extends ARViewActivity // implements
 
 			MetaioDebug.log("Tracking data loaded: " + result);
 
+			GameState.getState().nrOfPlayers = 1 + mService.mConnection.getNumberOfConnections();
 			/** Load Object */
 			
 			//create ground plane
@@ -202,8 +204,6 @@ public class GameActivity extends ARViewActivity // implements
 			geometryProperties(groundPlane, 25f, new Vector3d(0f, 0f, -15f), new Rotation(0f, 0f, 0f));
 			
 			//creates the tower	
-			
-
 			bluePlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"),  Load3Dmodel("ant/markers/boxBlue.mfbx"));
 			greenPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"));	
 			redPlayer = new Player(Load3Dmodel("tower/tower.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 350f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"));

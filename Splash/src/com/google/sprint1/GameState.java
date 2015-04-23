@@ -11,7 +11,7 @@ public class GameState {
 	public long gameTimeLeft;
 	
 	public int myPlayerID = 0;
-	public int nrOfPlayers = 2;// TODO have a counter for number of persons in current game round
+	public int nrOfPlayers = 1;
 	public ArrayList<PaintBall> exsisting_paint_balls;
 	public ArrayList<Player> players;
 	public ArrayList<Ant> ants;
