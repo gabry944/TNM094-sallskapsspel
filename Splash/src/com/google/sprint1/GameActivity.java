@@ -38,7 +38,7 @@ public class GameActivity extends ARViewActivity // implements
 													// OnGesturePerformedListener
 {
 	// Number of small ants - big ants - giant ants
-	public final static int NUM_OF_ANTS[] = {3, 1, 0};
+	public final static int NUM_OF_ANTS[] = {7, 4, 1};
 	
 	/* Variables for objects in the game */
 
