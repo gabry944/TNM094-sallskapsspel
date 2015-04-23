@@ -205,10 +205,10 @@ public class GameActivity extends ARViewActivity // implements
 			
 			//creates the tower				
 
-			bluePlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 220f), Load3Dmodel("tower/invisibleBall.mfbx"),  Load3Dmodel("ant/markers/boxBlue.mfbx"));
-			greenPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 220f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"));	
-			redPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 220f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"));
-			yellowPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 220f), Load3Dmodel("tower/invisibleBall.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
+			bluePlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 220f),  Load3Dmodel("ant/markers/boxBlue.mfbx"));
+			greenPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 220f), Load3Dmodel("ant/markers/boxGreen.mfbx"));	
+			redPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 220f), Load3Dmodel("ant/markers/boxRed.mfbx"));
+			yellowPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 220f), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 			
 			//! TODO make sure that init is called!
 			GameState.getState().addPlayer(bluePlayer);	
@@ -218,7 +218,7 @@ public class GameActivity extends ARViewActivity // implements
 			
 			// the player this unit has is decided by the player id in game state
 			player = GameState.getState().players.get(GameState.getState().myPlayerID);
-			mGestureHandler.addObject(player.touchSphere, 1);
+			mGestureHandler.addObject(player.ballGeometry, 1);
 
 			// Load powerUps
 			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aimPowerUp.mfbx"));
@@ -406,7 +406,7 @@ public class GameActivity extends ARViewActivity // implements
 		mGestureHandler.onTouch(v, event);
 
     	//coordinates between tower and "slangbella"
-		player.ballGeometry.setTranslation(player.touchSphere.getTranslation());
+		//player.ballGeometry.setTranslation(player.touchSphere.getTranslation());
 		
 		touchVec.setX(-(player.ballGeometry.getTranslation().getX()-player.towerGeometry.getTranslation().getX()));
 		touchVec.setY(-(player.ballGeometry.getTranslation().getY()-player.towerGeometry.getTranslation().getY()));
@@ -435,15 +435,13 @@ public class GameActivity extends ARViewActivity // implements
 	            	aim.drawBallPath(vel, player.getPosition()); 	            		
             	}
             	
-            	player.ballGeometry.setTranslation(player.touchSphere.getTranslation());
+            	//player.ballGeometry.setTranslation(player.touchSphere.getTranslation());
                 break;
             case MotionEvent.ACTION_UP:
             	aim.deactivate();
             	
             	// move slingshot to original position
         		player.ballGeometry.setTranslation(player.getPosition());
-
-        		player.touchSphere.setTranslation(player.ballGeometry.getTranslation());
         		
             	PaintBall ball = getAvailableBall(GameState.getState().myPlayerID);
         		if(ball != null)
