@@ -52,7 +52,7 @@
         android:gravity="center"
         android:padding="10sp"
         android:text="@string/red_player"
-        android:textColor="#50FF50"
+        android:textColor="#FF5050"
         android:textSize="30sp" 
         android:visibility="invisible"/>"
         
@@ -65,7 +65,7 @@
         android:gravity="center"
         android:padding="10sp"
         android:text="@string/yellow_player"
-        android:textColor="#50FF50"
+        android:textColor="#FFFF00"
         android:textSize="30sp" 
         android:visibility="invisible" />"
 
