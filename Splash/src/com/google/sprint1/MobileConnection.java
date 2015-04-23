@@ -184,8 +184,10 @@ public class MobileConnection {
 			break;
 		case DataPackage.ANT_HIT:
 			antHit(data.getData());
+			break;
 		case DataPackage.ANT_REACHED_TOWER:
 			antReachedTower(data.getData());
+			break;
 		case DataPackage.IP_LIST:
 				resolveHandshake(data.getData());
 				break;
@@ -373,6 +375,7 @@ public class MobileConnection {
 		
 		//We are assuming IPv4 so each address is 4 bytes. 
 		byte[] byteIP = new byte[4];
+		Log.d(TAG, "Resolving handshake.");
 		//Loops through the different IPS.
 		while (buffer.hasRemaining())
 		{
