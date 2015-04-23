@@ -19,25 +19,27 @@ public class Player extends Drawable {
 
 	public boolean superPower; 
 	
-	public Player(IGeometry towerGeo,IGeometry slingshotGeo,IGeometry ballGeo, Vector3d startPosPlayer, IGeometry invisibleBall, IGeometry Marker)
+	public Player(IGeometry anthillGeo,IGeometry slingshotGeo,IGeometry ballGeo, Vector3d startPosPlayer, IGeometry invisibleBall, IGeometry Marker)
 	{
 		score = 0;
 		superPower = false;
-		towerGeometry = towerGeo;
+		towerGeometry = anthillGeo;
 		slingshotGeometry = slingshotGeo;
 		ballGeometry = ballGeo;
 		startPosition = startPosPlayer;
 		touchSphere = invisibleBall; 
 		marker = Marker;
+
+		setGeometryProperties(anthillGeo, 8f, new Vector3d(startPosition.getX(), startPosition.getY(), 0f), new Rotation(0f, 0f, 0f));
+
+		if((startPosPlayer.getX() == -650f && startPosPlayer.getY() == 520f) || (startPosPlayer.getX() == 650f && startPosPlayer.getY() == -520f))
+		{
+			setGeometryProperties(slingshotGeometry, 2f, new Vector3d(startPosition.getX() + 35f, startPosition.getY() + 35f, startPosition.getZ() -100f), new Rotation((float)Math.PI/2, 0f, -(float)Math.PI/4));
+		}
+		else
+			setGeometryProperties(slingshotGeometry, 2f, new Vector3d(startPosition.getX() - 35f, startPosition.getY() + 35f, startPosition.getZ() -100f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
 		
-		//setGeometryProperties(towerGeometry, 3f, new Vector3d(-650f, -520f, 0f), new Rotation(0f, 0f, 0f));
-		//setGeometryProperties(towerGeometry, 3f, new Vector3d(startPosition.getX(), startPosition.getY(), 0f), new Rotation(0f, 0f, 0f));
-		setGeometryProperties(towerGeo, 8f, new Vector3d(startPosition.getX(), startPosition.getY(), 0f), new Rotation(0f, 0f, 0f));
-		//setGeometryProperties(slingshotGeometry, 2f, new Vector3d(-685f, -485f, 250f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
-		setGeometryProperties(slingshotGeometry, 2f, new Vector3d(startPosition.getX()-35f, startPosition.getY() + 35f, startPosition.getZ() -100f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
-		//setGeometryProperties(ballGeometry, 2f, new Vector3d(-650f, -520f, 350f), new Rotation(0f, 0f, 0f));
 		setGeometryProperties(ballGeometry, 2f, startPosition, new Rotation(0f, 0f, 0f));
-		//setGeometryProperties(touchSphere, 6f, new Vector3d(-650f, -520f, 250f), new Rotation(0f, 0f, 0f));
 		setGeometryProperties(touchSphere, 6f, startPosition, new Rotation(0f, 0f, 0f));
 		setGeometryProperties(marker, 0.2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
 		marker.setVisible(false);
