@@ -1,7 +1,5 @@
 package com.google.sprint1;
 
-import com.google.sprint1.NetworkService.LocalBinder;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,10 +14,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 public class GameEndedActivity extends Activity {
-	
-	// Variables for Service handling
-		private NetworkService mService;
-		boolean mBound = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +23,6 @@ public class GameEndedActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_game_ended);
-		
-		Intent intent = new Intent(this, NetworkService.class);
-		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		
 		//Necessary to run on UI thread to be able to edit the TextView
 		runOnUiThread(new Runnable() {
@@ -65,16 +56,6 @@ public class GameEndedActivity extends Activity {
 	
 	}
 	
-	@Override
-	protected void onDestroy() {
-		// Unbind from service
-		if (mBound) {
-			unbindService(mServiceConnection);
-			mBound = false;
-		}
-		super.onDestroy();
-		
-	}
 	
 	/** Called when the user clicks the Return button */
 	public void onPlayAgain(View v) {
@@ -93,21 +74,4 @@ public class GameEndedActivity extends Activity {
 		startActivity(mainMenu);
 	}
 	
-	/** Defines callbacks for service binding, passed to bindService() */
-	private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get
-			// LocalService instance
-			LocalBinder binder = (LocalBinder) service;
-			mService = binder.getService();
-			mBound = true;
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName arg0) {
-			mBound = false;
-		}
-	};
 }

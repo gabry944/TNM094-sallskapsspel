@@ -18,7 +18,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.google.sprint1.NetworkService.LocalBinder;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
@@ -73,27 +72,11 @@ public class GameActivity extends ARViewActivity // implements
 	protected int point;
 	TextView displayPoints;
 
-	// Variables for Service handling
-	private NetworkService mService;
-	boolean mBound = false;
-
 	// FPS specific variables
 	//private int frameCounter = 0;
 	//private double lastTime;
 
 	public static final String TAG = "GameActivity";
-	
-	@Override
-	protected void onDestroy() {
-		Log.d(TAG, "i onDestroy i GameActivity");
-		// Unbind from service
-		if (mBound) {
-			unbindService(mServiceConnection);
-			mBound = false;
-		}
-		super.onDestroy();
-		
-	}
 
 	@Override
 	protected void onStart() {
@@ -120,12 +103,7 @@ public class GameActivity extends ARViewActivity // implements
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);		
-		
-		// Bind to NetworkService
-		Intent intent = new Intent(this, NetworkService.class);
-		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
-		
-		
+				
 		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
 		GameState.getState().ants = new ArrayList<Ant>(NUM_OF_ANTS[0] + NUM_OF_ANTS[1] + NUM_OF_ANTS[2]);
 		
@@ -194,8 +172,8 @@ public class GameActivity extends ARViewActivity // implements
 
 			MetaioDebug.log("Tracking data loaded: " + result);
 
-			GameState.getState().nrOfPlayers = 1 + mService.mConnection.getNumberOfConnections();
-			GameState.getState().connection = mService.mConnection;
+			GameState.getState().nrOfPlayers = 1 + NetworkState.getState().mConnection.getNumberOfConnections();
+			GameState.getState().connection = NetworkState.getState().mConnection;
 			/** Load Object */
 			
 			//create ground plane
@@ -333,7 +311,7 @@ public class GameActivity extends ARViewActivity // implements
 				//TODO: Move to Ant class?
 				if(ant.isActive())
 				{
-					mService.mConnection.sendData(NetDataHandler.antPos(ant.getId(),
+					NetworkState.getState().mConnection.sendData(NetDataHandler.antPos(ant.getId(),
 																		ant.getPosition(),
 																		ant.getRotation()));
 
@@ -452,7 +430,7 @@ public class GameActivity extends ARViewActivity // implements
         			if(!(Math.abs(touchVec.getX()) < 0.1f))
         			{
                 		//Send it off to the network
-            			mService.mConnection.sendData(NetDataHandler.ballFired(ball.getId(), vel, pos));
+        				NetworkState.getState().mConnection.sendData(NetDataHandler.ballFired(ball.getId(), vel, pos));
             		
             			//Fire the ball locally
             			ball.fire(vel, pos); 
@@ -468,24 +446,6 @@ public class GameActivity extends ARViewActivity // implements
 	{
 		return null;
 	}
-	
-	/** Defines callbacks for service binding, passed to bindService() */
-	private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get
-			// LocalService instance
-			LocalBinder binder = (LocalBinder) service;
-			mService = binder.getService();
-			mBound = true;
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName arg0) {
-			mBound = false;
-		}
-	};
 	
 	private void showScore()
 	{
