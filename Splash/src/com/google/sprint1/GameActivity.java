@@ -178,8 +178,8 @@ public class GameActivity extends ARViewActivity // implements
 			
 			//create ground plane
 			
-			groundPlane = Load3Dmodel("groundPlane/grassplane2.mfbx");
-			geometryProperties(groundPlane, 25f, new Vector3d(0f, 0f, -15f), new Rotation(0f, 0f, 0f));
+//			groundPlane = Load3Dmodel("groundPlane/grassplane2.mfbx");
+//			geometryProperties(groundPlane, 25f, new Vector3d(0f, 0f, -15f), new Rotation(0f, 0f, 0f));
 			
 			//creates the tower				
 
