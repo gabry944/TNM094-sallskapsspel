@@ -15,7 +15,7 @@ public class GameState {
 	
 	public MobileConnection connection;
 	
-	public ArrayList<PaintBall> exsisting_paint_balls;
+	public ArrayList<PaintBall> paintBalls;
 	public ArrayList<Player> players;
 	public ArrayList<Ant> ants;
 	public ArrayList<PowerUp> powerUps;
@@ -42,6 +42,25 @@ public class GameState {
 	public void addPlayer(Player p){
 		players.add(p);
 	}	
+	
+	public void resetGameState(){
+		for(Player p : players){
+			p.score = 0;
+		}
+		for (Ant a : ants)
+		{
+			a.setActive(false);
+		}
+		for (PowerUp pup : powerUps)
+		{
+			pup.setHit(false);
+		}
+		for (PaintBall ball : paintBalls)
+		{
+			ball.disable();
+		}
+	}
+	
 	public void updateTime() {
 		// 3 min game round (5 min quit long)
 		gameTimeLeft = 1*60*1000 -(System.currentTimeMillis() - gameStartTime);

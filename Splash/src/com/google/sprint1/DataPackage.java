@@ -2,6 +2,7 @@ package com.google.sprint1;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 
 import android.util.Log;
