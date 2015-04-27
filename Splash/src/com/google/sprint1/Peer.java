@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 
 import android.util.Log;
 
@@ -23,7 +24,7 @@ public class Peer {
 	private OutputStream mOutStream;
 	private InputStream mInStream;
 	
-	public Peer(Socket socket)
+	public Peer(Socket socket) throws SocketException
 	{
 		try {
 			mSocket = socket;
@@ -43,6 +44,15 @@ public class Peer {
 		return mSocket;
 	}
 	
+	public void closeSocket() throws SocketException
+	{
+		try {
+			mSocket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public OutputStream getOutputStream(){
 		return mOutStream;
 	}

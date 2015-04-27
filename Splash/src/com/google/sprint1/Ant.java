@@ -235,17 +235,17 @@ public class Ant extends Drawable
 			markerBlue.setTranslation(new Vector3d(pos.getX(), pos.getY(), 50f));
 			markerBlue.setVisible(true);
 		}
-		if(i == 1)
+		else if(i == 1)
 		{
 			markerGreen.setTranslation(new Vector3d(pos.getX(), pos.getY(), 50f));
 			markerGreen.setVisible(true);
 		}
-		if(i == 2)
+		else if(i == 2)
 		{
 			markerRed.setTranslation(new Vector3d(pos.getX(), pos.getY(), 50f));
 			markerRed.setVisible(true);
 		}
-		if(i == 3)
+		else if(i == 3)
 		{
 			markerYellow.setTranslation(new Vector3d(pos.getX(), pos.getY(), 50f));
 			markerYellow.setVisible(true);
@@ -258,6 +258,7 @@ public class Ant extends Drawable
 	public void setPosition(Vector3d pos)
 	{
 		ant.setTranslation(pos);
+		setMarker(getOwnedByPlayer());
 	}
 	
 	//function to get ants position

@@ -12,8 +12,6 @@ public class NetworkState {
 	
 	private static NetworkState instance = null;
 	
-    private Handler mUpdateHandler;
-	
 	MobileConnection mConnection;
 	
 	public NsdHelper mNsdHelper;
@@ -45,8 +43,7 @@ public class NetworkState {
 //		players = new ArrayList<Player>();
 		this.context = context; 
 		
-		mUpdateHandler = new Handler();
-		mConnection = new MobileConnection(mUpdateHandler);
+		mConnection = new MobileConnection();
 		
 		//ArrayList to store all services
 		serviceList = new ArrayList<NsdServiceInfo>();
@@ -123,6 +120,10 @@ public class NetworkState {
 	public ArrayList<NsdServiceInfo> getServiceList(){
 		return serviceList;
 	}
-
 	
+	public void closeNetwork()
+	{
+		mConnection.tearDown();
+	}
+
 }

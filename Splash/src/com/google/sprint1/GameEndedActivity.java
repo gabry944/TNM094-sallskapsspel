@@ -60,16 +60,14 @@ public class GameEndedActivity extends Activity {
 	/** Called when the user clicks the Return button */
 	public void onPlayAgain(View v) {
 		GameState.getState().gameStartTime = System.currentTimeMillis();
-		for (int i = 0; i < GameState.getState().nrOfPlayers; i++ )
-		{
-			GameState.getState().players.get(i).score = 0;
-		}
+		GameState.getState().resetGameState();
 		finish();
 	}
 	
 	/** Called when the user clicks the finish button */
 	public void onFinishGame(View v) {
-		//TODO nätverket ska kopplas från också!
+		NetworkState.getState().closeNetwork();
+		GameState.getState().resetGameState();
 		Intent mainMenu = new Intent(this, MainActivity.class);
 		startActivity(mainMenu);
 	}
