@@ -18,9 +18,9 @@ public class NetworkState {
 	
 	public NsdHelper mNsdHelper;
 	
-	public ArrayAdapter<String> listAdapter;
-	public ArrayList<NsdServiceInfo> serviceList;
-	public ArrayList<String> serviceNameList;
+	private ArrayAdapter<String> listAdapter;
+	private ArrayList<NsdServiceInfo> serviceList;
+	private ArrayList<String> serviceNameList;
 	
 	public Handler mNSDHandler;
 	
@@ -123,6 +123,6 @@ public class NetworkState {
 	public ArrayList<NsdServiceInfo> getServiceList(){
 		return serviceList;
 	}
-	
+
 	
 }

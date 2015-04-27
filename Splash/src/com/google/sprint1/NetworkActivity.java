@@ -34,7 +34,7 @@ public class NetworkActivity extends Activity {
 	
 	public static final String TAG = "NetworkActivity";
 	
-	ListView serviceListView;
+	private ListView serviceListView;
 	
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {

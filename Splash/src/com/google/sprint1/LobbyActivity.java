@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 /**
  * Activity to handle the screen between network and the gamescreen
@@ -27,6 +29,9 @@ public class LobbyActivity extends Activity {
 
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
+	private ListView playerListView;
+	
+	private ArrayAdapter<String> playerListAdapter;
 	
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +45,13 @@ public class LobbyActivity extends Activity {
 		/* Start game */
 		startGame = new AssetsExtracter();
 		
-		};
+		NetworkState.getState().getMobileConnection().initPlayerAdapter(this);
+		
+		playerListView = (ListView) findViewById(R.id.playerListView);
+		
+		playerListView.setAdapter(NetworkState.getState().getMobileConnection().getPlayerAdapter());
+
+	}
 
 	/** Called when the user clicks the start Game button (starta spel) */
 	public void startGame(View view) {
@@ -62,15 +73,6 @@ public class LobbyActivity extends Activity {
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		
 		super.onPause();
-	}
-
-	/**
-	 * Called when after onStart() when a new instance of LobbyActivity is
-	 * started and when ever the user enters the activity from a paused state
-	 */
-	@Override
-	protected void onResume() {
-		super.onResume();
 	}
 
 
