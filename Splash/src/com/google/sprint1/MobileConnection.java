@@ -336,7 +336,10 @@ public class MobileConnection {
 		int playerId = buffer.getInt();
 		int ballId = buffer.getInt();
 		Log.d(TAG, "Collision with ant " + antId +" by player " + playerId);
-		GameState.getState().ants.get(antId).setIsHit(true, playerId);
+		
+		//Provisorisk felkoll
+		if(antId < 12)
+			GameState.getState().ants.get(antId).setIsHit(true, playerId);
 		GameState.getState().exsisting_paint_balls.get(ballId).disable();
 	}
 	
