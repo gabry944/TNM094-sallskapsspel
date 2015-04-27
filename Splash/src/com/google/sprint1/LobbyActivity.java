@@ -3,7 +3,6 @@ package com.google.sprint1;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.google.sprint1.NetworkService.LocalBinder;
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
 
@@ -40,9 +39,6 @@ public class LobbyActivity extends Activity {
 
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
-	public NetworkService mService;
-	private boolean mBound = false;
-
 	
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +48,7 @@ public class LobbyActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_lobby);
-		
-		// Bind to NetworkService. The service will not destroy
-		// until there is no activity bound to it
-		Intent intent = new Intent(this, NetworkService.class);
-		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
-		
+				
 		/* Start game */
 		startGame = new AssetsExtracter();
 		
@@ -94,19 +85,6 @@ public class LobbyActivity extends Activity {
 		super.onResume();
 	}
 
-	/**
-	 * Called when user exits the Activity or pausing and then destroy the app
-	 * by brute force
-	 */
-	protected void onDestroy() {
-		
-		//Unbinds from network service.
-		if(mBound){
-			unbindService(mServiceConnection);
-			mBound = false;
-		}
-		super.onDestroy();
-	}
 
 	/**
 	 * This task extracts all the assets to an external or internal location to
@@ -146,22 +124,4 @@ public class LobbyActivity extends Activity {
 
 	}
 	
-	/** Defines callbacks for service binding, passed to bindService() */
-	private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get
-			// LocalService instance
-			LocalBinder binder = (LocalBinder) service;
-			mService = binder.getService();
-			mBound = true;
-
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName arg0) {
-			mBound = false;
-		}
-	};
 }
