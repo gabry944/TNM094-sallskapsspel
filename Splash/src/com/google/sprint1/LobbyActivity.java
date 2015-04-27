@@ -10,22 +10,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.AlertDialog;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.ServiceConnection;
-import android.net.nsd.NsdServiceInfo;
-import android.os.Handler;
-import android.os.Message;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 /**
  * Activity to handle the screen between network and the gamescreen

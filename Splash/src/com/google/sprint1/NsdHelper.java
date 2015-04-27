@@ -25,8 +25,8 @@ public class NsdHelper {
 	public String mServiceName = "";
 
 	public boolean serviceResolved = false;
-	public boolean serviceRegistered;
-	NsdServiceInfo mService;
+	private boolean serviceRegistered;
+	private NsdServiceInfo mService;
 	
 	/**Constructor */
 	public NsdHelper(Context context, Handler handler) {
