@@ -230,4 +230,5 @@ public class NsdHelper {
 	public boolean getRegistrationState(){
 		return serviceRegistered;
 	}
+	
 }

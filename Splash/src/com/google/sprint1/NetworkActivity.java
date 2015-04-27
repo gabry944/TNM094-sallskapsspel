@@ -50,7 +50,7 @@ public class NetworkActivity extends Activity {
 		// TODO  E/AndroidRuntime(17132): java.lang.RuntimeException: Unable to start activity ComponentInfo{com.google.sprint1/com.google.sprint1.NetworkActivity}: java.lang.ClassCastException: android.widget.TextView cannot be cast to android.widget.ListView
 		serviceListView = (ListView) findViewById(R.id.serviceListView);
 
-		serviceListView.setAdapter(NetworkState.getState().listAdapter);
+		serviceListView.setAdapter(NetworkState.getState().getAdapter());
 		serviceListView
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -67,7 +67,7 @@ public class NetworkActivity extends Activity {
 
 						builder.setMessage(
 								"Connect to "
-										+ NetworkState.getState().listAdapter.getItem(pos) + "?")
+										+ NetworkState.getState().getAdapter().getItem(pos) + "?")
 								.setTitle("Connect")
 								.setPositiveButton(R.string.BTN_OK,
 										new DialogInterface.OnClickListener() {
@@ -80,19 +80,19 @@ public class NetworkActivity extends Activity {
 												//a loop will compare all names in the listAdapter with the names from 
 												//the serviceList. If they are the same, the correct service to connect
 												//to is found
-												for(int i = 0; i < NetworkState.getState().serviceList.size(); i++){
-													if(NetworkState.getState().listAdapter.getItem(pos).equals(NetworkState.getState().serviceList.get(i).getServiceName())){
-														service =NetworkState.getState().serviceList.get(i);
+												for(int i = 0; i < NetworkState.getState().getServiceList().size(); i++){
+													if(NetworkState.getState().getAdapter().getItem(pos).equals(NetworkState.getState().getServiceList().get(i).getServiceName())){
+														service = NetworkState.getState().getServiceList().get(i);
 													}
 												}
-												service = NetworkState.getState().mNsdHelper
+												service = NetworkState.getState().getNsdHelper()
 														.resolveService(service);
 												if (service != null) {
 													Log.d(TAG,
 															"Connecting to: "
 																	+ service
 																			.getServiceName());
-													NetworkState.getState().mConnection.connectToPeer(
+													NetworkState.getState().getMobileConnection().connectToPeer(
 															service.getHost());
 													//TODO : Go to Lobby
 												} else {
@@ -140,8 +140,8 @@ public class NetworkActivity extends Activity {
 		
 		//If user is not already host and the registration state is false,
 		//register/host a game
-		if(!isHost && !NetworkState.getState().mNsdHelper.getRegistrationState())
-			NetworkState.getState().mNsdHelper.registerService(MobileConnection.SERVER_PORT);
+		if(!isHost && !NetworkState.getState().getNsdHelper().getRegistrationState())
+			NetworkState.getState().getNsdHelper().registerService(MobileConnection.SERVER_PORT);
 		
 			isHost = true;
 		//TODO : Go to Lobby, stay registered!
@@ -154,13 +154,13 @@ public class NetworkActivity extends Activity {
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		
 		//Stops service discovery if mNsdHelper is still initialized.
-		if (NetworkState.getState().mNsdHelper != null) {
-			NetworkState.getState().mNsdHelper.stopDiscovery();
+		if (NetworkState.getState().getNsdHelper() != null) {
+			NetworkState.getState().getNsdHelper().stopDiscovery();
 		}
 		
 		//Unregister if the registration state is true.
-		if(NetworkState.getState().mNsdHelper.serviceRegistered){
-			NetworkState.getState().mNsdHelper.unregisterService();
+		if(NetworkState.getState().getNsdHelper().getRegistrationState()){
+			NetworkState.getState().getNsdHelper().unregisterService();
         }
 		
 		NetworkState.getState().mNsdHelper = null;
@@ -178,17 +178,17 @@ public class NetworkActivity extends Activity {
 		
 			//If mNsdHelper is null(which happens if activity return after call to 
 			//onPause() it will create a new NsdHelper and initialize it.
-			if(NetworkState.getState().mNsdHelper == null)
+			if(NetworkState.getState().getNsdHelper() == null)
 				NetworkState.getState().initNsdHelper();
 			
 			//Starts service discovery when when starting activity for the first
 			//or when returing from a paused state.
-			if (NetworkState.getState().mNsdHelper != null) 
-				NetworkState.getState().mNsdHelper.discoverServices(); 
+			if (NetworkState.getState().getNsdHelper() != null) 
+				NetworkState.getState().getNsdHelper().discoverServices(); 
 			
 			//Checks if the user is a host and register a service accordingly.
 			if(isHost)
-				NetworkState.getState().mNsdHelper.registerService(MobileConnection.SERVER_PORT);
+				NetworkState.getState().getNsdHelper().registerService(MobileConnection.SERVER_PORT);
 
 
 	}
@@ -201,15 +201,15 @@ public class NetworkActivity extends Activity {
 
 		// Check if mNsdHelper is not null(will throw NullPointerException
 		// otherwise) and stops service discovery.
-		if (NetworkState.getState().mNsdHelper != null) {
-			NetworkState.getState().mNsdHelper.stopDiscovery();
+		if (NetworkState.getState().getNsdHelper() != null) {
+			NetworkState.getState().getNsdHelper().stopDiscovery();
         }
 		
 		//Checks state of mNsdHelper, isHost and registration state to prevent 
 		//crash.
-		if(NetworkState.getState().mNsdHelper != null && isHost 
-				&& NetworkState.getState().mNsdHelper.getRegistrationState()){
-			NetworkState.getState().mNsdHelper.unregisterService();
+		if(NetworkState.getState().getNsdHelper() != null && isHost 
+				&& NetworkState.getState().getNsdHelper().getRegistrationState()){
+			NetworkState.getState().getNsdHelper().unregisterService();
 		}
 		
 		super.onDestroy();

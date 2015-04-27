@@ -107,4 +107,22 @@ public class NetworkState {
 		mNsdHelper = new NsdHelper(context, mNSDHandler);
 		mNsdHelper.initializeNsd();
 	}
+	
+	public MobileConnection getMobileConnection(){
+		return mConnection;
+	}
+	
+	public NsdHelper getNsdHelper(){
+		return mNsdHelper;
+	}
+	
+	public ArrayAdapter<String> getAdapter(){
+		return listAdapter;
+	}
+	
+	public ArrayList<NsdServiceInfo> getServiceList(){
+		return serviceList;
+	}
+	
+	
 }
