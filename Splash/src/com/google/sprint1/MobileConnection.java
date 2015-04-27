@@ -351,7 +351,7 @@ public class MobileConnection {
 		int playerId = buffer.getInt();
 
 		Ant ant = GameState.getState().ants.get(antId);
-		GameState.getState().players.get(playerId).removeMarker();
+		//GameState.getState().players.get(playerId).removeMarker();
 		GameState.getState().players.get(playerId).increaseScore(ant.getType());
 		Log.d(TAG, "Ant  " + antId +" reached player " + playerId);
 		ant.setActive(false);

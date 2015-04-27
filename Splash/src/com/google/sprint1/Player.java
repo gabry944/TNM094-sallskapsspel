@@ -13,12 +13,12 @@ public class Player extends Drawable {
 	public IGeometry towerGeometry;
 	public IGeometry slingshotGeometry;
 	public IGeometry ballGeometry;
-	public IGeometry marker;
+
 	//private Vector3d startPosition;
 
 	public boolean superPower; 
 	
-	public Player(IGeometry anthillGeo,IGeometry slingshotGeo,IGeometry ballGeo, Vector3d startPosPlayer, IGeometry Marker)
+	public Player(IGeometry anthillGeo,IGeometry slingshotGeo,IGeometry ballGeo, Vector3d startPosPlayer)
 	{
 		score = 0;
 		superPower = false;
@@ -26,7 +26,7 @@ public class Player extends Drawable {
 		slingshotGeometry = slingshotGeo;
 		ballGeometry = ballGeo;
 		startPosition = startPosPlayer;
-		marker = Marker;
+		
 
 		setGeometryProperties(anthillGeo, 8f, new Vector3d(startPosition.getX(), startPosition.getY(), 0f), new Rotation(0f, 0f, 0f));
 
@@ -39,8 +39,7 @@ public class Player extends Drawable {
 		
 		setGeometryProperties(ballGeometry, 4f, startPosition, new Rotation(0f, 0f, 0f));
 		//setGeometryProperties(touchSphere, 6f, startPosition, new Rotation(0f, 0f, 0f));
-		setGeometryProperties(marker, 0.2f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
-		marker.setVisible(false);
+
 		
 	}
 	
@@ -62,18 +61,4 @@ public class Player extends Drawable {
 		return startPosition;
 	}
 	
-	//displays a marker over the ant when being hit
-	public void setMarker(Vector3d pos)
-	{
-		marker.setTranslation(new Vector3d(pos.getX(), pos.getY(), 50f));
-		marker.setVisible(true);
-		//marker.startAnimation("Take 001", true);
-	}
-	
-	//remove marker over ant when it reached the tower
-	public void removeMarker()
-	{
-		marker.setVisible(false);
-		//marker.startAnimation("Take 001", false);
-	}
 }

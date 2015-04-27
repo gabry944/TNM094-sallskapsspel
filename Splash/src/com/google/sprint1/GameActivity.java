@@ -205,10 +205,10 @@ public class GameActivity extends ARViewActivity // implements
 			
 			//creates the tower				
 
-			bluePlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 220f),  Load3Dmodel("ant/markers/boxBlue.mfbx"));
-			greenPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 220f), Load3Dmodel("ant/markers/boxGreen.mfbx"));	
-			redPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 220f), Load3Dmodel("ant/markers/boxRed.mfbx"));
-			yellowPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 220f), Load3Dmodel("ant/markers/boxYellow.mfbx"));
+			bluePlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 220f));
+			greenPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 220f));	
+			redPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 220f));
+			yellowPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 220f));
 			
 			//! TODO make sure that init is called!
 			GameState.getState().addPlayer(bluePlayer);	
@@ -245,19 +245,19 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < NUM_OF_ANTS[0]; i++)
 			{
 				// create ant geometry
-				ant = new Ant(Load3Dmodel("ant/smallAnt/ant.mfbx"), Ant.SMALL_ANT);
+				ant = new Ant(Load3Dmodel("ant/smallAnt/ant.mfbx"), Ant.SMALL_ANT, Load3Dmodel("ant/markers/boxBlue.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 				GameState.getState().ants.add(ant);
 			}
 			//Big ants
 			for(int i = 0; i< NUM_OF_ANTS[1]; i++)
 			{
-				ant = new Ant(Load3Dmodel("ant/bigAnt/ant.mfbx"), Ant.BIG_ANT);
+				ant = new Ant(Load3Dmodel("ant/bigAnt/ant.mfbx"), Ant.BIG_ANT, Load3Dmodel("ant/markers/boxBlue.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 				GameState.getState().ants.add(ant);	
 			}
 			//Giant ants
 			for(int i = 0; i < NUM_OF_ANTS[2]; i++)
 			{
-				ant = new Ant(Load3Dmodel("ant/giantAnt/ant.mfbx"), Ant.GIANT_ANT);
+				ant = new Ant(Load3Dmodel("ant/giantAnt/ant.mfbx"), Ant.GIANT_ANT, Load3Dmodel("ant/markers/boxBlue.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 				GameState.getState().ants.add(ant);	
 			}
 			

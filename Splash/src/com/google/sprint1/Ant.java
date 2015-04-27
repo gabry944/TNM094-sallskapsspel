@@ -22,6 +22,10 @@ public class Ant extends Drawable
 	private int id;
 	private int type;
 	private int ownedByPlayer;
+	private IGeometry markerBlue;
+	private IGeometry markerGreen;
+	private IGeometry markerRed;
+	private IGeometry markerYellow;
 	
 	private final MobileConnection connection;
 	
@@ -32,12 +36,27 @@ public class Ant extends Drawable
 	int k = 0;
 	
 	/** constructor ant */
-	public Ant(IGeometry geo, int antType) {
+	public Ant(IGeometry geo, int antType, IGeometry markBlue, IGeometry markGreen, IGeometry markRed, IGeometry markYellow) {
 		super();
 		id = numberOfAnts;
 		numberOfAnts++;
 		
 		connection = GameState.getState().connection;
+		
+		markerBlue = markBlue;
+		markerGreen = markGreen;
+		markerRed = markRed;
+		markerYellow = markYellow;
+		
+		setGeometryProperties(markerBlue, 0.3f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+		setGeometryProperties(markerGreen, 0.3f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+		setGeometryProperties(markerRed, 0.3f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+		setGeometryProperties(markerYellow, 0.3f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f));
+		
+		markerBlue.setVisible(false);
+		markerGreen.setVisible(false);
+		markerRed.setVisible(false);
+		markerYellow.setVisible(false);
 		
 		ant = geo;
 		type = antType;		//1 = small ant, 2 = big ant, 3 = giant ant
@@ -176,8 +195,8 @@ public class Ant extends Drawable
 	public void movementToTower(Vector3d pos)
 	{
 		//pos.setZ(0f);
-		
-		GameState.getState().players.get(ownedByPlayer).setMarker(ant.getTranslation());
+
+		setMarker(getOwnedByPlayer());
 		diffVec = ant.getTranslation().subtract(pos);
 		diffVec.setZ(0f);
 		
@@ -195,7 +214,7 @@ public class Ant extends Drawable
 		if(diffVec.getX() < 2f && diffVec.getX() > -2f  && diffVec.getY() < 2f && diffVec.getY() > -2f)
 		{
 			int points = getType();
-			GameState.getState().players.get(ownedByPlayer).removeMarker();
+			
 			GameState.getState().players.get(ownedByPlayer).increaseScore(points);
 			connection.sendData(NetDataHandler.antReachedTower(getId(), ownedByPlayer));
 			Log.d(TAG, "Ant  " + getId() +" reached player " + ownedByPlayer);
@@ -205,15 +224,40 @@ public class Ant extends Drawable
 		}
 	}
 	
+	//displays a marker over the ant when being hit
+	public void setMarker(int i)
+	{
+		
+		Vector3d pos = ant.getTranslation();
+		
+		if(i == 0)
+		{
+			markerBlue.setTranslation(new Vector3d(pos.getX(), pos.getY(), 50f));
+			markerBlue.setVisible(true);
+		}
+		if(i == 1)
+		{
+			markerGreen.setTranslation(new Vector3d(pos.getX(), pos.getY(), 50f));
+			markerGreen.setVisible(true);
+		}
+		if(i == 2)
+		{
+			markerRed.setTranslation(new Vector3d(pos.getX(), pos.getY(), 50f));
+			markerRed.setVisible(true);
+		}
+		if(i == 3)
+		{
+			markerYellow.setTranslation(new Vector3d(pos.getX(), pos.getY(), 50f));
+			markerYellow.setVisible(true);
+		}
+		
+	}
+	
 	
 	//function to set position for ant
 	public void setPosition(Vector3d pos)
 	{
 		ant.setTranslation(pos);
-		if(isHit)
-		{
-			GameState.getState().players.get(ownedByPlayer).setMarker(ant.getTranslation());
-		}
 	}
 	
 	//function to get ants position
