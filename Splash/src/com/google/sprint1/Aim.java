@@ -56,16 +56,11 @@ public class Aim extends Drawable
 	/** Function to draw the path of the ball (aim) */
 	public void drawBallPath(Vector3d startVelocity, Vector3d startPosition) 
 	{ 
-		//Vector3d gravity = new Vector3d(0f, 0f, -9.82f);
-		//Vector3d position = new Vector3d(0f, 0f, 0f);
-		//float zVelocity = startVelocity.getZ();
 		zVelocity = startVelocity.getZ();
-		//float timeToLanding = (float) (zVelocity / (2 * 9.82f) + Math.sqrt(Math.pow( zVelocity / (2 * 9.82), 2) + startPosition.getZ() / 9.82));
 		timeToLanding = (float) (zVelocity / (2 * 9.82f) + Math.sqrt(Math.pow( zVelocity / (2 * 9.82), 2) + startPosition.getZ() / 9.82));
-		Log.d(TAG, "time to landing : " + timeToLanding);
-		//float deltaTime = timeToLanding/(10);
+		//Log.d(TAG, "time to landing : " + timeToLanding);
 		deltaTime = timeToLanding/(15);
-		Log.d(TAG, "delta time : " + deltaTime);
+		//Log.d(TAG, "delta time : " + deltaTime);
 		currentTime = 0;
 		
 		if (powerUp)
