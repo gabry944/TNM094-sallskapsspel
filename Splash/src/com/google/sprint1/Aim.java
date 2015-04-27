@@ -2,6 +2,8 @@ package com.google.sprint1;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
@@ -14,6 +16,14 @@ public class Aim extends Drawable
 	private boolean powerUp;
 	private ArrayList<IGeometry> ballPath; // lista med bollar som visar parabeln för den flygande färgbollen
 	private ArrayList<IGeometry> ballPathShadow; // skuggor till parabelsiktet
+	
+	//varibles for draw aim path
+	Vector3d gravity;
+	Vector3d position;
+	float zVelocity;
+	float timeToLanding;
+	float deltaTime;
+	float currentTime;
 	
 	/** constructor Aim */
 	public Aim(IGeometry geo, ArrayList<IGeometry> ball, ArrayList<IGeometry> ballShadow) {
@@ -33,19 +43,31 @@ public class Aim extends Drawable
 			ballPath.get(i).setVisible(false);
 			ballShadow.get(i).setVisible(false);
 		}
+		
+		
+		gravity = new Vector3d(0f, 0f, -9.82f);
+		position = new Vector3d(0f, 0f, 0f);
+		zVelocity = 0;
+		timeToLanding = 0;
+		deltaTime = 0;
+		currentTime = 0;
 	}
 	
 	/** Function to draw the path of the ball (aim) */
 	public void drawBallPath(Vector3d startVelocity, Vector3d startPosition) 
 	{ 
-		//Vector3d startPosition = player.getPosition();
-		Vector3d gravity = new Vector3d(0f, 0f, -9.82f);
-		Vector3d position = new Vector3d(0f, 0f, 0f);
-		float zVelocity = startVelocity.getZ();
-		float timeToLanding = (float) (zVelocity / (2 * 9.82f) + Math.sqrt(Math.pow( zVelocity / (2 * 9.82), 2) + startPosition.getZ() / 9.82));
-		// Log.d(TAG, "time to landing : " + timeToLanding);
-		float deltaTime = timeToLanding/(10*5);
-
+		//Vector3d gravity = new Vector3d(0f, 0f, -9.82f);
+		//Vector3d position = new Vector3d(0f, 0f, 0f);
+		//float zVelocity = startVelocity.getZ();
+		zVelocity = startVelocity.getZ();
+		//float timeToLanding = (float) (zVelocity / (2 * 9.82f) + Math.sqrt(Math.pow( zVelocity / (2 * 9.82), 2) + startPosition.getZ() / 9.82));
+		timeToLanding = (float) (zVelocity / (2 * 9.82f) + Math.sqrt(Math.pow( zVelocity / (2 * 9.82), 2) + startPosition.getZ() / 9.82));
+		Log.d(TAG, "time to landing : " + timeToLanding);
+		//float deltaTime = timeToLanding/(10);
+		deltaTime = timeToLanding/(15);
+		Log.d(TAG, "delta time : " + deltaTime);
+		currentTime = 0;
+		
 		if (powerUp)
 		{
 			position.setX(startPosition.getX()+startVelocity.getX()*timeToLanding+gravity.getX()*timeToLanding*timeToLanding);		
@@ -60,22 +82,21 @@ public class Aim extends Drawable
 			for (int i = 0; i < 10; i++) 
 			{
 				// Calculate the objects position after i timestep
-				deltaTime += deltaTime;
-				position.setX(startPosition.getX()+startVelocity.getX()*deltaTime+gravity.getX()*deltaTime*deltaTime);		
-				position.setY(startPosition.getY()+startVelocity.getY()*deltaTime+gravity.getY()*deltaTime*deltaTime);
-				position.setZ(startPosition.getZ()+startVelocity.getZ()*deltaTime+gravity.getZ()*deltaTime*deltaTime);
+				currentTime += deltaTime;
+				position.setX(startPosition.getX()+startVelocity.getX()*currentTime+gravity.getX()*currentTime*currentTime);		
+				position.setY(startPosition.getY()+startVelocity.getY()*currentTime+gravity.getY()*currentTime*currentTime);
+				position.setZ(startPosition.getZ()+startVelocity.getZ()*currentTime+gravity.getZ()*currentTime*currentTime);
 				
 				//check for collision with ground
 				if (position.getZ()<0f)
 				{
 				ballPath.get(i).setVisible(false);
 				ballPathShadow.get(i).setVisible(false);
+				//Log.d(TAG, "boll som försvinner: " + i + " currentTime: " + currentTime + " Z-led: " + position.getZ());
 				}
 				else
 				{
-					//ballPath.get(i).setVisible(true);
-					//ballPathShadow.get(i).setVisible(true);
-					
+					//Log.d(TAG, "boll som syns: " + i + " currentTime: " + currentTime);
 					ballPath.get(i).setTranslation(position);
 					ballPathShadow.get(i).setTranslation(new Vector3d(position.getX() , position.getY(),0f));	
 				}

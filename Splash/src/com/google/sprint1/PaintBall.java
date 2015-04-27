@@ -157,7 +157,7 @@ public class PaintBall extends Drawable
 		float deltaTime = currentTime - startTime;
 		//Log.d(TAG, "CurrentTime: " + currentTime + "  DeltaTime : " + deltaTime);
 		deltaTime = deltaTime/1000; // convert from ms to s
-		deltaTime = deltaTime*4; // speed up time
+		deltaTime = deltaTime*8; // speed up time
 		//Log.d(TAG, "deltaTime : " + deltaTime);
 		Vector3d gravity = new Vector3d(0f, 0f, -9.82f);
 		Vector3d position = new Vector3d(0f, 0f, 0f);
