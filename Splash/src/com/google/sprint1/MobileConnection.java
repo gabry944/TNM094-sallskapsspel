@@ -14,8 +14,10 @@ import java.util.List;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
 
+import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 public class MobileConnection {
 
@@ -23,17 +25,22 @@ public class MobileConnection {
 	private List<InetAddress> mIPs;
 	private List<Peer> mPeers;
 	
+	private ArrayAdapter<String> playerAdapter;
+	private ArrayList<String> playerList;
+	
 	private static final String TAG = "MobileConnection";
 	public static final int SERVER_PORT = 8196;
     
     private boolean handshakeActive = false;
+    private boolean pAisInit = false;
     
     private Thread serverThread;
     
 	public MobileConnection() {
 		mIPs = new ArrayList<InetAddress>();
 		mPeers = new ArrayList<Peer>();
-
+		playerList = new ArrayList<String>();
+		
 		//Start a ServerThread
 		serverThread = new Thread(new ServerThread());
 		serverThread.start();
@@ -99,6 +106,13 @@ public class MobileConnection {
 		}
 	}
 	
+	/**
+	 * Return all IP addresses 
+	 */
+	public List<InetAddress> getIPs(){
+		return mIPs;
+	}
+	
 
 	/** 
 	 * Sends a byte array to the peer using the peers outputstream. 
@@ -144,7 +158,10 @@ public class MobileConnection {
 				//Add this peer to the list
 				mPeers.add(peer);
 				mIPs.add(peer.getAdress());
-
+				playerList.add(peer.getAdress().toString());
+				if(pAisInit)
+					playerAdapter.notifyDataSetChanged();
+				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -412,5 +429,15 @@ public class MobileConnection {
 		}
 		
 		Log.d(TAG, "Assigned ID: " + GameState.getState().myPlayerID);
+	}
+
+	public void initPlayerAdapter(Context context) {
+		playerAdapter = new ArrayAdapter<String>(context,
+				R.layout.custom_list_for_services,
+				playerList);
+		pAisInit = true;
+	}
+	public ArrayAdapter<String> getPlayerAdapter(){
+		return playerAdapter;
 	}
 }
