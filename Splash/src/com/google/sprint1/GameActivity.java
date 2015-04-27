@@ -47,7 +47,7 @@ public class GameActivity extends ARViewActivity // implements
 	public Player redPlayer;
 	public Player yellowPlayer;
 
-
+	private int currentBall = 0;
 	GameState gameState;
 
 	Aim aim;
@@ -357,12 +357,13 @@ public class GameActivity extends ARViewActivity // implements
     private PaintBall getAvailableBall(int id)
     {
     	PaintBall ball;
-    	for(int i=id*5; i < (id+1)*5;i++)
-    	{
-    		ball = GameState.getState().paintBalls.get(i);
-    		if (!(ball.getGeometry().isVisible()))
-    			return ball;
-    	}
+    	
+		ball = GameState.getState().paintBalls.get(currentBall + id*5);
+		currentBall = (currentBall++)%5;
+		Log.d("Ball", "CurrentBall "+ currentBall);
+		if (!(ball.getGeometry().isVisible()))
+			return ball;
+	
     	
     	return null;
     }
