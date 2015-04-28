@@ -21,8 +21,10 @@ import android.widget.TextView;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
+import com.metaio.sdk.jni.ELIGHT_TYPE;
 import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
+import com.metaio.sdk.jni.ILight;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
@@ -52,6 +54,7 @@ public class GameActivity extends ARViewActivity // implements
 
 	Aim aim;
 
+	private ILight mSpotLight;
 
 	private IGeometry ball;
 	private IGeometry ballShadow;
@@ -119,7 +122,21 @@ public class GameActivity extends ARViewActivity // implements
 		
 		//Gesture handler
 		mGestureMask = GestureHandler.GESTURE_DRAG;
-		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);		
+		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);	
+		
+		// create light
+
+
+		mSpotLight = metaioSDK.createLight();
+		mSpotLight.setAmbientColor(new Vector3d(0.17f, 0, 0)); // slightly red ambient
+		mSpotLight.setType(ELIGHT_TYPE.ELIGHT_TYPE_SPOT);
+		mSpotLight.setRadiusDegrees(10);
+		mSpotLight.setDiffuseColor(new Vector3d(1, 1, 0)); // yellow
+		mSpotLight.setCoordinateSystemID(1);
+//		mSpotLightGeo = createLightGeometry();
+//		mSpotLightGeo.setCoordinateSystemID(mSpotLight.getCoordinateSystemID());
+//		mSpotLightGeo.setDynamicLightingEnabled(false);
+
 
 	}
 
@@ -299,6 +316,8 @@ public class GameActivity extends ARViewActivity // implements
 
 		if(GameState.getState().powerUps.get(0).isHit())
 			aim.setPowerUp(true);
+		
+
 		//spawn ant at random and move ants
 		if(GameState.getState().myPlayerID == 0)
 		{
@@ -354,6 +373,7 @@ public class GameActivity extends ARViewActivity // implements
 		// Only implemented because its required by the parent class
 	}
 
+	/** Returns if there is an available ball */
     private PaintBall getAvailableBall(int id)
     {
     	PaintBall ball;
@@ -375,7 +395,7 @@ public class GameActivity extends ARViewActivity // implements
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 	}
 	
-	//Gesture handler
+	/** Function to handle all the gestures on the screen */
 	@Override
 	public boolean onTouch(View v, MotionEvent event)
 	{
@@ -463,6 +483,7 @@ public class GameActivity extends ARViewActivity // implements
 		});
 	}
 	
+	/** Return number of ants */
 	public static int getNrOfAnts()
 	{
 		return GameState.getState().ants.size();
