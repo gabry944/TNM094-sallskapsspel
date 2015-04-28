@@ -3,7 +3,6 @@ package com.google.sprint1;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.google.sprint1.NetworkService.LocalBinder;
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
 
@@ -11,20 +10,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.AlertDialog;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.ServiceConnection;
-import android.net.nsd.NsdServiceInfo;
-import android.os.Handler;
-import android.os.Message;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -40,9 +29,9 @@ public class LobbyActivity extends Activity {
 
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
-	public NetworkService mService;
-	private boolean mBound = false;
-
+	private ListView playerListView;
+	
+	private ArrayAdapter<String> playerListAdapter;
 	
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +41,17 @@ public class LobbyActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_lobby);
-		
-		// Bind to NetworkService. The service will not destroy
-		// until there is no activity bound to it
-		Intent intent = new Intent(this, NetworkService.class);
-		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
-		
+				
 		/* Start game */
 		startGame = new AssetsExtracter();
 		
-		};
+		NetworkState.getState().getMobileConnection().initPlayerAdapter(this);
+		
+		playerListView = (ListView) findViewById(R.id.playerListView);
+		
+		playerListView.setAdapter(NetworkState.getState().getMobileConnection().getPlayerAdapter());
+
+	}
 
 	/** Called when the user clicks the start Game button (starta spel) */
 	public void startGame(View view) {
@@ -85,28 +75,6 @@ public class LobbyActivity extends Activity {
 		super.onPause();
 	}
 
-	/**
-	 * Called when after onStart() when a new instance of LobbyActivity is
-	 * started and when ever the user enters the activity from a paused state
-	 */
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
-	/**
-	 * Called when user exits the Activity or pausing and then destroy the app
-	 * by brute force
-	 */
-	protected void onDestroy() {
-		
-		//Unbinds from network service.
-		if(mBound){
-			unbindService(mServiceConnection);
-			mBound = false;
-		}
-		super.onDestroy();
-	}
 
 	/**
 	 * This task extracts all the assets to an external or internal location to
@@ -146,22 +114,4 @@ public class LobbyActivity extends Activity {
 
 	}
 	
-	/** Defines callbacks for service binding, passed to bindService() */
-	private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get
-			// LocalService instance
-			LocalBinder binder = (LocalBinder) service;
-			mService = binder.getService();
-			mBound = true;
-
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName arg0) {
-			mBound = false;
-		}
-	};
 }

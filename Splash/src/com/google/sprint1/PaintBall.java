@@ -113,7 +113,7 @@ public class PaintBall extends Drawable
 		{
 			if (checkCollision(GameState.getState().powerUps.get(i).getGeometry()) && isActive == true) {
 				//player.superPower = true;
-				GameState.getState().powerUps.get(i).setHit();
+				GameState.getState().powerUps.get(i).setHit(true);
 			}
 		}
 	}

@@ -1,31 +1,20 @@
 package com.google.sprint1;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import com.google.sprint1.NetworkService.LocalBinder;
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.AlertDialog;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.ServiceConnection;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Handler;
-import android.os.Message;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 /**
@@ -39,22 +28,13 @@ import android.widget.ListView;
 public class NetworkActivity extends Activity {
 
 	Handler mNSDHandler;
-	
-	// Variables for Network Service handling
-	public NetworkService mService;
-	public NsdHelper mNsdHelper;
-	private boolean mBound = false;
-	
+		
 	//Variable that indicates if user is host
 	private boolean isHost = false;
-
-	public static final String TAG = "NetworkActivity";
-
-	private ArrayAdapter<String> listAdapter;
-	private ArrayList<NsdServiceInfo> serviceList;
-	private ArrayList<String> serviceNameList;
 	
-	ListView serviceListView;
+	public static final String TAG = "NetworkActivity";
+	
+	private ListView serviceListView;
 	
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,68 +45,12 @@ public class NetworkActivity extends Activity {
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_network);
 		
-		// Bind to NetworkService. The service will not destroy
-		// until there is no activity bound to it
-		Intent intent = new Intent(this, NetworkService.class);
-		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
-		
+		NetworkState.getState().init(this);
+
 		// TODO  E/AndroidRuntime(17132): java.lang.RuntimeException: Unable to start activity ComponentInfo{com.google.sprint1/com.google.sprint1.NetworkActivity}: java.lang.ClassCastException: android.widget.TextView cannot be cast to android.widget.ListView
-		serviceListView = (ListView) findViewById(R.id.serviceListView);		
-		
-		//ArrayList to store all services
-		serviceList = new ArrayList<NsdServiceInfo>();
-		//ArrayList to store all names of services
-		serviceNameList = new ArrayList<String>();
+		serviceListView = (ListView) findViewById(R.id.serviceListView);
 
-		//The listAdapter only holds the name of the services and not the total
-		//NsdServiceInfo items.
-		listAdapter = new ArrayAdapter<String>(this,
-				R.layout.custom_list_for_services,
-				serviceNameList);
-
-		mNSDHandler = new Handler() {
-			@Override
-			// Called whenever a message is sent to the handler.
-			// Currently assumes that the message contains a NsdServiceInfo
-			// object.
-			public void handleMessage(Message msg) {
-				NsdServiceInfo service;
-				// If message is of type 1, meaning "delete list".
-				// TODO: Should probably be an enum
-				if (msg.what == 1) {
-					listAdapter.clear();
-				}
-				// If key is "found", add NsdServiceInfo to serviceList and service name to serviceNameList.
-				else if ((service = (NsdServiceInfo) msg.getData().get("found")) != null) {
-					
-					serviceList.add(service);
-					serviceNameList.add(service.getServiceName());
-			
-				}
-				
-				// If key is "lost", remove from serviceList and serviceNameList
-				else if ((service = (NsdServiceInfo) msg.getData().get("lost")) != null) {
-					
-					for(int i = 0; i < serviceList.size(); i++){
-						if(serviceList.get(i).getServiceName().equals(service.getServiceName()))
-							serviceList.remove(i);
-					}
-					for(int i = 0; i < serviceNameList.size(); i++){
-						if(serviceNameList.get(i).equals(service.getServiceName()))
-							serviceNameList.remove(i);
-					}
-					
-				}
-				
-				// Notify adapter that the list is updated.
-				listAdapter.notifyDataSetChanged();
-
-			}
-		};
-
-		 
-		
-		serviceListView.setAdapter(listAdapter);
+		serviceListView.setAdapter(NetworkState.getState().getAdapter());
 		serviceListView
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -143,7 +67,7 @@ public class NetworkActivity extends Activity {
 
 						builder.setMessage(
 								"Connect to "
-										+ listAdapter.getItem(pos) + "?")
+										+ NetworkState.getState().getAdapter().getItem(pos) + "?")
 								.setTitle("Connect")
 								.setPositiveButton(R.string.BTN_OK,
 										new DialogInterface.OnClickListener() {
@@ -156,19 +80,19 @@ public class NetworkActivity extends Activity {
 												//a loop will compare all names in the listAdapter with the names from 
 												//the serviceList. If they are the same, the correct service to connect
 												//to is found
-												for(int i = 0; i < serviceList.size(); i++){
-													if(listAdapter.getItem(pos).equals(serviceList.get(i).getServiceName())){
-														service = serviceList.get(i);
+												for(int i = 0; i < NetworkState.getState().getServiceList().size(); i++){
+													if(NetworkState.getState().getAdapter().getItem(pos).equals(NetworkState.getState().getServiceList().get(i).getServiceName())){
+														service = NetworkState.getState().getServiceList().get(i);
 													}
 												}
-												service = mNsdHelper
+												service = NetworkState.getState().getNsdHelper()
 														.resolveService(service);
 												if (service != null) {
 													Log.d(TAG,
 															"Connecting to: "
 																	+ service
 																			.getServiceName());
-													mService.mConnection.connectToPeer(
+													NetworkState.getState().getMobileConnection().connectToPeer(
 															service.getHost());
 													//TODO : Go to Lobby
 												} else {
@@ -195,9 +119,6 @@ public class NetworkActivity extends Activity {
 
 				});
 		
-		mNsdHelper = new NsdHelper(this, mNSDHandler);
-		mNsdHelper.initializeNsd();
-
 	}
 
 	/** Called when the user clicks the start Game button (starta spel) */
@@ -219,31 +140,30 @@ public class NetworkActivity extends Activity {
 		
 		//If user is not already host and the registration state is false,
 		//register/host a game
-		if(!isHost && !mNsdHelper.getRegistrationState())
-			mNsdHelper.registerService(MobileConnection.SERVER_PORT);
+		if(!isHost && !NetworkState.getState().getNsdHelper().getRegistrationState())
+			NetworkState.getState().getNsdHelper().registerService(MobileConnection.SERVER_PORT);
 		
-		//if(mNsdHelper.getRegistrationState())
 			isHost = true;
 		//TODO : Go to Lobby, stay registered!
 	}
 
 	/** Called when user minimize the window or clicks home button */
 	@Override
-	protected void onPause() {
+	protected void onPause() {	
 		
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		
 		//Stops service discovery if mNsdHelper is still initialized.
-		if (mNsdHelper != null) {
-			mNsdHelper.stopDiscovery();
+		if (NetworkState.getState().getNsdHelper() != null) {
+			NetworkState.getState().getNsdHelper().stopDiscovery();
 		}
 		
 		//Unregister if the registration state is true.
-		if(mNsdHelper.getRegistrationState()){
-			mNsdHelper.unregisterService();
+		if(NetworkState.getState().getNsdHelper().getRegistrationState()){
+			NetworkState.getState().getNsdHelper().unregisterService();
         }
 		
-		mNsdHelper = null;
+		NetworkState.getState().mNsdHelper = null;
 
 		super.onPause();
 	}
@@ -256,22 +176,20 @@ public class NetworkActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		
-		//If mNsdHelper is null(which happens if activity return after call to 
-		//onPause() it will create a new NsdHelper and initialize it.
-		if(mNsdHelper == null){
-			mNsdHelper = new NsdHelper(this, mNSDHandler);
-			mNsdHelper.initializeNsd();
-		}
-		
-		//Starts service discovery when when starting activity for the first
-		//or when returing from a paused state.
-		if (mNsdHelper != null) {
-			mNsdHelper.discoverServices();            
-        }
-		
-		//Checks if the user is a host and register a service accordingly.
-		if(isHost)
-			mNsdHelper.registerService(MobileConnection.SERVER_PORT);
+			//If mNsdHelper is null(which happens if activity return after call to 
+			//onPause() it will create a new NsdHelper and initialize it.
+			if(NetworkState.getState().getNsdHelper() == null)
+				NetworkState.getState().initNsdHelper();
+			
+			//Starts service discovery when when starting activity for the first
+			//or when returing from a paused state.
+			if (NetworkState.getState().getNsdHelper() != null) 
+				NetworkState.getState().getNsdHelper().discoverServices(); 
+			
+			//Checks if the user is a host and register a service accordingly.
+			if(isHost)
+				NetworkState.getState().getNsdHelper().registerService(MobileConnection.SERVER_PORT);
+
 
 	}
 
@@ -283,41 +201,18 @@ public class NetworkActivity extends Activity {
 
 		// Check if mNsdHelper is not null(will throw NullPointerException
 		// otherwise) and stops service discovery.
-		if (mNsdHelper != null) {
-			mNsdHelper.stopDiscovery();
+		if (NetworkState.getState().getNsdHelper() != null) {
+			NetworkState.getState().getNsdHelper().stopDiscovery();
         }
 		
 		//Checks state of mNsdHelper, isHost and registration state to prevent 
 		//crash.
-		if(mNsdHelper != null && isHost && mNsdHelper.getRegistrationState()){
-			mNsdHelper.unregisterService();
-		}
-		
-		//Unbinds from network service.
-		if(mBound){
-			unbindService(mServiceConnection);
-			mBound = false;
+		if(NetworkState.getState().getNsdHelper() != null && isHost 
+				&& NetworkState.getState().getNsdHelper().getRegistrationState()){
+			NetworkState.getState().getNsdHelper().unregisterService();
 		}
 		
 		super.onDestroy();
 	}
 
-	/** Defines callbacks for service binding, passed to bindService() */
-	private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get
-			// LocalService instance
-			LocalBinder binder = (LocalBinder) service;
-			mService = binder.getService();
-			mBound = true;
-
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName arg0) {
-			mBound = false;
-		}
-	};
 }

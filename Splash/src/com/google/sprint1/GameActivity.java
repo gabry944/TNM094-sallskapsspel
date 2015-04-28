@@ -18,7 +18,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.google.sprint1.NetworkService.LocalBinder;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
@@ -73,27 +72,11 @@ public class GameActivity extends ARViewActivity // implements
 	protected int point;
 	TextView displayPoints;
 
-	// Variables for Service handling
-	private NetworkService mService;
-	boolean mBound = false;
-
 	// FPS specific variables
 	//private int frameCounter = 0;
 	//private double lastTime;
 
 	public static final String TAG = "GameActivity";
-	
-	@Override
-	protected void onDestroy() {
-		Log.d(TAG, "i onDestroy i GameActivity");
-		// Unbind from service
-		if (mBound) {
-			unbindService(mServiceConnection);
-			mBound = false;
-		}
-		super.onDestroy();
-		
-	}
 
 	@Override
 	protected void onStart() {
@@ -120,13 +103,8 @@ public class GameActivity extends ARViewActivity // implements
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);		
-		
-		// Bind to NetworkService
-		Intent intent = new Intent(this, NetworkService.class);
-		bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
-		
-		
-		GameState.getState().exsisting_paint_balls = new ArrayList<PaintBall>(20);
+				
+		GameState.getState().paintBalls = new ArrayList<PaintBall>(20);
 		GameState.getState().ants = new ArrayList<Ant>(NUM_OF_ANTS[0] + NUM_OF_ANTS[1] + NUM_OF_ANTS[2]);
 		
 
@@ -194,19 +172,21 @@ public class GameActivity extends ARViewActivity // implements
 
 			MetaioDebug.log("Tracking data loaded: " + result);
 
-			GameState.getState().nrOfPlayers = 1 + mService.mConnection.getNumberOfConnections();
-			GameState.getState().connection = mService.mConnection;
+			GameState.getState().nrOfPlayers = 1 + NetworkState.getState().mConnection.getNumberOfConnections();
+			GameState.getState().connection = NetworkState.getState().mConnection;
 			/** Load Object */
 			
-			//create ground plane
-			//groundPlane = Load3Dmodel("groundPlane/grassplane2.mfbx");
-			//geometryProperties(groundPlane, 25f, new Vector3d(0f, 0f, -15f), new Rotation(0f, 0f, 0f));
+			//create ground plane			
+//			groundPlane = Load3Dmodel("groundPlane/grassplane2.mfbx");
+//			geometryProperties(groundPlane, 25f, new Vector3d(0f, 0f, -15f), new Rotation(0f, 0f, 0f));
 			
 			//creates the tower				
-			bluePlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 220f),  Load3Dmodel("ant/markers/boxBlue.mfbx"));
-			greenPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 220f), Load3Dmodel("ant/markers/boxGreen.mfbx"));	
-			redPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 220f), Load3Dmodel("ant/markers/boxRed.mfbx"));
-			yellowPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 220f), Load3Dmodel("ant/markers/boxYellow.mfbx"));
+
+			bluePlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 220f));
+			greenPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 220f));	
+			redPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 220f));
+			yellowPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 220f));
+
 			
 			//! TODO make sure that init is called!
 			GameState.getState().addPlayer(bluePlayer);	
@@ -243,26 +223,26 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < NUM_OF_ANTS[0]; i++)
 			{
 				// create ant geometry
-				ant = new Ant(Load3Dmodel("ant/smallAnt/ant.mfbx"), Ant.SMALL_ANT);
+				ant = new Ant(Load3Dmodel("ant/smallAnt/ant.mfbx"), Ant.SMALL_ANT, Load3Dmodel("ant/markers/boxBlue.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 				GameState.getState().ants.add(ant);
 			}
 			//Big ants
 			for(int i = 0; i< NUM_OF_ANTS[1]; i++)
 			{
-				ant = new Ant(Load3Dmodel("ant/bigAnt/ant.mfbx"), Ant.BIG_ANT);
+				ant = new Ant(Load3Dmodel("ant/bigAnt/ant.mfbx"), Ant.BIG_ANT, Load3Dmodel("ant/markers/boxBlue.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 				GameState.getState().ants.add(ant);	
 			}
 			//Giant ants
 			for(int i = 0; i < NUM_OF_ANTS[2]; i++)
 			{
-				ant = new Ant(Load3Dmodel("ant/giantAnt/ant.mfbx"), Ant.GIANT_ANT);
+				ant = new Ant(Load3Dmodel("ant/giantAnt/ant.mfbx"), Ant.GIANT_ANT, Load3Dmodel("ant/markers/boxBlue.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 				GameState.getState().ants.add(ant);	
 			}
 			
 			// creates a list of paint blue balls that player 0 shoots
 			for (int i = 0; i < 5; i++) {
 				// add paint ball to list of paint balls
-				GameState.getState().exsisting_paint_balls.add(
+				GameState.getState().paintBalls.add(
 						new PaintBall(Load3Dmodel("paintball/paintball/ballBlue.mfbx"),
 									  Load3Dmodel("paintball/splash/splashBlue.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 0));
@@ -270,7 +250,7 @@ public class GameActivity extends ARViewActivity // implements
 			// creates a list of paint blue balls that player 1 shoots
 			for (int i = 0; i < 5; i++) {
 				// add paint ball to list of paint balls
-				GameState.getState().exsisting_paint_balls.add(
+				GameState.getState().paintBalls.add(
 						new PaintBall(Load3Dmodel("paintball/paintball/ballGreen.mfbx"),
 									  Load3Dmodel("paintball/splash/splashGreen.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 1));
@@ -278,7 +258,7 @@ public class GameActivity extends ARViewActivity // implements
 			// creates a list of paint blue balls that player 2 shoots
 			for (int i = 0; i < 5; i++) {
 				// add paint ball to list of paint balls
-				GameState.getState().exsisting_paint_balls.add(
+				GameState.getState().paintBalls.add(
 						new PaintBall(Load3Dmodel("paintball/paintball/ballRed.mfbx"),
 									  Load3Dmodel("paintball/splash/splashRed.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 2));
@@ -286,7 +266,7 @@ public class GameActivity extends ARViewActivity // implements
 			// creates a list of paint blue balls that player 3 shoots
 			for (int i = 0; i < 5; i++) {
 				// add paint ball to list of paint balls
-				GameState.getState().exsisting_paint_balls.add(
+				GameState.getState().paintBalls.add(
 						new PaintBall(Load3Dmodel("paintball/paintball/ballYellow.mfbx"),
 									  Load3Dmodel("paintball/splash/splashYellow.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 3));
@@ -314,7 +294,7 @@ public class GameActivity extends ARViewActivity // implements
 		super.onDrawFrame();
 
 		// If content not loaded yet, do nothing
-		if ( GameState.getState().exsisting_paint_balls.isEmpty())
+		if ( GameState.getState().paintBalls.isEmpty())
 			return;
 
 		if(GameState.getState().powerUps.get(0).isHit())
@@ -331,7 +311,7 @@ public class GameActivity extends ARViewActivity // implements
 				//TODO: Move to Ant class?
 				if(ant.isActive())
 				{
-					mService.mConnection.sendData(NetDataHandler.antPos(ant.getId(),
+					NetworkState.getState().mConnection.sendData(NetDataHandler.antPos(ant.getId(),
 																		ant.getPosition(),
 																		ant.getRotation()));
 
@@ -348,8 +328,8 @@ public class GameActivity extends ARViewActivity // implements
 		}
 
 		//Update Paintballs
-		if (!GameState.getState().exsisting_paint_balls.isEmpty()) {
-			for (PaintBall obj : GameState.getState().exsisting_paint_balls) {
+		if (!GameState.getState().paintBalls.isEmpty()) {
+			for (PaintBall obj : GameState.getState().paintBalls) {
 				if (obj.isActive()) {
 					obj.update();
 				}
@@ -379,7 +359,7 @@ public class GameActivity extends ARViewActivity // implements
     	PaintBall ball;
     	for(int i=id*5; i < (id+1)*5;i++)
     	{
-    		ball = GameState.getState().exsisting_paint_balls.get(i);
+    		ball = GameState.getState().paintBalls.get(i);
     		if (!(ball.getGeometry().isVisible()))
     			return ball;
     	}
@@ -450,7 +430,7 @@ public class GameActivity extends ARViewActivity // implements
         			if(!(Math.abs(touchVec.getX()) < 0.1f))
         			{
                 		//Send it off to the network
-            			mService.mConnection.sendData(NetDataHandler.ballFired(ball.getId(), vel, pos));
+        				NetworkState.getState().mConnection.sendData(NetDataHandler.ballFired(ball.getId(), vel, pos));
             		
             			//Fire the ball locally
             			ball.fire(vel, pos); 
@@ -466,24 +446,6 @@ public class GameActivity extends ARViewActivity // implements
 	{
 		return null;
 	}
-	
-	/** Defines callbacks for service binding, passed to bindService() */
-	private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get
-			// LocalService instance
-			LocalBinder binder = (LocalBinder) service;
-			mService = binder.getService();
-			mBound = true;
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName arg0) {
-			mBound = false;
-		}
-	};
 	
 	private void showScore()
 	{

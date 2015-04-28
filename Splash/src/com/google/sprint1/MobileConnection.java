@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -13,8 +14,10 @@ import java.util.List;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
 
+import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 public class MobileConnection {
 
@@ -22,17 +25,25 @@ public class MobileConnection {
 	private List<InetAddress> mIPs;
 	private List<Peer> mPeers;
 	
+	private ArrayAdapter<String> playerAdapter;
+	private ArrayList<String> playerList;
+	
 	private static final String TAG = "MobileConnection";
 	public static final int SERVER_PORT = 8196;
     
     private boolean handshakeActive = false;
+    private boolean pAisInit = false;
     
-	public MobileConnection(Handler handler) {
+    private Thread serverThread;
+    
+	public MobileConnection() {
 		mIPs = new ArrayList<InetAddress>();
 		mPeers = new ArrayList<Peer>();
-
+		playerList = new ArrayList<String>();
+		
 		//Start a ServerThread
-		new Thread(new ServerThread()).start();
+		serverThread = new Thread(new ServerThread());
+		serverThread.start();
 	}
 
 	/**
@@ -56,13 +67,21 @@ public class MobileConnection {
 	 */
 	public void tearDown() {
 		try {
-			
+			serverThread.interrupt();
 			mServerSocket.close();
-		} catch (IOException e) {
+			for(Peer p : mPeers)
+				p.closeSocket();
+			mIPs.clear();
+			mPeers.clear();
+			GameState.getState().myPlayerID = 0;
+			handshakeActive = false;
+		}
+		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
 
 	/**
 	 * Returns the number of peers connected.
@@ -85,6 +104,13 @@ public class MobileConnection {
 		}else{
 			//Log.d(TAG, "Cannot send data. Not connected to any peers.");
 		}
+	}
+	
+	/**
+	 * Return all IP addresses 
+	 */
+	public List<InetAddress> getIPs(){
+		return mIPs;
 	}
 	
 
@@ -132,7 +158,10 @@ public class MobileConnection {
 				//Add this peer to the list
 				mPeers.add(peer);
 				mIPs.add(peer.getAdress());
-
+				playerList.add(peer.getAdress().toString());
+				if(pAisInit)
+					playerAdapter.notifyDataSetChanged();
+				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -222,7 +251,12 @@ public class MobileConnection {
 					handshake(socket);
 					
 				}
-			} catch (IOException e) {
+				
+				
+			}catch (SocketException e)
+			{
+				Log.d(TAG, "SocketException. Most likely closed.");
+			}catch (IOException e) {
 				Log.e(TAG, "Error creating ServerSocket: ", e);
 				e.printStackTrace();
 			}
@@ -248,9 +282,11 @@ public class MobileConnection {
 			Log.d(TAG, "Listening to: " + mPeer.getAdress());
 			while (!Thread.currentThread().isInterrupted()) {
 				DataPackage data = new DataPackage(mPeer.getInputStream());
-				handleData(data);
+				handleData(data);	
 			}
 			Log.d(TAG, "Stopped listening to: " + mPeer.getAdress());
+			mPeers.remove(mPeer);
+			
 		}
 	}
 	
@@ -303,7 +339,7 @@ public class MobileConnection {
 		Vector3d vel = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
 		Vector3d pos = new Vector3d(buffer.getFloat(),buffer.getFloat(),buffer.getFloat());
 		if(id < 20)
-			GameState.getState().exsisting_paint_balls.get(id).fire(vel, pos);
+			GameState.getState().paintBalls.get(id).fire(vel, pos);
 	}
 	
 	/**
@@ -336,8 +372,11 @@ public class MobileConnection {
 		int playerId = buffer.getInt();
 		int ballId = buffer.getInt();
 		Log.d(TAG, "Collision with ant " + antId +" by player " + playerId);
-		GameState.getState().ants.get(antId).setIsHit(true, playerId);
-		GameState.getState().exsisting_paint_balls.get(ballId).disable();
+		
+		//Provisional failcheck
+		if(antId < 12)
+			GameState.getState().ants.get(antId).setIsHit(true, playerId);
+		GameState.getState().paintBalls.get(ballId).disable();
 	}
 	
 	/**
@@ -351,7 +390,7 @@ public class MobileConnection {
 		int playerId = buffer.getInt();
 
 		Ant ant = GameState.getState().ants.get(antId);
-		GameState.getState().players.get(playerId).removeMarker();
+		//GameState.getState().players.get(playerId).removeMarker();
 		GameState.getState().players.get(playerId).increaseScore(ant.getType());
 		Log.d(TAG, "Ant  " + antId +" reached player " + playerId);
 		ant.setActive(false);
@@ -390,5 +429,15 @@ public class MobileConnection {
 		}
 		
 		Log.d(TAG, "Assigned ID: " + GameState.getState().myPlayerID);
+	}
+
+	public void initPlayerAdapter(Context context) {
+		playerAdapter = new ArrayAdapter<String>(context,
+				R.layout.custom_list_for_services,
+				playerList);
+		pAisInit = true;
+	}
+	public ArrayAdapter<String> getPlayerAdapter(){
+		return playerAdapter;
 	}
 }
