@@ -30,9 +30,7 @@ public class LobbyActivity extends Activity {
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
 	private ListView playerListView;
-	
-	private ArrayAdapter<String> playerListAdapter;
-	
+		
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
