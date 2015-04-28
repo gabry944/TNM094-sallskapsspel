@@ -121,7 +121,9 @@ public class NetworkActivity extends Activity {
 		
 	}
 
-	/** Called when the user clicks the start Game button (starta spel) */
+	/** 
+	 * Called when the user clicks the start Game button (starta spel)
+	 */
 	public void startGame(View view) {
 		// In order to start the game we need to extract our assets to the
 		// metaio SDK
@@ -129,13 +131,17 @@ public class NetworkActivity extends Activity {
 		startActivity(intentlobby);	
 	}
 
-	/** Called when the user clicks the mainMenu button (huvudmeny) */
+	/**
+	 *  Called when the user clicks the mainMenu button (huvudmeny) 
+	 */
 	public void mainMenu(View view) {
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}
 	
-	/** Called when the user clicks the Host Game button */
+	/** 
+	 * Called when the user clicks the Host Game button 
+	 */
 	public void hostGame(View view){
 		
 		//If user is not already host and the registration state is false,
@@ -147,7 +153,9 @@ public class NetworkActivity extends Activity {
 		//TODO : Go to Lobby, stay registered!
 	}
 
-	/** Called when user minimize the window or clicks home button */
+	/** 
+	 * Called when user minimize the window or clicks home button 
+	 */
 	@Override
 	protected void onPause() {	
 		

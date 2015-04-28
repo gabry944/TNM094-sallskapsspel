@@ -430,13 +430,21 @@ public class MobileConnection {
 		
 		Log.d(TAG, "Assigned ID: " + GameState.getState().myPlayerID);
 	}
-
+	
+	/**
+	 * Initializes the playerAdapter with the context from LobbyActviity 
+	 */
 	public void initPlayerAdapter(Context context) {
 		playerAdapter = new ArrayAdapter<String>(context,
 				R.layout.custom_list_for_services,
 				playerList);
 		pAisInit = true;
 	}
+	
+	/**
+	 * Function that returns the playerAdapter
+	 * @return playerAdapter
+	 */
 	public ArrayAdapter<String> getPlayerAdapter(){
 		return playerAdapter;
 	}
