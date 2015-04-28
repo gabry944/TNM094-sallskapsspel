@@ -1,15 +1,17 @@
 package com.google.sprint1;
 
 import java.io.File;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-import android.content.ComponentName;
-import android.content.Context;
+
+
+
+
+
+
+
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -18,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.google.sprint1.R.string;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
@@ -57,8 +60,7 @@ public class GameActivity extends ARViewActivity // implements
 	private IGeometry ballShadow;
 	//private IGeometry touchSphere;
 
-	private IGeometry groundPlane;
-	private IGeometry anthill;
+	//private IGeometry groundPlane;
 	
 	//Gesture handler
 	private GestureHandlerAndroid mGestureHandler;
@@ -454,9 +456,21 @@ public class GameActivity extends ARViewActivity // implements
 
 			@Override
 			public void run() {
-				TextView displayPoints = (TextView) findViewById(R.id.myPoints);
-				displayPoints.setText("Score: " + player.getScore());
 				
+				//Display all the players score:
+				TextView displayBluePoints = (TextView) findViewById(R.id.bluePoints);
+				displayBluePoints.setText(""+ GameState.getState().players.get(0).score + "p");
+				
+				TextView displayGreenPoints = (TextView) findViewById(R.id.greenPoints);
+				displayGreenPoints.setText(""+ GameState.getState().players.get(1).score + "p");
+				
+				TextView displayRedPoints = (TextView) findViewById(R.id.redPoints);
+				displayRedPoints.setText(""+ GameState.getState().players.get(2).score + "p");
+				
+				TextView displayYellowPoints = (TextView) findViewById(R.id.yellowPoints);
+				displayYellowPoints.setText(""+ GameState.getState().players.get(3).score + "p");
+				
+				// Display the time left in game round
 				TextView displayTime= (TextView) findViewById(R.id.timeLeft);
 				displayTime.setText(GameState.getState().timeToString());
 			}

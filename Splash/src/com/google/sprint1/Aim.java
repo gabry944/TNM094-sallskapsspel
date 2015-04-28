@@ -58,14 +58,16 @@ public class Aim extends Drawable
 	{ 
 		zVelocity = startVelocity.getZ();
 		timeToLanding = (float) (zVelocity / (2 * 9.82f) + Math.sqrt(Math.pow( zVelocity / (2 * 9.82), 2) + startPosition.getZ() / 9.82));
-		Log.d(TAG, "time to landing : " + timeToLanding);
+		//Log.d(TAG, "time to landing : " + timeToLanding);
 		deltaTime = timeToLanding/(1+2+3+4+5+6+7+8+9);
-		Log.d(TAG, "delta time : " + deltaTime);
+		//Log.d(TAG, "delta time : " + deltaTime);
 		currentTime = 0;
 
+		// draw 9 balls in the path the paintball will fly
+		// will increase the distant between balls the longer away from the wower the ball gets.
 		for (int i = 0; i < 9; i++) 
 		{
-			// Calculate the objects position after i timestep
+			// Calculate the objects position after "i" timestep
 			currentTime += deltaTime*i;
 			position.setX(startPosition.getX()+startVelocity.getX()*currentTime+gravity.getX()*currentTime*currentTime);		
 			position.setY(startPosition.getY()+startVelocity.getY()*currentTime+gravity.getY()*currentTime*currentTime);
@@ -76,30 +78,32 @@ public class Aim extends Drawable
 			{
 			ballPath.get(i).setVisible(false);
 			ballPathShadow.get(i).setVisible(false);
-			Log.d(TAG, "boll som försvinner: " + i + " currentTime: " + currentTime + " Z-led: " + position.getZ());
+			//Log.d(TAG, "boll som försvinner: " + i + " currentTime: " + currentTime + " Z-led: " + position.getZ());
 			}
 			else
 			{
-				Log.d(TAG, "boll som syns: " + i + " currentTime: " + currentTime);
+				//Log.d(TAG, "boll som syns: " + i + " currentTime: " + currentTime);
 				ballPath.get(i).setTranslation(position);
 				ballPathShadow.get(i).setTranslation(new Vector3d(position.getX() , position.getY(),0f));	
 			}
 		}
+		// draw the last ball in ball path at the place where the ball will land
 		position.setX(startPosition.getX()+startVelocity.getX()*timeToLanding+gravity.getX()*timeToLanding*timeToLanding);		
 		position.setY(startPosition.getY()+startVelocity.getY()*timeToLanding+gravity.getY()*timeToLanding*timeToLanding);
 		position.setZ(0f);
+		
 		ballPath.get(9).setTranslation(position);
 		ballPathShadow.get(9).setVisible(false);
+		
 		if (powerUp)
 		{
-			position.setX(startPosition.getX()+startVelocity.getX()*timeToLanding+gravity.getX()*timeToLanding*timeToLanding);		
-			position.setY(startPosition.getY()+startVelocity.getY()*timeToLanding+gravity.getY()*timeToLanding*timeToLanding);
-			position.setZ(startPosition.getZ()+startVelocity.getZ()*timeToLanding+gravity.getZ()*timeToLanding*timeToLanding);
-			
-			crosshair.setTranslation(new Vector3d( position.getX(), position.getY(), 0f));
+			// place the crosshair
+			crosshair.setTranslation(position);
 		}
 	}
-	
+	/**
+	 * Set the aim geometrys visible
+	 */
 	public void activate()
 	{
 		if(powerUp)
@@ -112,6 +116,9 @@ public class Aim extends Drawable
          } 
 	}
 	
+	/**
+	 * Set the aim geometrys invisible
+	 */
 	public void deactivate()
 	{
 		 crosshair.setVisible(false);        	
@@ -122,6 +129,9 @@ public class Aim extends Drawable
          } 
 	}
 	
+	/**
+	 * return if powerUpp is true or false
+	 */
 	public boolean getPowerUp()
 	{
 		if(powerUp == true)
@@ -130,6 +140,9 @@ public class Aim extends Drawable
 			return false;
 	}
 	
+	/**
+	 * set powerUpp to true or false
+	 */
 	public void setPowerUp(boolean power)
 	{
 		if(power == true)
