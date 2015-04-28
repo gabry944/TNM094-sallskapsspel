@@ -20,7 +20,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.google.sprint1.R.string;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
@@ -129,12 +128,12 @@ public class GameActivity extends ARViewActivity // implements
 		// create light
 
 
-		mSpotLight = metaioSDK.createLight();
+	/*	mSpotLight = metaioSDK.createLight();
 		mSpotLight.setAmbientColor(new Vector3d(0.17f, 0, 0)); // slightly red ambient
 		mSpotLight.setType(ELIGHT_TYPE.ELIGHT_TYPE_SPOT);
 		mSpotLight.setRadiusDegrees(10);
 		mSpotLight.setDiffuseColor(new Vector3d(1, 1, 0)); // yellow
-		mSpotLight.setCoordinateSystemID(1);
+		mSpotLight.setCoordinateSystemID(1);*/
 //		mSpotLightGeo = createLightGeometry();
 //		mSpotLightGeo.setCoordinateSystemID(mSpotLight.getCoordinateSystemID());
 //		mSpotLightGeo.setDynamicLightingEnabled(false);
@@ -479,16 +478,16 @@ public class GameActivity extends ARViewActivity // implements
 				
 				//Display all the players score:
 				TextView displayBluePoints = (TextView) findViewById(R.id.bluePoints);
-				displayBluePoints.setText(""+ GameState.getState().players.get(0).score + "p");
+				displayBluePoints.setText(""+ GameState.getState().players.get(0).score);
 				
 				TextView displayGreenPoints = (TextView) findViewById(R.id.greenPoints);
-				displayGreenPoints.setText(""+ GameState.getState().players.get(1).score + "p");
+				displayGreenPoints.setText(""+ GameState.getState().players.get(1).score);
 				
 				TextView displayRedPoints = (TextView) findViewById(R.id.redPoints);
-				displayRedPoints.setText(""+ GameState.getState().players.get(2).score + "p");
+				displayRedPoints.setText(""+ GameState.getState().players.get(2).score);
 				
 				TextView displayYellowPoints = (TextView) findViewById(R.id.yellowPoints);
-				displayYellowPoints.setText(""+ GameState.getState().players.get(3).score + "p");
+				displayYellowPoints.setText(""+ GameState.getState().players.get(3).score);
 				
 				// Display the time left in game round
 				TextView displayTime= (TextView) findViewById(R.id.timeLeft);

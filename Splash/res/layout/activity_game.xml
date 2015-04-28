@@ -30,60 +30,110 @@
 	         android:background="@android:color/transparent"
 	         android:onClick="onExitButtonClick"
 	         android:src="@drawable/cancel" />
-	     			     
-			     <TextView
-			         android:id="@+id/bluePoints"
-			         android:layout_gravity="end"
-			         android:layout_width="75dp"
-			         android:layout_height="wrap_content"
-			         android:background="@null"
-			         android:editable="true"
-			         android:ems="10"
-			         android:gravity="end"
-			         android:text="100"
-			         android:textColor="#1911FF"
-			         android:textSize="40sp"
-			         android:visibility="visible" />
+	     
+	    <LinearLayout
+		    android:layout_width="wrap_content"
+		    android:layout_height="50dp"
+		    android:layout_gravity="end"
+		    android:orientation="horizontal">		
+		    	     
+		     <TextView
+		         android:id="@+id/bluePoints"
+		         android:layout_gravity="end"
+		         android:layout_width="75dp"
+		         android:layout_height="wrap_content"
+		         android:background="@null"
+		         android:ems="10"
+		         android:gravity="end"
+		         android:text="100"
+		         android:textColor="#1911FF"
+		         android:textSize="40sp"
+		         android:visibility="visible" />
 
-	    <TextView
-	         android:id="@+id/greenPoints"
-	         android:layout_gravity="end"
-	         android:layout_width="75dp"
-	         android:layout_height="wrap_content"
-	         android:background="@null"
-	         android:editable="true"
-	         android:ems="10"
-	         android:gravity="end"
-	         android:text="100"
-	         android:textColor="#19D119"
-	         android:textSize="40sp"
-	         android:visibility="visible" />
-		<TextView
-	         android:id="@+id/redPoints"
-	         android:layout_gravity="end"
-	         android:layout_width="75dp"
-	         android:layout_height="wrap_content"
-	         android:background="@null"
-	         android:editable="true"
-	         android:ems="10"
-	         android:gravity="end"
-	         android:text="100"
-	         android:textColor="#F91919"
-	         android:textSize="40sp"
-	         android:visibility="visible" />
-		<TextView
-	         android:id="@+id/yellowPoints"
-	         android:layout_gravity="end"
-	         android:layout_width="75dp"
-	         android:layout_height="wrap_content"
-	         android:background="@null"
-	         android:editable="true"
-	         android:ems="10"
-	         android:gravity="end"
-	         android:text="100"
-	         android:textColor="#FFFF19"
-	         android:textSize="40sp"
-	         android:visibility="visible" />
+		     <ImageView
+		         android:id="@+id/imageView1"
+		         android:layout_width="51dp"
+		         android:layout_height="wrap_content"
+		         android:src="@drawable/ant" />
+
+	 	</LinearLayout>
+		
+		<LinearLayout
+		    android:layout_width="wrap_content"
+		    android:layout_height="50dp"
+		    android:layout_gravity="end"
+		    android:orientation="horizontal">		
+		    <TextView
+		         android:id="@+id/greenPoints"
+		         android:layout_gravity="end"
+		         android:layout_width="75dp"
+		         android:layout_height="wrap_content"
+		         android:background="@null"
+		         android:ems="10"
+		         android:gravity="end"
+		         android:text="100"
+		         android:textColor="#19D119"
+		         android:textSize="40sp"
+		         android:visibility="visible" />
+		 <ImageView
+		         android:id="@+id/imageView2"
+		         android:layout_width="51dp"
+		         android:layout_height="wrap_content"
+		         android:src="@drawable/ant" />
+
+	 	</LinearLayout>
+	 	
+	  	<LinearLayout
+		    android:layout_width="wrap_content"
+		    android:layout_height="50dp"
+		    android:layout_gravity="end"
+		    android:orientation="horizontal">		
+		        
+			<TextView
+		         android:id="@+id/redPoints"
+		         android:layout_gravity="end"
+		         android:layout_width="75dp"
+		         android:layout_height="wrap_content"
+		         android:background="@null"
+		         android:ems="10"
+		         android:gravity="end"
+		         android:text="100"
+		         android:textColor="#F91919"
+		         android:textSize="40sp"
+		         android:visibility="visible" />		
+		         	     
+         	<ImageView
+		         android:id="@+id/imageView3"
+		         android:layout_width="51dp"
+		         android:layout_height="wrap_content"
+		         android:src="@drawable/ant" />
+
+	 	</LinearLayout>
+			
+		<LinearLayout
+		    android:layout_width="wrap_content"
+		    android:layout_height="50dp"
+		    android:layout_gravity="end"
+		    android:orientation="horizontal">		
+			<TextView
+		         android:id="@+id/yellowPoints"
+		         android:layout_gravity="end"
+		         android:layout_width="75dp"
+		         android:layout_height="wrap_content"
+		         android:background="@null"
+		         android:ems="10"
+		         android:gravity="end"
+		         android:text="100"
+		         android:textColor="#FFFF19"
+		         android:textSize="40sp"
+		         android:visibility="visible" />
+			<ImageView
+		         android:id="@+id/imageView4"
+		         android:layout_width="51dp"
+		         android:layout_height="wrap_content"
+		         android:src="@drawable/ant" />
+
+	 	</LinearLayout>
 	</LinearLayout>
 	    
 </FrameLayout>
