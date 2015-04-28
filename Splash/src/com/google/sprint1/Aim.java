@@ -58,11 +58,38 @@ public class Aim extends Drawable
 	{ 
 		zVelocity = startVelocity.getZ();
 		timeToLanding = (float) (zVelocity / (2 * 9.82f) + Math.sqrt(Math.pow( zVelocity / (2 * 9.82), 2) + startPosition.getZ() / 9.82));
-		//Log.d(TAG, "time to landing : " + timeToLanding);
-		deltaTime = timeToLanding/(15);
-		//Log.d(TAG, "delta time : " + deltaTime);
+		Log.d(TAG, "time to landing : " + timeToLanding);
+		deltaTime = timeToLanding/(1+2+3+4+5+6+7+8+9);
+		Log.d(TAG, "delta time : " + deltaTime);
 		currentTime = 0;
-		
+
+		for (int i = 0; i < 9; i++) 
+		{
+			// Calculate the objects position after i timestep
+			currentTime += deltaTime*i;
+			position.setX(startPosition.getX()+startVelocity.getX()*currentTime+gravity.getX()*currentTime*currentTime);		
+			position.setY(startPosition.getY()+startVelocity.getY()*currentTime+gravity.getY()*currentTime*currentTime);
+			position.setZ(startPosition.getZ()+startVelocity.getZ()*currentTime+gravity.getZ()*currentTime*currentTime);
+			
+			//check for collision with ground
+			if (position.getZ()<0f)
+			{
+			ballPath.get(i).setVisible(false);
+			ballPathShadow.get(i).setVisible(false);
+			Log.d(TAG, "boll som försvinner: " + i + " currentTime: " + currentTime + " Z-led: " + position.getZ());
+			}
+			else
+			{
+				Log.d(TAG, "boll som syns: " + i + " currentTime: " + currentTime);
+				ballPath.get(i).setTranslation(position);
+				ballPathShadow.get(i).setTranslation(new Vector3d(position.getX() , position.getY(),0f));	
+			}
+		}
+		position.setX(startPosition.getX()+startVelocity.getX()*timeToLanding+gravity.getX()*timeToLanding*timeToLanding);		
+		position.setY(startPosition.getY()+startVelocity.getY()*timeToLanding+gravity.getY()*timeToLanding*timeToLanding);
+		position.setZ(0f);
+		ballPath.get(9).setTranslation(position);
+		ballPathShadow.get(9).setVisible(false);
 		if (powerUp)
 		{
 			position.setX(startPosition.getX()+startVelocity.getX()*timeToLanding+gravity.getX()*timeToLanding*timeToLanding);		
@@ -70,65 +97,29 @@ public class Aim extends Drawable
 			position.setZ(startPosition.getZ()+startVelocity.getZ()*timeToLanding+gravity.getZ()*timeToLanding*timeToLanding);
 			
 			crosshair.setTranslation(new Vector3d( position.getX(), position.getY(), 0f));
-			crosshair.setVisible(true);
-		}
-		else
-		{
-			for (int i = 0; i < 10; i++) 
-			{
-				// Calculate the objects position after i timestep
-				currentTime += deltaTime;
-				position.setX(startPosition.getX()+startVelocity.getX()*currentTime+gravity.getX()*currentTime*currentTime);		
-				position.setY(startPosition.getY()+startVelocity.getY()*currentTime+gravity.getY()*currentTime*currentTime);
-				position.setZ(startPosition.getZ()+startVelocity.getZ()*currentTime+gravity.getZ()*currentTime*currentTime);
-				
-				//check for collision with ground
-				if (position.getZ()<0f)
-				{
-				ballPath.get(i).setVisible(false);
-				ballPathShadow.get(i).setVisible(false);
-				//Log.d(TAG, "boll som försvinner: " + i + " currentTime: " + currentTime + " Z-led: " + position.getZ());
-				}
-				else
-				{
-					//Log.d(TAG, "boll som syns: " + i + " currentTime: " + currentTime);
-					ballPath.get(i).setTranslation(position);
-					ballPathShadow.get(i).setTranslation(new Vector3d(position.getX() , position.getY(),0f));	
-				}
-			}
 		}
 	}
 	
 	public void activate()
 	{
 		if(powerUp)
-    	{
-    		crosshair.setVisible(true);
-    	}
-	    else
-	    {                	
-			 for(int i = 0; i < 10; i++)
-	         {
-	         	ballPath.get(i).setVisible(true);
-	         	ballPathShadow.get(i).setVisible(true);
-	         } 
-	    }
+			crosshair.setVisible(true);
+       	
+		 for(int i = 0; i < 10; i++)
+         {
+         	ballPath.get(i).setVisible(true);
+         	ballPathShadow.get(i).setVisible(true);
+         } 
 	}
 	
 	public void deactivate()
 	{
-		if(powerUp)
-    	{
-    		crosshair.setVisible(false);
-    	}
-	    else
-	    {                	
-			 for(int i = 0; i < 10; i++)
-	         {
-	         	ballPath.get(i).setVisible(false);
-	         	ballPathShadow.get(i).setVisible(false);
-	         } 
-	    }
+		 crosshair.setVisible(false);        	
+		 for(int i = 0; i < 10; i++)
+         {
+         	ballPath.get(i).setVisible(false);
+         	ballPathShadow.get(i).setVisible(false);
+         } 
 	}
 	
 	public boolean getPowerUp()

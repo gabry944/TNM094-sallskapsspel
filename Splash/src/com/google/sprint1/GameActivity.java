@@ -176,8 +176,7 @@ public class GameActivity extends ARViewActivity // implements
 			GameState.getState().connection = NetworkState.getState().mConnection;
 			/** Load Object */
 			
-			//create ground plane
-			
+			//create ground plane			
 //			groundPlane = Load3Dmodel("groundPlane/grassplane2.mfbx");
 //			geometryProperties(groundPlane, 25f, new Vector3d(0f, 0f, -15f), new Rotation(0f, 0f, 0f));
 			
@@ -187,6 +186,7 @@ public class GameActivity extends ARViewActivity // implements
 			greenPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 220f));	
 			redPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 220f));
 			yellowPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 220f));
+
 			
 			//! TODO make sure that init is called!
 			GameState.getState().addPlayer(bluePlayer);	
