@@ -148,6 +148,15 @@ public class PaintBall extends Drawable
 		startVelocity = new Vector3d(0.0f, 0.0f, 0.0f);
 		geometry.setTranslation(startPosition);
 	}
+	public void deactivate(){
+		startTime = 0;		
+		splashGeometry.setVisible(false);
+		geometry.setVisible(false);
+		paintballShadow.setVisible(false);
+		isActive = false;
+		startVelocity = new Vector3d(0.0f, 0.0f, 0.0f);
+		geometry.setTranslation(startPosition);
+	}
 	
 	/** move an object depending on physics calculated with Euler model*/
 	private void physicsPositionCalibration()

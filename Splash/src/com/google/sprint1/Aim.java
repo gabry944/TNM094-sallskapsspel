@@ -107,7 +107,10 @@ public class Aim extends Drawable
 	public void activate()
 	{
 		if(powerUp)
+		{
 			crosshair.setVisible(true);
+			crosshair.setTranslation(GameState.getState().players.get(GameState.getState().myPlayerID).startPosition);
+		}
        	
 		 for(int i = 0; i < 10; i++)
          {
