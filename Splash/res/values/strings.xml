@@ -28,5 +28,6 @@
     <string name="network_button_host">Host game</string>
     <string name="network_text_host">....or host a game</string>
     <string name="play_again">Play again</string>
+    <string name="connect_to_game">connect to game</string>
 
 </resources>

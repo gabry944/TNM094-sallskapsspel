@@ -37,8 +37,8 @@ public class Aim extends Drawable
 		ballPathShadow = ballShadow;
 		for (int i = 0; i < 10; i++) 
 		{
-			setGeometryProperties(ballPath.get(i), 0.5f, new Vector3d(-550, -450, 200f), new Rotation(0f, 0f, 0f)); //TODO set tower position values instead of hard code the values here
-			setGeometryProperties(ballShadow.get(i), 0.2f, new Vector3d(-550, -450, 0), new Rotation(0f, 0f, 0f));
+			setGeometryProperties(ballPath.get(i), 0.5f, GameState.getState().players.get(GameState.getState().myPlayerID).startPosition, new Rotation(0f, 0f, 0f)); //TODO set tower position values instead of hard code the values here
+			setGeometryProperties(ballShadow.get(i), 0.2f, GameState.getState().players.get(GameState.getState().myPlayerID).startPosition, new Rotation(0f, 0f, 0f));
 
 			ballPath.get(i).setVisible(false);
 			ballShadow.get(i).setVisible(false);
@@ -112,7 +112,9 @@ public class Aim extends Drawable
 		 for(int i = 0; i < 10; i++)
          {
          	ballPath.get(i).setVisible(true);
+         	ballPath.get(i).setTranslation(GameState.getState().players.get(GameState.getState().myPlayerID).startPosition);
          	ballPathShadow.get(i).setVisible(true);
+         	ballPathShadow.get(i).setTranslation(GameState.getState().players.get(GameState.getState().myPlayerID).startPosition);
          } 
 	}
 	

@@ -3,13 +3,6 @@ package com.google.sprint1;
 import java.io.File;
 import java.util.ArrayList;
 
-
-
-
-
-
-
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -199,14 +192,11 @@ public class GameActivity extends ARViewActivity // implements
 //			geometryProperties(groundPlane, 25f, new Vector3d(0f, 0f, -15f), new Rotation(0f, 0f, 0f));
 			
 			//creates the tower				
-
 			bluePlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 220f));
 			greenPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 220f));	
 			redPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 220f));
 			yellowPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 220f));
-
 			
-			//! TODO make sure that init is called!
 			GameState.getState().addPlayer(bluePlayer);	
 			GameState.getState().addPlayer(greenPlayer);
 			GameState.getState().addPlayer(redPlayer);
@@ -214,6 +204,7 @@ public class GameActivity extends ARViewActivity // implements
 			
 			// the player this unit has is decided by the player id in game state
 			player = GameState.getState().players.get(GameState.getState().myPlayerID);
+			player.ballGeometry.setVisible(true);
 			mGestureHandler.addObject(player.ballGeometry, 1);
 
 			// Load powerUps
@@ -334,7 +325,6 @@ public class GameActivity extends ARViewActivity // implements
 					NetworkState.getState().mConnection.sendData(NetDataHandler.antPos(ant.getId(),
 																		ant.getPosition(),
 																		ant.getRotation()));
-
 				}
 			}
 

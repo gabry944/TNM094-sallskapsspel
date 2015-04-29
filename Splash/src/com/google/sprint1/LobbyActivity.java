@@ -36,7 +36,7 @@ public class LobbyActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+							 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_lobby);
 				
@@ -66,8 +66,8 @@ public class LobbyActivity extends Activity {
 
 	/** Called when user minimize the window or clicks home button */
 	@Override
-	protected void onPause() {
-		
+	protected void onPause()
+	{	
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		
 		super.onPause();
@@ -78,7 +78,8 @@ public class LobbyActivity extends Activity {
 	 * This task extracts all the assets to an external or internal location to
 	 * make them accessible to Metaio SDK.
 	 */
-	private class AssetsExtracter extends AsyncTask<Integer, Integer, Boolean> {
+	private class AssetsExtracter extends AsyncTask<Integer, Integer, Boolean> 
+	{
 		/** Extract all assets to make them accessible to Metaio SDK */
 		@Override
 		protected Boolean doInBackground(Integer... params) {
@@ -109,7 +110,5 @@ public class LobbyActivity extends Activity {
 			}
 			finish();
 		}
-
 	}
-	
 }
