@@ -18,7 +18,7 @@ public class Player extends Drawable {
 
 	public boolean superPower; 
 	
-	public Player(IGeometry anthillGeo,IGeometry slingshotGeo,IGeometry ballGeo, Vector3d startPosPlayer)
+	public Player(IGeometry anthillGeo, IGeometry slingshotGeo, IGeometry ballGeo, Vector3d startPosPlayer)
 	{
 		score = 0;
 		superPower = false;

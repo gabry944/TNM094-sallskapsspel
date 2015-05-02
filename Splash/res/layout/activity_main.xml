@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/background5"
     android:gravity="center"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -20,8 +20,8 @@
         android:fontFamily="sans-serif-medium"
         android:onClick="startSettings"
         android:text="@string/action_settings"
-        android:textColor="#000000"
-        android:textSize="30dp"
+        android:textColor="#0000FF"
+        android:textSize="45dp"
         android:textStyle="bold" />
 
     <Button
@@ -29,13 +29,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="60dp"
         android:background="@null"
         android:onClick="startNetwork"
         android:fontFamily="sans-serif-medium"
         android:text="@string/startaSpel"
-        android:textColor="#000000"
-        android:textSize="30dp"
+        android:textColor="#E60000"
+        android:textSize="45dp"
         android:textStyle="bold" />
 
 

@@ -5,7 +5,7 @@ import android.util.Log;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
-
+/**Class for all the ants */
 public class Ant extends Drawable
 {
 	public static final String TAG = "Ant";
@@ -73,32 +73,32 @@ public class Ant extends Drawable
 		diffVec = new Vector3d(0f, 0f, 0f);
 		memory = 0f;
 	}
-	
-	//return the type of the ant
+	 
+	/** return the type of the ant */
 	public int getType()
 	{
 		return type;
 	}
 	
-	//return which player the ant has been hit by
+	/** return which player the ant has been hit by */
 	public int getOwnedByPlayer()
 	{
 		return ownedByPlayer;
 	}
 	
-	//set which player hit the ant
+	/** set which player hit the ant */
 	public void setOwnedByPlayer(int id)
 	{
 		ownedByPlayer = id;
 	}
 	
-	//return ant geometry
+	/** return ant geometry */
 	public IGeometry getGeometry()
 	{
 		return ant;
 	}
 	
-	//return if the ant is hit
+	/** return if the ant is hit */
 	public boolean getIsHit()
 	{
 		if(isHit == true)
@@ -107,7 +107,7 @@ public class Ant extends Drawable
 			return false;
 	}
 	
-	// set the ant to hit 
+	/** set the ant to hit */
 	public void setIsHit(boolean hit, int id)
 	{
 		if(hit == true)
@@ -136,6 +136,7 @@ public class Ant extends Drawable
 		
 	}
 	
+	/** Update function that is allways called and therefor updated in real time */
 	public void update()
 	{
 		if(!isActive())
@@ -224,7 +225,7 @@ public class Ant extends Drawable
 		}
 	}
 	
-	//displays a marker over the ant when being hit
+	/** displays a marker over the ant when being hit */
 	public void setMarker(int i)
 	{
 		
@@ -254,32 +255,32 @@ public class Ant extends Drawable
 	}
 	
 	
-	//function to set position for ant
+	/** function to set position for ant */
 	public void setPosition(Vector3d pos)
 	{
 		ant.setTranslation(pos);
 		setMarker(getOwnedByPlayer());
 	}
 	
-	//function to get ants position
+	/** function to get ants position */
 	public Vector3d getPosition()
 	{
 		return ant.getTranslation();
 	}
 	
-	//function to get ants rotation
+	/** function to get ants rotation */
 	public Rotation getRotation()
 	{
 		return ant.getRotation();
 	}
 	
-	//function to set rotation for ant
+	/** function to set rotation for ant */
 	public void setRotation(Rotation rot)
 	{
 		ant.setRotation(rot);
 	}
 		
-	//returns the ants id
+	/** returns the ants id */
 	public int getId()
 	{
 		return id;
@@ -295,6 +296,7 @@ public class Ant extends Drawable
 			return false;
 	}
 	
+	/** Function to set if the ant is active or not */
 	public void setActive(boolean active)
 	{
 		ant.setVisible(active);

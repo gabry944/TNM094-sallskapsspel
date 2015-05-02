@@ -1,15 +1,17 @@
 package com.google.sprint1;
 
 import java.io.File;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-import android.content.ComponentName;
-import android.content.Context;
+
+
+
+
+
+
+
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -21,8 +23,10 @@ import android.widget.TextView;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
+import com.metaio.sdk.jni.ELIGHT_TYPE;
 import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
+import com.metaio.sdk.jni.ILight;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
@@ -52,13 +56,13 @@ public class GameActivity extends ARViewActivity // implements
 
 	Aim aim;
 
+	private ILight mSpotLight;
 
 	private IGeometry ball;
 	private IGeometry ballShadow;
 	//private IGeometry touchSphere;
 
-	private IGeometry groundPlane;
-	private IGeometry anthill;
+	//private IGeometry groundPlane;
 	
 	//Gesture handler
 	private GestureHandlerAndroid mGestureHandler;
@@ -119,7 +123,21 @@ public class GameActivity extends ARViewActivity // implements
 		
 		//Gesture handler
 		mGestureMask = GestureHandler.GESTURE_DRAG;
-		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);		
+		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);	
+		
+		// create light
+
+
+	/*	mSpotLight = metaioSDK.createLight();
+		mSpotLight.setAmbientColor(new Vector3d(0.17f, 0, 0)); // slightly red ambient
+		mSpotLight.setType(ELIGHT_TYPE.ELIGHT_TYPE_SPOT);
+		mSpotLight.setRadiusDegrees(10);
+		mSpotLight.setDiffuseColor(new Vector3d(1, 1, 0)); // yellow
+		mSpotLight.setCoordinateSystemID(1);*/
+//		mSpotLightGeo = createLightGeometry();
+//		mSpotLightGeo.setCoordinateSystemID(mSpotLight.getCoordinateSystemID());
+//		mSpotLightGeo.setDynamicLightingEnabled(false);
+
 
 	}
 
@@ -176,8 +194,7 @@ public class GameActivity extends ARViewActivity // implements
 			GameState.getState().connection = NetworkState.getState().mConnection;
 			/** Load Object */
 			
-			//create ground plane
-			
+			//create ground plane			
 //			groundPlane = Load3Dmodel("groundPlane/grassplane2.mfbx");
 //			geometryProperties(groundPlane, 25f, new Vector3d(0f, 0f, -15f), new Rotation(0f, 0f, 0f));
 			
@@ -187,6 +204,7 @@ public class GameActivity extends ARViewActivity // implements
 			greenPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 220f));	
 			redPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotRed.mfbx"), Load3Dmodel("paintball/paintball/ballRed.mfbx"), new Vector3d(-650f, 520f, 220f));
 			yellowPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotYellow.mfbx"), Load3Dmodel("paintball/paintball/ballYellow.mfbx"), new Vector3d(650f, -520f, 220f));
+
 			
 			//! TODO make sure that init is called!
 			GameState.getState().addPlayer(bluePlayer);	
@@ -299,6 +317,8 @@ public class GameActivity extends ARViewActivity // implements
 
 		if(GameState.getState().powerUps.get(0).isHit())
 			aim.setPowerUp(true);
+		
+
 		//spawn ant at random and move ants
 		if(GameState.getState().myPlayerID == 0)
 		{
@@ -354,6 +374,7 @@ public class GameActivity extends ARViewActivity // implements
 		// Only implemented because its required by the parent class
 	}
 
+	/** Returns if there is an available ball */
     private PaintBall getAvailableBall(int id)
     {
     	PaintBall ball;
@@ -376,7 +397,7 @@ public class GameActivity extends ARViewActivity // implements
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 	}
 	
-	//Gesture handler
+	/** Function to handle all the gestures on the screen */
 	@Override
 	public boolean onTouch(View v, MotionEvent event)
 	{
@@ -455,15 +476,28 @@ public class GameActivity extends ARViewActivity // implements
 
 			@Override
 			public void run() {
-				TextView displayPoints = (TextView) findViewById(R.id.myPoints);
-				displayPoints.setText("Score: " + player.getScore());
 				
+				//Display all the players score:
+				TextView displayBluePoints = (TextView) findViewById(R.id.bluePoints);
+				displayBluePoints.setText(""+ GameState.getState().players.get(0).score);
+				
+				TextView displayGreenPoints = (TextView) findViewById(R.id.greenPoints);
+				displayGreenPoints.setText(""+ GameState.getState().players.get(1).score);
+				
+				TextView displayRedPoints = (TextView) findViewById(R.id.redPoints);
+				displayRedPoints.setText(""+ GameState.getState().players.get(2).score);
+				
+				TextView displayYellowPoints = (TextView) findViewById(R.id.yellowPoints);
+				displayYellowPoints.setText(""+ GameState.getState().players.get(3).score);
+				
+				// Display the time left in game round
 				TextView displayTime= (TextView) findViewById(R.id.timeLeft);
 				displayTime.setText(GameState.getState().timeToString());
 			}
 		});
 	}
 	
+	/** Return number of ants */
 	public static int getNrOfAnts()
 	{
 		return GameState.getState().ants.size();
