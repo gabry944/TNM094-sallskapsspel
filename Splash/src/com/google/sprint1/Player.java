@@ -38,6 +38,7 @@ public class Player extends Drawable {
 			setGeometryProperties(slingshotGeometry, 2f, new Vector3d(startPosition.getX() - 35f, startPosition.getY() + 35f, startPosition.getZ() -100f), new Rotation((float)Math.PI/2, 0f, (float)Math.PI/4));
 		
 		setGeometryProperties(ballGeometry, 4f, startPosition, new Rotation(0f, 0f, 0f));
+		ballGeometry.setVisible(false);
 		//setGeometryProperties(touchSphere, 6f, startPosition, new Rotation(0f, 0f, 0f));
 
 		

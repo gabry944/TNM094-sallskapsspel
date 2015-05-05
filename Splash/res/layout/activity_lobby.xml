@@ -41,7 +41,7 @@
         android:layout_marginLeft="20dp"
         android:background="#B2FFB2"
         android:onClick="Lobby"
-        android:text="@string/Lobby"
+        android:text="@string/connect_to_game"
         android:textColor="#000000" />
 
     <ListView

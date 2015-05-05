@@ -57,7 +57,7 @@ public class GameState {
 		}
 		for (PaintBall ball : paintBalls)
 		{
-			ball.disable();
+			ball.deactivate();
 		}
 	}
 	
