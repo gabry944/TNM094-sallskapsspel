@@ -36,7 +36,7 @@ public class NetworkState {
 		return instance;
 	}
 	
-	/** Initialize the Game State, currently called the first time getState is called*/
+	/** Initialize the Game State*/
 	public void init(Context context){
 //		powerUps = new ArrayList<PowerUp>();
 //		
