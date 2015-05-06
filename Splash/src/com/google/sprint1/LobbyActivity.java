@@ -22,8 +22,6 @@ import android.widget.ListView;
  * Activity to handle the screen between network and the gamescreen
  * 
  * where players should connect to each other before entering gamemode.
- * 
- * 
  */
 
 public class LobbyActivity extends Activity {

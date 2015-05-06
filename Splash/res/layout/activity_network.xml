@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/button1"
         android:layout_centerHorizontal="true"
-        android:text="@string/network_button_host"
+        android:text="@string/network_button_create_game"
         android:onClick="hostGame" />
 
     <TextView
