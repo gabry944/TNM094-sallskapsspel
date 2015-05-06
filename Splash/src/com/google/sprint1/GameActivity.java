@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.util.DisplayMetrics;
@@ -131,7 +130,23 @@ public class GameActivity extends ARViewActivity // implements
 		mSpotLight.setRadiusDegrees(10);
 		mSpotLight.setDiffuseColor(new Vector3d(1, 1, 0)); // yellow
 		mSpotLight.setCoordinateSystemID(1);*/
-
+//		mSpotLightGeo = createLightGeometry();
+//		mSpotLightGeo.setCoordinateSystemID(mSpotLight.getCoordinateSystemID());
+//		mSpotLightGeo.setDynamicLightingEnabled(false);
+		
+/*		if(isZoomSupported())
+		{
+			Log.d(TAG,"Zoom suported");
+		}*/
+		 DisplayMetrics dm = new DisplayMetrics();
+	    getWindowManager().getDefaultDisplay().getMetrics(dm);
+	    
+	    double mWidthPixels = dm.widthPixels;
+	    double mHeightPixels = dm.heightPixels;        
+	    double x = Math.pow(mWidthPixels/dm.xdpi,2);
+	    double y = Math.pow(mHeightPixels/dm.ydpi,2);
+	    double screenInches = Math.sqrt(x+y);
+	    Log.d(TAG,"Screen inches : " + screenInches);
 	}
 
 	/** Called when the user clicks the Exit button (krysset) */
