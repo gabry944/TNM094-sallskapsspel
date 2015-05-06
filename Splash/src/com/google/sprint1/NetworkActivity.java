@@ -4,6 +4,7 @@ import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.AlertDialog;
@@ -16,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * Activity to handle the screen between mainmenu and the gamescreen
@@ -143,6 +145,11 @@ public class NetworkActivity extends Activity {
 	 * Called when the user clicks the Host Game button 
 	 */
 	public void hostGame(View view){
+		Context context = getApplicationContext();
+		CharSequence text = "Game created successfully!";
+		int duration = Toast.LENGTH_LONG;
+
+		Toast toast = Toast.makeText(context, text, duration);
 		
 		//If user is not already host and the registration state is false,
 		//register/host a game
@@ -150,6 +157,11 @@ public class NetworkActivity extends Activity {
 			NetworkState.getState().getNsdHelper().registerService(MobileConnection.SERVER_PORT);
 		
 			isHost = true;
+			
+			toast.show();
+			
+			Intent intentlobby = new Intent(this, LobbyActivity.class);
+			startActivity(intentlobby);	
 		//TODO : Go to Lobby, stay registered!
 	}
 
