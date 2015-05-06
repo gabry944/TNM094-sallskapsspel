@@ -28,7 +28,7 @@ public class Player extends Drawable {
 		startPosition = startPosPlayer;
 		
 
-		setGeometryProperties(anthillGeo, 8f, new Vector3d(startPosition.getX(), startPosition.getY(), 0f), new Rotation(0f, 0f, 0f));
+		setGeometryProperties(anthillGeo, 3f, new Vector3d(startPosition.getX(), startPosition.getY(), 0f), new Rotation((float)(Math.PI/2), 0f, 0f));
 
 		if((startPosPlayer.getX() == -650f && startPosPlayer.getY() == 520f) || (startPosPlayer.getX() == 650f && startPosPlayer.getY() == -520f))
 		{
@@ -60,6 +60,11 @@ public class Player extends Drawable {
 	public Vector3d getPosition()
 	{
 		return startPosition;
+	}
+	
+	public void playAnthillAnimation()
+	{
+		towerGeometry.startAnimation("Take 001", false);
 	}
 	
 }
