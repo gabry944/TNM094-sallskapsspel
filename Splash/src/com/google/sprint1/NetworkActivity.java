@@ -162,7 +162,7 @@ public class NetworkActivity extends Activity {
 			
 			Intent intentlobby = new Intent(this, LobbyActivity.class);
 			startActivity(intentlobby);	
-		//TODO : Go to Lobby, stay registered!
+
 	}
 
 	/** 
