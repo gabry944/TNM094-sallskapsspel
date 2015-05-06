@@ -67,7 +67,7 @@ public class GameEndedActivity extends Activity {
 	/** Called when the user clicks the finish button */
 	public void onFinishGame(View v) {
 		NetworkState.getState().closeNetwork();
-		GameState.getState().resetGameState();
+		GameActivity.fa.finish();
 		Intent mainMenu = new Intent(this, MainActivity.class);
 		startActivity(mainMenu);
 	}

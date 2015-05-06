@@ -2,6 +2,8 @@ package com.google.sprint1;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
+
 public class GameState {
 	
 	private static GameState instance = null;
@@ -59,6 +61,12 @@ public class GameState {
 		{
 			ball.deactivate();
 		}
+	}
+	public void eraseGameState(){
+		players.clear();
+		ants.clear();
+		powerUps.clear();
+		paintBalls.clear();
 	}
 	
 	public void updateTime() {

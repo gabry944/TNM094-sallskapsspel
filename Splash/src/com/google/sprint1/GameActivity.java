@@ -3,9 +3,12 @@ package com.google.sprint1;
 import java.io.File;
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,7 +19,6 @@ import android.widget.TextView;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
-import com.metaio.sdk.jni.ELIGHT_TYPE;
 import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.ILight;
@@ -32,18 +34,17 @@ import com.metaio.tools.io.AssetsManager;
 
 public class GameActivity extends ARViewActivity // implements
 													// OnGesturePerformedListener
-{
+{		
 	// Number of small ants - big ants - giant ants
 	public final static int NUM_OF_ANTS[] = {7, 4, 1};
 	
 	/* Variables for objects in the game */
 
-	public Player player;
-	public Player bluePlayer;
-	public Player greenPlayer;
-	public Player redPlayer;
-	public Player yellowPlayer;
-
+	private Player player;
+	private Player bluePlayer;
+	private Player greenPlayer;
+	private Player redPlayer;
+	private Player yellowPlayer;
 
 	GameState gameState;
 
@@ -74,6 +75,7 @@ public class GameActivity extends ARViewActivity // implements
 	//private double lastTime;
 
 	public static final String TAG = "GameActivity";
+	public static Activity fa;
 
 	@Override
 	protected void onStart() {
@@ -84,7 +86,6 @@ public class GameActivity extends ARViewActivity // implements
 		InstructionsDialog dFragment = new InstructionsDialog();
 		// Show DialogFragment
 		dFragment.show(fm, "Dialog Fragment");
-
 	}
 
 	/** Attaching layout to the activity */
@@ -100,7 +101,9 @@ public class GameActivity extends ARViewActivity // implements
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);		
-				
+		
+		fa = this;
+		
 		GameState.getState().paintBalls = new ArrayList<PaintBall>(20);
 		GameState.getState().ants = new ArrayList<Ant>(NUM_OF_ANTS[0] + NUM_OF_ANTS[1] + NUM_OF_ANTS[2]);
 		
@@ -130,8 +133,15 @@ public class GameActivity extends ARViewActivity // implements
 //		mSpotLightGeo = createLightGeometry();
 //		mSpotLightGeo.setCoordinateSystemID(mSpotLight.getCoordinateSystemID());
 //		mSpotLightGeo.setDynamicLightingEnabled(false);
-
-
+		
+		/*DisplayMetrics dm = new DisplayMetrics();
+	    getWindowManager().getDefaultDisplay().getMetrics(dm);
+	    double mWidthPixels = dm.widthPixels;
+	    double mHeightPixels = dm.heightPixels;        
+	    double x = Math.pow(mWidthPixels/dm.xdpi,2);
+	    double y = Math.pow(mHeightPixels/dm.ydpi,2);
+	    double screenInches = Math.sqrt(x+y);
+	    Log.d(TAG,"Screen inches : " + screenInches);*/
 	}
 
 	/** Called when the user clicks the Exit button (krysset) */
@@ -491,7 +501,15 @@ public class GameActivity extends ARViewActivity // implements
 	{
 		return GameState.getState().ants.size();
 	}
-		
+	
+	@Override
+	protected void onDestroy() 
+	{
+		super.onDestroy();
+		GameState.getState().eraseGameState();
+		//Log.d(TAG,"On destroy");
+	}
+	
 	/**Updates Fps each frame and display it to user once every second*/ 
 //	private void updateFps() {
 //		

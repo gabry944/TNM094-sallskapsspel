@@ -1,5 +1,7 @@
 package com.google.sprint1;
 
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -24,6 +26,16 @@ public class MainActivity extends Activity {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_main);
+		
+		
+	/*	DisplayMetrics dm = new DisplayMetrics();
+	    getWindowManager().getDefaultDisplay().getMetrics(dm);
+	    double mWidthPixels = dm.widthPixels;
+	    double mHeightPixels = dm.heightPixels;        
+	    double x = Math.pow(mWidthPixels/dm.xdpi,2);
+	    double y = Math.pow(mHeightPixels/dm.ydpi,2);
+	    double screenInches = Math.sqrt(x+y);
+	    Log.d(TAG,"Screen inches : " + screenInches);*/
 				
 	}
 
