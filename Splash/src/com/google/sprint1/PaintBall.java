@@ -1,5 +1,6 @@
 package com.google.sprint1;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.metaio.sdk.jni.IGeometry;
@@ -105,6 +106,8 @@ public class PaintBall extends Drawable
 				connection.sendData(NetDataHandler.antHit(i, getPlayerId(), getId()));
 				GameState.getState().ants.get(i).setIsHit(true, getPlayerId());
 				
+				//Sound.playSound(getBaseContext());
+				
 				disable();
 			}
 		}
@@ -117,6 +120,7 @@ public class PaintBall extends Drawable
 			}
 		}
 	}
+
 	/** Check if paintball is current active */
 	public boolean isActive()
 	{

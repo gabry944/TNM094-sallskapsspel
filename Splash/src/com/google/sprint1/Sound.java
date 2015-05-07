@@ -10,12 +10,16 @@ import android.util.Log;
 public class Sound {
 	
 	static boolean loaded = false;
+	static Context mContext;
 	
-	public static int[] loadSound(Context context){
+	public static void playSound(Context context){
 		
 		SoundPool soundPool;
 		soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-		int soundIds[] = new int[10];
+		final int soundIds[] = new int[10];
+		
+		//Test test = new Test(this);
+			
 		soundIds[0] = soundPool.load(context, R.raw.ping, 1);
 		
 		soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
@@ -23,16 +27,15 @@ public class Sound {
 			@Override
 			public void onLoadComplete(SoundPool soundPool, int sampleId,
 					int status) {
-				loaded = true;
+				soundPool.play(soundIds[0], 1, 1, 1, 0, 1.0f);
+				//loaded = true;
 				
 			}
 			
 		});
-		
+			
 		Log.e("Test", "soundID before = " + soundIds[0]);
 		Log.e("Test", "Loaded = " + loaded);
-		
-		return soundIds;
 		
 		}
 	
@@ -48,24 +51,6 @@ public class Sound {
 	}
 	
 	public static void playsoundEffect(int soundID){
-		
-		
-		//Vill använda SoundPool istället för mediaplayer
-		/*SoundPool sp;
-		
-		sp = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
-		
-		int soundIds[] = new int[10];
-		soundIds[0] = sp.load(context, R.raw.ping, 1);
-		
-		sp.play(soundIds[0], 1, 1, 1, 0, (float) 1.0);*/
-		
-		/*MediaPlayer backgroundMusic;
-		backgroundMusic = MediaPlayer.create(context, R.raw.ping);
-		
-		backgroundMusic.setLooping(false);
-		backgroundMusic.setVolume(10.0f, 3.0f);
-		backgroundMusic.start();*/
 		
 		SoundPool soundPool;
 		soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
