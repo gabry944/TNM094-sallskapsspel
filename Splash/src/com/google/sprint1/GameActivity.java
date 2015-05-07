@@ -19,12 +19,16 @@ import android.widget.TextView;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
+import com.metaio.sdk.jni.ECAMERA_TYPE;
 import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.ILight;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
 import com.metaio.sdk.jni.Rotation;
+import com.metaio.sdk.jni.Vector2d;
+import com.metaio.sdk.jni.Vector2di;
 import com.metaio.sdk.jni.Vector3d;
+import com.metaio.sdk.jni.Vector4d;
 import com.metaio.tools.io.AssetsManager;
 
 /**
@@ -169,13 +173,26 @@ public class GameActivity extends ARViewActivity // implements
 	    Log.d(TAG,"wanted thetaV : " + thetaV);
 	    if(p.isZoomSupported())
 	    {
-	    	Log.d(TAG,"Zoom possible");
+	    	Log.d(TAG,"Zoom possible, max: " + p.getMaxZoom());
+	    	//p.setZoom(p.getMaxZoom());
 	    }
 	    else
 	    {
 	    	Log.d(TAG,"Zoom not possible");
 	    }
 		camera.release();
+		
+		Vector2di imageResolution = new Vector2di(0,0);
+		Vector2d focalLengths = new Vector2d(0,0);
+		Vector2d principalPoint	= new Vector2d(0,0);
+		Vector4d distortion = new Vector4d(0,0,0,0);
+		ECAMERA_TYPE myCameraType= ECAMERA_TYPE.ECT_RENDERING_MONO;
+		metaioSDK.getCameraParameters(imageResolution,focalLengths, principalPoint, distortion, myCameraType);	
+		Log.d(TAG,"Image resolution x: " + imageResolution.getX());
+		Log.d(TAG,"Image resolution y: " + imageResolution.getY());
+		Log.d(TAG,"Focal lengths x: " + focalLengths.getX());
+		Log.d(TAG,"Focal lengths y: " + focalLengths.getY());
+		
 	}
 
 	/** Called when the user clicks the Exit button (krysset) */
