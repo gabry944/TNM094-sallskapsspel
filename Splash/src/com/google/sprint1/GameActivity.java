@@ -398,6 +398,7 @@ public class GameActivity extends ARViewActivity // implements
 		super.onTouch(v, event);
 
 		mGestureHandler.onTouch(v, event);
+		
 
     	//coordinates between tower and "slangbella"
 		//player.ballGeometry.setTranslation(player.touchSphere.getTranslation());
