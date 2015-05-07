@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.util.DisplayMetrics;
@@ -137,16 +138,44 @@ public class GameActivity extends ARViewActivity // implements
 /*		if(isZoomSupported())
 		{
 			Log.d(TAG,"Zoom suported");
-		}*/
-		 DisplayMetrics dm = new DisplayMetrics();
-	    getWindowManager().getDefaultDisplay().getMetrics(dm);
+		}*/		
+		DisplayMetrics dm = new DisplayMetrics();
+	    getWindowManager().getDefaultDisplay().getMetrics(dm);	    
+	    //double mWidthPixels = dm.widthPixels;
+	    //double mHeightPixels = dm.heightPixels;        
+	    //double x = Math.pow(mWidthPixels/dm.xdpi,2);
+	    //double y = Math.pow(mHeightPixels/dm.ydpi,2);
+	    //double screenInches = Math.sqrt(x+y);
+	    //Log.d(TAG,"Screen inches : " + screenInches);
+	    double x = (dm.widthPixels/dm.xdpi);
+	    double y = (dm.heightPixels/dm.ydpi);
+	    Log.d(TAG,"Screen width : " + x);
+	    Log.d(TAG,"Screen height : " + y);
 	    
-	    double mWidthPixels = dm.widthPixels;
-	    double mHeightPixels = dm.heightPixels;        
-	    double x = Math.pow(mWidthPixels/dm.xdpi,2);
-	    double y = Math.pow(mHeightPixels/dm.ydpi,2);
-	    double screenInches = Math.sqrt(x+y);
-	    Log.d(TAG,"Screen inches : " + screenInches);
+
+		Camera camera = Camera.open();
+		Camera.Parameters p = camera.getParameters();
+		double thetaH = p.getHorizontalViewAngle();
+		double thetaV = p.getVerticalViewAngle();
+		//double thetaH = Math.toRadians(p.getHorizontalViewAngle());
+		//double thetaV = Math.toRadians(p.getVerticalViewAngle());
+	    Log.d(TAG,"current thetaH : " + thetaH);
+	    Log.d(TAG,"current thetaV : " + thetaV);
+	    //thetaH = Math.atan((double) (x/2)/15.748);
+	    //thetaV = Math.atan((double) (y/2)/15.748);
+	    thetaH = Math.toDegrees(2 * Math.atan((double) (x/2)/15.748));
+	    thetaV = Math.toDegrees(2 * Math.atan((double) (y/2)/15.748));
+	    Log.d(TAG,"wanted thetaH : " + thetaH);
+	    Log.d(TAG,"wanted thetaV : " + thetaV);
+	    if(p.isZoomSupported())
+	    {
+	    	Log.d(TAG,"Zoom possible");
+	    }
+	    else
+	    {
+	    	Log.d(TAG,"Zoom not possible");
+	    }
+		camera.release();
 	}
 
 	/** Called when the user clicks the Exit button (krysset) */
@@ -339,7 +368,6 @@ public class GameActivity extends ARViewActivity // implements
 					//ant.getGeometry().setTexture("ant/smallAnt/blueTexture.jpg");
 				
 				//send position and rotation to other players
-				//TODO: Move to Ant class?
 				if(ant.isActive())
 				{
 					NetworkState.getState().mConnection.sendData(NetDataHandler.antPos(ant.getId(),
@@ -421,7 +449,7 @@ public class GameActivity extends ARViewActivity // implements
 		touchVec.setY(-(player.ballGeometry.getTranslation().getY()-player.towerGeometry.getTranslation().getY()));
 		touchVec.setZ(0f);   
 		
-
+		//TODO remove new
 		// Math.sin(Math.PI/6) angle PI/6 = 30' => sin(pi/6) = 0.5 && Math.cos(Math.PI/6) angle PI/6 = 30' => cos(pi/6) = 0.5
 		Vector3d vel = new Vector3d((float)(touchVec.getX()/3* Math.cos(angleForCanon)), 
 									(float)(touchVec.getY()/3* Math.cos(angleForCanon)),
