@@ -56,6 +56,9 @@ public class Aim extends Drawable
 	/** Function to draw the path of the ball (aim) */
 	public void drawBallPath(Vector3d startVelocity, Vector3d startPosition) 
 	{ 
+		if(GameState.getState().powerUps.get(0).isHit() == false)
+			powerUp = false;
+		
 		zVelocity = startVelocity.getZ();
 		timeToLanding = (float) (zVelocity / (2 * 9.82f) + Math.sqrt(Math.pow( zVelocity / (2 * 9.82), 2) + startPosition.getZ() / 9.82));
 		//Log.d(TAG, "time to landing : " + timeToLanding);
@@ -64,7 +67,7 @@ public class Aim extends Drawable
 		currentTime = 0;
 
 		// draw 9 balls in the path the paintball will fly
-		// will increase the distant between balls the longer away from the wower the ball gets.
+		// will increase the distance between balls the further away from the tower the ball gets.
 		for (int i = 0; i < 9; i++) 
 		{
 			// Calculate the objects position after "i" timestep
@@ -135,14 +138,11 @@ public class Aim extends Drawable
 	}
 	
 	/**
-	 * return if powerUpp is true or false
+	 * return if powerUp is true or false
 	 */
 	public boolean getPowerUp()
 	{
-		if(powerUp == true)
-			return true;
-		else
-			return false;
+		return powerUp;
 	}
 	
 	/**
@@ -150,9 +150,6 @@ public class Aim extends Drawable
 	 */
 	public void setPowerUp(boolean power)
 	{
-		if(power == true)
-			powerUp = true;
-		else
-			powerUp =  false;
+		powerUp = power;
 	}
 }
