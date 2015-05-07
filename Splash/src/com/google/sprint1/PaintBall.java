@@ -1,6 +1,7 @@
 package com.google.sprint1;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.util.Log;
 
 import com.metaio.sdk.jni.IGeometry;
@@ -20,6 +21,7 @@ public class PaintBall extends Drawable
 	private int playerId;
 	private boolean isActive;
 	private final MobileConnection connection;
+	private Context context;
 	
 	public PaintBall(IGeometry geo, IGeometry splGeo, IGeometry pbShad, int playerID) {
 		super();
@@ -101,12 +103,14 @@ public class PaintBall extends Drawable
 		for(int i = 0; i < GameActivity.getNrOfAnts() ; i++)
 		{
 			if (isActive() && checkCollision(GameState.getState().ants.get(i).getGeometry())) { 
+				
+				Log.d("Sound", "Should play sound??");
+				Sound.playSound(((ContextWrapper) context).getBaseContext());
+				
 				//GameState.getState().ants.get(i).ant.setRotation(new Rotation( (float) (3 * Math.PI / 4), 0f, 0f), true);
 				Log.d(TAG, "Collision with ant " + i +" by player " + getPlayerId());
 				connection.sendData(NetDataHandler.antHit(i, getPlayerId(), getId()));
 				GameState.getState().ants.get(i).setIsHit(true, getPlayerId());
-				
-				//Sound.playSound(getBaseContext());
 				
 				disable();
 			}

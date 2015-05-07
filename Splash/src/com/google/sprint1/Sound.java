@@ -10,7 +10,7 @@ import android.util.Log;
 public class Sound {
 	
 	static boolean loaded = false;
-	static Context mContext;
+	protected Context context;
 	
 	public static void playSound(Context context){
 		
@@ -28,7 +28,7 @@ public class Sound {
 			public void onLoadComplete(SoundPool soundPool, int sampleId,
 					int status) {
 				soundPool.play(soundIds[0], 1, 1, 1, 0, 1.0f);
-				//loaded = true;
+				loaded = true;
 				
 			}
 			
