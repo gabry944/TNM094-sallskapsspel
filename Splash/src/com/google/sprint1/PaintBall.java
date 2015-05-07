@@ -104,8 +104,9 @@ public class PaintBall extends Drawable
 		{
 			if (isActive() && checkCollision(GameState.getState().ants.get(i).getGeometry())) { 
 				
-				Log.d("Sound", "Should play sound??");
-				Sound.playSound(((ContextWrapper) context).getBaseContext());
+				//Fucking skit ljud kan dö i ett hål
+				//Log.d("Sound", "Should play sound??");
+				//Sound.playSound(((ContextWrapper) context).getBaseContext());
 				
 				//GameState.getState().ants.get(i).ant.setRotation(new Rotation( (float) (3 * Math.PI / 4), 0f, 0f), true);
 				Log.d(TAG, "Collision with ant " + i +" by player " + getPlayerId());
