@@ -31,7 +31,7 @@ public class Ant extends Drawable
 	
 	float angDiffLimit = (float)(5*Math.PI/180);
 	float speed = 2f;
-	float fastSpeed = 4f;
+	float fastSpeed = 3f;
 	float angle = 0;
 	float randNr = 0;
 	int k = 0;
@@ -63,12 +63,12 @@ public class Ant extends Drawable
 		type = antType;		//1 = small ant, 2 = big ant, 3 = giant ant
 		ownedByPlayer = -1;	
 		isHit = false;
-		setGeometryProperties(ant, 50f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f)); 
+		setGeometryProperties(ant, 30f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f)); 
 		
 		if (type == BIG_ANT)
-			ant.setScale(80f);
+			ant.setScale(50f);
 		else if(type == GIANT_ANT)
-			ant.setScale(130f);
+			ant.setScale(70f);
 		
 		ant.setVisible(false);
 		diffVec = new Vector3d(0f, 0f, 0f);
@@ -114,6 +114,7 @@ public class Ant extends Drawable
 		if(hit == true)
 		{
 			setOwnedByPlayer(id);
+			ant.startAnimation("Take 001", false);
 			isHit = true;
 		}
 		else
@@ -131,8 +132,8 @@ public class Ant extends Drawable
 		{
 			//spawn ant at random
 			ant.setVisible(true);
-			ant.setTranslation(new Vector3d(randBetween(-600 , 600), randBetween(-600 , 600), (float)(Math.PI*3/2)));
-			ant.setRotation(new Rotation(randBetween(0f , 6.28f), randBetween(0f , 6.28f), (float)(Math.PI*3/2)));
+			ant.setTranslation(new Vector3d(randBetween(-600 , 600), randBetween(-600 , 600), 0f));
+			ant.setRotation(new Rotation(randBetween(0f , 6.28f), randBetween(0f , 6.28f), 0));	//(float)(Math.PI*3/2)
 		}
 		
 	}
@@ -189,7 +190,7 @@ public class Ant extends Drawable
 		
 		//random movement of the ant until being hit 
 		ant.setTranslation(movement);
-		ant.setRotation(new Rotation(0f, 0f, angle + (float)(Math.PI*3/2) ));  
+		ant.setRotation(new Rotation((float)(Math.PI/2), 0f, angle ));  
 
 	}	
 	
@@ -207,7 +208,7 @@ public class Ant extends Drawable
 		else
 			angle = (float)(Math.atan(diffVec.getY()/diffVec.getX()) + Math.PI);
 		
-		ant.setRotation( new Rotation( 0f, 0f, angle + (float)(Math.PI*3/2))); 
+		ant.setRotation( new Rotation((float)(Math.PI/2), 0f, angle)); //(float)(Math.PI*3/2) 
 		ant.setTranslation(ant.getTranslation().subtract((diffVec.getNormalized()).multiply(fastSpeed)));
 		
 		
