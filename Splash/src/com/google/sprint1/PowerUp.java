@@ -12,13 +12,13 @@ public class PowerUp extends Drawable {
 	private IGeometry geometry;
 	private boolean visible;
 	private float timer;
-	private float startTime;
+	private long prevTime;
 	
 	public PowerUp(IGeometry geo){
 		geometry = geo;
 		visible = true;
 		setGeometryProperties(geometry, 2.1f, new Vector3d(0f, 0f, 50f), new Rotation(0f, 0f, 0f));
-		timer = 15f;
+		timer = 20f;
 		
 	}
 	
@@ -31,7 +31,7 @@ public class PowerUp extends Drawable {
 	{
 		visible = !hit;
 		if(hit)
-			startTime(timer);
+			startTime();
 	}
 	
 	public boolean isHit()
@@ -60,7 +60,7 @@ public class PowerUp extends Drawable {
 				geometry.setVisible(false);
 				if(updateTimer())	//if the timer returns 0 the powerup respawns
 				{
-					timer = 15f;
+					timer = 20f;
 					geometry.setVisible(true);
 					setHit(false);
 					//aim.setPowerUp(false);
@@ -69,27 +69,22 @@ public class PowerUp extends Drawable {
 			}
 	}
 	
-	public void startTime(float timerTime)
+	public void startTime()
 	{
-		
+		prevTime = System.currentTimeMillis();
 	}
 	
 	public boolean updateTimer()
 	{
-//		float deltaTime;
-//		if(timer == 15f)		//if first time entering the function
-//		{
-//			startTime = System.nanoTime();
-//			//deltaTime = (System.nanoTime() - startTime) / 1000000000.0f;
-//			timer = startTime - 0.1f;	//to avoid this if again
-//		}
-//		else
-//		{
-//			deltaTime = startTime - (System.nanoTime() / 1000000000.0f);
-//			timer = timer - deltaTime;			
-//		}
+		long currentTime = System.currentTimeMillis();
 		
-		timer = timer - 0.05f;
+		float deltaTime = currentTime - prevTime;
+		deltaTime = deltaTime/1000; // convert from ms to s
+		prevTime = System.currentTimeMillis();	// save prevTime for next iteration
+		
+		timer = timer - deltaTime;
+		
+//		timer = timer - 0.05f;
 		Log.d(TAG, "timer : " + timer);
 
 		if(timer <= 0f)
