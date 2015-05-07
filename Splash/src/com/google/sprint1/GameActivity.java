@@ -119,9 +119,10 @@ public class GameActivity extends ARViewActivity // implements
 		
 		//Gesture handler
 		mGestureMask = GestureHandler.GESTURE_DRAG;
-		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);	
+		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);
 		
 		// create light
+
 
 
 	/*	mSpotLight = metaioSDK.createLight();
@@ -130,18 +131,7 @@ public class GameActivity extends ARViewActivity // implements
 		mSpotLight.setRadiusDegrees(10);
 		mSpotLight.setDiffuseColor(new Vector3d(1, 1, 0)); // yellow
 		mSpotLight.setCoordinateSystemID(1);*/
-//		mSpotLightGeo = createLightGeometry();
-//		mSpotLightGeo.setCoordinateSystemID(mSpotLight.getCoordinateSystemID());
-//		mSpotLightGeo.setDynamicLightingEnabled(false);
-		
-		/*DisplayMetrics dm = new DisplayMetrics();
-	    getWindowManager().getDefaultDisplay().getMetrics(dm);
-	    double mWidthPixels = dm.widthPixels;
-	    double mHeightPixels = dm.heightPixels;        
-	    double x = Math.pow(mWidthPixels/dm.xdpi,2);
-	    double y = Math.pow(mHeightPixels/dm.ydpi,2);
-	    double screenInches = Math.sqrt(x+y);
-	    Log.d(TAG,"Screen inches : " + screenInches);*/
+
 	}
 
 	/** Called when the user clicks the Exit button (krysset) */
@@ -244,6 +234,7 @@ public class GameActivity extends ARViewActivity // implements
 				// create ant geometry
 				ant = new Ant(Load3Dmodel("ant/smallAnt/ant.mfbx"), Ant.SMALL_ANT, Load3Dmodel("ant/markers/boxBlue.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 				GameState.getState().ants.add(ant);
+				
 			}
 			//Big ants
 			for(int i = 0; i< NUM_OF_ANTS[1]; i++)
@@ -328,6 +319,10 @@ public class GameActivity extends ARViewActivity // implements
 			{
 				ant = GameState.getState().ants.get(i); 
 				ant.update();
+				
+				//if(ant.getIsHit())
+					//ant.getGeometry().setTexture("ant/smallAnt/blueTexture.jpg");
+				
 				//send position and rotation to other players
 				//TODO: Move to Ant class?
 				if(ant.isActive())

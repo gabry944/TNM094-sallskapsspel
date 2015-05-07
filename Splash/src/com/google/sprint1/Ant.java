@@ -31,6 +31,7 @@ public class Ant extends Drawable
 	
 	float angDiffLimit = (float)(5*Math.PI/180);
 	float speed = 2f;
+	float fastSpeed = 4f;
 	float angle = 0;
 	float randNr = 0;
 	int k = 0;
@@ -125,7 +126,7 @@ public class Ant extends Drawable
 	/** function to spawn the ants at random time and random position */
 	public void spawnAnt()
 	{
-		ant.startAnimation("Take 001", true);
+		//ant.startAnimation("Take 001", true);
 		if(randBetween(1, 100) == 10)
 		{
 			//spawn ant at random
@@ -196,7 +197,6 @@ public class Ant extends Drawable
 	public void movementToTower(Vector3d pos)
 	{
 		//pos.setZ(0f);
-
 		setMarker(getOwnedByPlayer());
 		diffVec = ant.getTranslation().subtract(pos);
 		diffVec.setZ(0f);
@@ -208,7 +208,7 @@ public class Ant extends Drawable
 			angle = (float)(Math.atan(diffVec.getY()/diffVec.getX()) + Math.PI);
 		
 		ant.setRotation( new Rotation( 0f, 0f, angle + (float)(Math.PI*3/2))); 
-		ant.setTranslation(ant.getTranslation().subtract((diffVec.getNormalized()).multiply(speed)));
+		ant.setTranslation(ant.getTranslation().subtract((diffVec.getNormalized()).multiply(fastSpeed)));
 		
 		
 		//when ant reached tower
@@ -216,11 +216,15 @@ public class Ant extends Drawable
 		{
 			int points = getType();
 			
+			//animate anthill
+			GameState.getState().players.get(ownedByPlayer).playAnthillAnimation();
+			
 			GameState.getState().players.get(ownedByPlayer).increaseScore(points);
 			connection.sendData(NetDataHandler.antReachedTower(getId(), ownedByPlayer));
 			Log.d(TAG, "Ant  " + getId() +" reached player " + ownedByPlayer);
 			setActive(false);
 			//player.point();
+						
 			
 		}
 	}

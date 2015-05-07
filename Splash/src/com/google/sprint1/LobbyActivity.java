@@ -15,14 +15,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 /**
  * Activity to handle the screen between network and the gamescreen
  * 
  * where players should connect to each other before entering gamemode.
- * 
- * 
  */
 
 public class LobbyActivity extends Activity {
@@ -30,6 +29,8 @@ public class LobbyActivity extends Activity {
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
 	private ListView playerListView;
+	
+	private Button startGameBtn;// = (Button) findViewById(R.id.startGame);
 		
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,8 @@ public class LobbyActivity extends Activity {
 		playerListView = (ListView) findViewById(R.id.playerListView);
 		
 		playerListView.setAdapter(NetworkState.getState().getMobileConnection().getPlayerAdapter());
+		
+		startGameBtn = (Button) findViewById(R.id.startGame);
 
 	}
 
@@ -55,6 +58,8 @@ public class LobbyActivity extends Activity {
 	public void startGame(View view) {
 		// In order to start the game we need to extract our assets to the
 		// metaio SDK
+		startGameBtn.setClickable(false);
+		startGameBtn.setBackgroundColor(getResources().getColor(R.color.grey));
 		startGame.execute(0); // Starts the assetsExtracter class
 	}
 
