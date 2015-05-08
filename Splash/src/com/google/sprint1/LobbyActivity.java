@@ -84,11 +84,19 @@ public class LobbyActivity extends Activity {
 
 	/** Called when user minimize the window or clicks home button */
 	@Override
-	protected void onPause()
-	{	
+	protected void onPause(){	
+		Log.d(TAG, "In inPause()");
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		
 		super.onPause();
+	}
+	
+	@Override
+	protected void onDestroy(){
+		if(progressDialog.isShowing())
+			progressDialog.cancel();
+		Log.d(TAG, "In inDestroy()");
+		super.onDestroy();
 	}
 
 
