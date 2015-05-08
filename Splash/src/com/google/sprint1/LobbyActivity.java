@@ -65,7 +65,7 @@ public class LobbyActivity extends Activity {
 		
 	}
 
-	/** Called when the user clicks the start Game button (starta spel) */
+	/** Called when the user clicks the start Game button */
 	public void startGame(View view) {
 		//Start progressDialog
 		progressDialog.show();
