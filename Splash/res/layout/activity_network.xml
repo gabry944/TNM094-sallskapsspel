@@ -9,15 +9,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.google.sprint1.NetworkActivity" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="@string/network_text_connect"
-        android:textColor="#19D119"
-        android:textSize="20sp" />
-
 	<Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
@@ -26,22 +17,8 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="22dp"
         android:layout_marginRight="20dp"
-        android:background="#B2FFB2"
         android:onClick="startGame"
         android:text="@string/startaSpel"
-        android:textColor="#000000" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button1"
-        android:layout_alignBottom="@+id/button1"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:background="#B2FFB2"
-        android:onClick="mainMenu"
-        android:text="@string/Huvudmeny"
         android:textColor="#000000" />
 
     <ListView
@@ -51,17 +28,8 @@
         android:layout_above="@+id/textView2"
         android:layout_alignLeft="@+id/button2"
         android:layout_alignRight="@+id/button1"
-        android:layout_below="@+id/textView1" >
+        android:layout_below="@+id/button2" >
     </ListView>
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
-        android:layout_centerHorizontal="true"
-        android:text="@string/network_button_create_game"
-        android:onClick="hostGame" />
 
     <TextView
         android:id="@+id/textView2"
@@ -70,6 +38,38 @@
         android:layout_above="@+id/button3"
         android:layout_centerHorizontal="true"
         android:text="@string/network_text_host"
+        android:textColor="#19D119"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button1"
+        android:layout_alignBottom="@+id/button1"
+        android:layout_alignLeft="@+id/textView1"
+        android:onClick="hostGame"
+        android:text="@string/network_button_create_game" />
+
+    <ImageButton
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:onClick="backArrow"
+        android:src="@drawable/arrow_button_selector" 
+        android:background="@android:color/transparent"/>
+    <!-- android:text="@string/Huvudmeny"
+    	 android:textColor="#000000" --> 
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/network_text_connect"
         android:textColor="#19D119"
         android:textSize="20sp" />
 

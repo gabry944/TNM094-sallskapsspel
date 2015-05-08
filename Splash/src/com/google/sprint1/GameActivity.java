@@ -134,9 +134,12 @@ public class GameActivity extends ARViewActivity // implements
 
 	}
 
-	/** Called when the user clicks the Exit button (krysset) */
-	public void onExitButtonClick(View v) {
-		finish();
+	/**
+	 *  Called when the user clicks the back arrow button 
+	 */
+	public void backArrow(View view) {
+		Intent intentmenu = new Intent(this, MainActivity.class);
+		startActivity(intentmenu);
 	}
 
 

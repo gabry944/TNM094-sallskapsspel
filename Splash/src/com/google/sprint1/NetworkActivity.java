@@ -134,9 +134,9 @@ public class NetworkActivity extends Activity {
 	}
 
 	/**
-	 *  Called when the user clicks the mainMenu button (huvudmeny) 
+	 *  Called when the user clicks the back arrow button 
 	 */
-	public void mainMenu(View view) {
+	public void backArrow(View view) {
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}

@@ -75,9 +75,16 @@ public class LobbyActivity extends Activity {
 		// In order to start the game we need to extract our assets to the
 		// metaio SDK
 		startGame.execute(0); // Starts the assetsExtracter class
-
 	}
-
+	
+	/**
+	 *  Called when the user clicks the back arrow button 
+	 */
+	public void backArrow(View view) {
+		Intent intentmenu = new Intent(this, NetworkActivity.class);
+		startActivity(intentmenu);
+	}
+	
 	/** Called when the user clicks the Lobby button (huvudmeny) */
 	public void Lobby(View view) {
 		Intent intentmenu = new Intent(this, NetworkActivity.class);
