@@ -19,8 +19,10 @@ public class NsdHelper {
 	NsdManager.RegistrationListener mRegistrationListener;
 
 	public static final String SERVICE_TYPE = "_http._tcp.";
-	public static final String TAG = "NsdHelper";
 	public static final String SERVICE_NAME = "ARGame";
+	
+	public static final String TAG = "NsdHelper";
+
 	
 	public String mServiceName = "";
 

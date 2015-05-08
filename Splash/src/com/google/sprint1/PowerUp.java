@@ -85,7 +85,7 @@ public class PowerUp extends Drawable {
 		timer = timer - deltaTime;
 		
 //		timer = timer - 0.05f;
-		Log.d(TAG, "timer : " + timer);
+		//Log.d(TAG, "timer : " + timer);
 
 		if(timer <= 0f)
 			return true;

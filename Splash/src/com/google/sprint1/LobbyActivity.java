@@ -7,6 +7,8 @@ import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,7 +32,12 @@ public class LobbyActivity extends Activity {
 										// AssetExtraxter class
 	private ListView playerListView;
 	
-	private Button startGameBtn;// = (Button) findViewById(R.id.startGame);
+	private Button startGameBtn;
+	
+	public static final String TAG = "LobbyActivity";
+	
+	private ProgressDialog progressDialog;
+
 		
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +58,22 @@ public class LobbyActivity extends Activity {
 		playerListView.setAdapter(NetworkState.getState().getMobileConnection().getPlayerAdapter());
 		
 		startGameBtn = (Button) findViewById(R.id.startGame);
-
+		
+		progressDialog = new ProgressDialog(this, AlertDialog.THEME_HOLO_DARK);
+		progressDialog.setTitle("Loading resources...");
+		progressDialog.setCancelable(false);
+		
 	}
 
 	/** Called when the user clicks the start Game button (starta spel) */
 	public void startGame(View view) {
 		// In order to start the game we need to extract our assets to the
 		// metaio SDK
+		progressDialog.show();
 		startGameBtn.setClickable(false);
 		startGameBtn.setBackgroundColor(getResources().getColor(R.color.grey));
 		startGame.execute(0); // Starts the assetsExtracter class
+
 	}
 
 	/** Called when the user clicks the Lobby button (huvudmeny) */
