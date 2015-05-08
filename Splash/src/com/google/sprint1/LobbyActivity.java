@@ -38,7 +38,6 @@ public class LobbyActivity extends Activity {
 	
 	private ProgressDialog progressDialog;
 
-		
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,6 +58,7 @@ public class LobbyActivity extends Activity {
 		
 		startGameBtn = (Button) findViewById(R.id.startGame);
 		
+		//Set progressDialog properties
 		progressDialog = new ProgressDialog(this, AlertDialog.THEME_HOLO_DARK);
 		progressDialog.setTitle("Loading resources...");
 		progressDialog.setCancelable(false);
@@ -67,11 +67,13 @@ public class LobbyActivity extends Activity {
 
 	/** Called when the user clicks the start Game button (starta spel) */
 	public void startGame(View view) {
-		// In order to start the game we need to extract our assets to the
-		// metaio SDK
+		//Start progressDialog
 		progressDialog.show();
+		//Set button properties
 		startGameBtn.setClickable(false);
 		startGameBtn.setBackgroundColor(getResources().getColor(R.color.grey));
+		// In order to start the game we need to extract our assets to the
+		// metaio SDK
 		startGame.execute(0); // Starts the assetsExtracter class
 
 	}
@@ -85,7 +87,6 @@ public class LobbyActivity extends Activity {
 	/** Called when user minimize the window or clicks home button */
 	@Override
 	protected void onPause(){	
-		Log.d(TAG, "In inPause()");
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		
 		super.onPause();
@@ -95,7 +96,7 @@ public class LobbyActivity extends Activity {
 	protected void onDestroy(){
 		if(progressDialog.isShowing())
 			progressDialog.cancel();
-		Log.d(TAG, "In inDestroy()");
+
 		super.onDestroy();
 	}
 
@@ -114,10 +115,10 @@ public class LobbyActivity extends Activity {
 				// debug build only.
 				final String[] ignoreList = { "Menu", "webkit", "sounds",
 						"images", "webkitsec" };
+				
 				AssetsManager.extractAllAssets(getApplicationContext(), "",
 						ignoreList, BuildConfig.DEBUG);
-				// AssetsManager.extractAllAssets(getApplicationContext(),
-				// BuildConfig.DEBUG);
+				
 			} catch (IOException e) {
 				MetaioDebug.printStackTrace(Log.ERROR, e);
 				return false;
