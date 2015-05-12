@@ -7,7 +7,7 @@ import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.util.Log;
 
-public class Sound {
+public class SoundEffect {
 	
 	static boolean loaded = false;
 	protected Context context;
@@ -38,26 +38,5 @@ public class Sound {
 		Log.e("Test", "Loaded = " + loaded);
 		
 		}
-	
-	public static void playBackgroundMusic(Context context){
-	
-	MediaPlayer backgroundMusic;
-	backgroundMusic = MediaPlayer.create(context, R.raw.good);
-	
-	backgroundMusic.setLooping(true);
-	backgroundMusic.setVolume(10.0f, 3.0f);
-	backgroundMusic.start();
-	
-	}
-	
-	public static void playsoundEffect(int soundID){
-		
-		SoundPool soundPool;
-		soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
-		
-		Log.e("Test", "soundID play = " + soundID);
-		
-		soundPool.play(soundID, 1, 1, 1, 0, 1.0f);
-	}
 
 }
