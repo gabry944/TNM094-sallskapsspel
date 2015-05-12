@@ -139,10 +139,7 @@ public class GameActivity extends ARViewActivity // implements
 //		mSpotLightGeo.setCoordinateSystemID(mSpotLight.getCoordinateSystemID());
 //		mSpotLightGeo.setDynamicLightingEnabled(false);
 		
-/*		if(isZoomSupported())
-		{
-			Log.d(TAG,"Zoom suported");
-		}*/		
+
 		DisplayMetrics dm = new DisplayMetrics();
 	    getWindowManager().getDefaultDisplay().getMetrics(dm);	    
 	    //double mWidthPixels = dm.widthPixels;
@@ -156,31 +153,22 @@ public class GameActivity extends ARViewActivity // implements
 	    Log.d(TAG,"Screen width : " + x);
 	    Log.d(TAG,"Screen height : " + y);
 	    
-
 		Camera camera = Camera.open();
 		Camera.Parameters p = camera.getParameters();
+		float fmm = p.getFocalLength();
 		double thetaH = p.getHorizontalViewAngle();
 		double thetaV = p.getVerticalViewAngle();
 		//double thetaH = Math.toRadians(p.getHorizontalViewAngle());
 		//double thetaV = Math.toRadians(p.getVerticalViewAngle());
 	    Log.d(TAG,"current thetaH : " + thetaH);
 	    Log.d(TAG,"current thetaV : " + thetaV);
-	    //thetaH = Math.atan((double) (x/2)/15.748);
-	    //thetaV = Math.atan((double) (y/2)/15.748);
-	    thetaH = Math.toDegrees(2 * Math.atan((double) (x/2)/15.748));
-	    thetaV = Math.toDegrees(2 * Math.atan((double) (y/2)/15.748));
+	    thetaH = 2 * Math.atan((double) (x/2)/15.748);
+	    thetaV = 2 * Math.atan((double) (y/2)/15.748);
+	    //thetaH = Math.toDegrees(2 * Math.atan((double) (x/2)/15.748));
+	    //thetaV = Math.toDegrees(2 * Math.atan((double) (y/2)/15.748));
 	    Log.d(TAG,"wanted thetaH : " + thetaH);
 	    Log.d(TAG,"wanted thetaV : " + thetaV);
-	    if(p.isZoomSupported())
-	    {
-	    	Log.d(TAG,"Zoom possible, max: " + p.getMaxZoom());
-	    	//p.setZoom(p.getMaxZoom());
-	    }
-	    else
-	    {
-	    	Log.d(TAG,"Zoom not possible");
-	    }
-		camera.release();
+	    camera.release();		
 		
 		Vector2di imageResolution = new Vector2di(0,0);
 		Vector2d focalLengths = new Vector2d(0,0);
@@ -188,10 +176,35 @@ public class GameActivity extends ARViewActivity // implements
 		Vector4d distortion = new Vector4d(0,0,0,0);
 		ECAMERA_TYPE myCameraType= ECAMERA_TYPE.ECT_RENDERING_MONO;
 		metaioSDK.getCameraParameters(imageResolution,focalLengths, principalPoint, distortion, myCameraType);	
-		Log.d(TAG,"Image resolution x: " + imageResolution.getX());
-		Log.d(TAG,"Image resolution y: " + imageResolution.getY());
+		
+		/*float Wpx = imageResolution.getX();
+		float Hpx = imageResolution.getY();
+		Log.d(TAG,"Wpx: " + Wpx);
+		Log.d(TAG,"Hpx: " + Hpx);
+		
 		Log.d(TAG,"Focal lengths x: " + focalLengths.getX());
 		Log.d(TAG,"Focal lengths y: " + focalLengths.getY());
+		
+		float CCDwmm = (Wpx*fmm)/ focalLengths.getX();
+		float CCDhmm = (Hpx*fmm)/ focalLengths.getY();
+		Log.d(TAG,"CCDwmm: " + CCDwmm);
+		Log.d(TAG,"CCDhmm: " + CCDhmm);
+		
+		focalLengths.setX((float)((imageResolution.getX()*Math.sqrt(Math.pow(CCDwmm,1)+Math.pow(CCDhmm,2)))/(2*CCDwmm*Math.tan(thetaH/2))));
+		focalLengths.setY((float)((imageResolution.getY()*Math.sqrt(Math.pow(CCDwmm,1)+Math.pow(CCDhmm,2)))/(2*CCDhmm*Math.tan(thetaV/2))));
+		
+		Log.d(TAG,"Desierd Focal lengths x: " + focalLengths.getX());
+		Log.d(TAG,"Desierd Focal lengths y: " + focalLengths.getY());
+		
+		metaioSDK.setCameraParameters(imageResolution,focalLengths, principalPoint, distortion, myCameraType);	*/
+		
+		
+		imageResolution = metaioSDK.getCamera().getResolution();
+		imageResolution.setX(50);
+		imageResolution.setY(50);
+		metaioSDK.getCamera().setResolution(imageResolution);
+		Log.d(TAG,"imageResolution x: " + imageResolution.getX());
+		Log.d(TAG,"imageResolution y: " + imageResolution.getY());
 		
 	}
 
