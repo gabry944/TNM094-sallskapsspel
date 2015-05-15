@@ -137,7 +137,7 @@ public class GameActivity extends ARViewActivity // implements
 	/**
 	 *  Called when the user clicks the back arrow button 
 	 */
-	public void backArrow(View view) {
+	public void stopButton(View view) {
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}

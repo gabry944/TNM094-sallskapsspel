@@ -158,6 +158,7 @@ public class NetworkActivity extends Activity {
 		
 			isHost = true;
 			
+			//TODO: Check if registration is successfull
 			toast.show();
 			
 			Intent intentlobby = new Intent(this, LobbyActivity.class);

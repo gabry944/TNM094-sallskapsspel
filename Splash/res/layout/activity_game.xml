@@ -130,8 +130,8 @@
 	    android:id="@+id/button1"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:onClick="backArrow"
-	    android:src="@drawable/arrow_button_selector" 
+	    android:onClick="stopButton"
+	    android:src="@drawable/stop_button_selector" 
         android:background="@android:color/transparent" />
 	    
 </FrameLayout>
