@@ -67,6 +67,15 @@ public class LobbyActivity extends Activity {
 
 	/** Called when the user clicks the start Game button */
 	public void startGame(View view) {
+		//Unregister if the registration state is true. 
+		//Set mNsdHelper to null;
+		//TODO: show dialog that says that you will unregister your game.
+		if(NetworkState.getState().getNsdHelper().getRegistrationState()
+				&& NetworkState.getState().getNsdHelper() != null){
+			NetworkState.getState().getNsdHelper().unregisterService();
+        }
+		NetworkState.getState().mNsdHelper = null;
+		
 		//Start progressDialog
 		progressDialog.show();
 		//Set button properties
@@ -81,12 +90,15 @@ public class LobbyActivity extends Activity {
 	 *  Called when the user clicks the back arrow button 
 	 */
 	public void backArrow(View view) {
-		Intent intentmenu = new Intent(this, NetworkActivity.class);
-		startActivity(intentmenu);
-	}
-	
-	/** Called when the user clicks the Lobby button (huvudmeny) */
-	public void Lobby(View view) {
+		//Unregister if the registration state is true. 
+		//Set mNsdHelper to null;
+		//TODO: show dialog that says that you will unregister your game.
+		if(NetworkState.getState().getNsdHelper().getRegistrationState()
+				&& NetworkState.getState().getNsdHelper() != null){
+			NetworkState.getState().getNsdHelper().unregisterService();
+        }
+		NetworkState.getState().mNsdHelper = null;
+		
 		Intent intentmenu = new Intent(this, NetworkActivity.class);
 		startActivity(intentmenu);
 	}

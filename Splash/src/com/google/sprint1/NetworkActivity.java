@@ -123,20 +123,18 @@ public class NetworkActivity extends Activity {
 		
 	}
 
-	/** 
-	 * Called when the user clicks the start Game button (starta spel)
-	 */
-	public void startGame(View view) {
-		// In order to start the game we need to extract our assets to the
-		// metaio SDK
-		Intent intentlobby = new Intent(this, LobbyActivity.class);
-		startActivity(intentlobby);	
-	}
-
 	/**
 	 *  Called when the user clicks the back arrow button 
 	 */
 	public void backArrow(View view) {
+		
+		//Unregister if the registration state is true.
+		if(NetworkState.getState().getNsdHelper().getRegistrationState()
+				&& NetworkState.getState().getNsdHelper() != null){
+			NetworkState.getState().getNsdHelper().unregisterService();
+        }
+		NetworkState.getState().mNsdHelper = null;
+
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}
@@ -179,13 +177,6 @@ public class NetworkActivity extends Activity {
 			NetworkState.getState().getNsdHelper().stopDiscovery();
 		}
 		
-		//Unregister if the registration state is true.
-		if(NetworkState.getState().getNsdHelper().getRegistrationState()){
-			NetworkState.getState().getNsdHelper().unregisterService();
-        }
-		
-		NetworkState.getState().mNsdHelper = null;
-
 		super.onPause();
 	}
 
