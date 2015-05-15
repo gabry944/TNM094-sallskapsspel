@@ -9,6 +9,7 @@ import com.metaio.tools.io.AssetsManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -93,14 +94,37 @@ public class LobbyActivity extends Activity {
 		//Unregister if the registration state is true. 
 		//Set mNsdHelper to null;
 		//TODO: show dialog that says that you will unregister your game.
-		if(NetworkState.getState().getNsdHelper().getRegistrationState()
-				&& NetworkState.getState().getNsdHelper() != null){
-			NetworkState.getState().getNsdHelper().unregisterService();
-        }
-		NetworkState.getState().mNsdHelper = null;
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		
-		Intent intentmenu = new Intent(this, NetworkActivity.class);
-		startActivity(intentmenu);
+		builder.setMessage("If you continue people will no longer be able to connect")
+				.setTitle("Go back")
+				.setPositiveButton(R.string.BTN_CONTINUE,
+						new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						if(NetworkState.getState().getNsdHelper().getRegistrationState()
+								&& NetworkState.getState().getNsdHelper() != null){
+							NetworkState.getState().getNsdHelper().unregisterService();
+				        }
+						NetworkState.getState().mNsdHelper = null;
+						
+						Intent intentmenu = new Intent(LobbyActivity.this, NetworkActivity.class);
+						startActivity(intentmenu);
+						
+					}
+				})
+				.setNegativeButton(R.string.BTN_CANCEL,
+						new DialogInterface.OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								// TODO Auto-generated method stub
+								
+							}
+						});
+		AlertDialog dialog = builder.create();
+		dialog.show();
 	}
 
 	/** Called when user minimize the window or clicks home button */
