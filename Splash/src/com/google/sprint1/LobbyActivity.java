@@ -94,7 +94,7 @@ public class LobbyActivity extends Activity {
 		//Unregister if the registration state is true. 
 		//Set mNsdHelper to null;
 		//TODO: show dialog that says that you will unregister your game.
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK);
 		
 		builder.setMessage("If you continue people will no longer be able to connect")
 				.setTitle("Go back")
@@ -122,9 +122,8 @@ public class LobbyActivity extends Activity {
 								// TODO Auto-generated method stub
 								
 							}
-						});
-		AlertDialog dialog = builder.create();
-		dialog.show();
+						}).create().show();;
+		
 	}
 
 	/** Called when user minimize the window or clicks home button */
