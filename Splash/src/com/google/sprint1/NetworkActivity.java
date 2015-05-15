@@ -112,11 +112,7 @@ public class NetworkActivity extends Activity {
 												// TODO Auto-generated method
 												// stub
 											}
-										});
-						// 3. Get the AlertDialog from create()
-						AlertDialog dialog = builder.create();
-						// Show the AlertDialog
-						dialog.show();
+										}).create().show();
 					}
 
 				});
