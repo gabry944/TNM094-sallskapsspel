@@ -97,6 +97,8 @@ public class NetworkActivity extends Activity {
 													NetworkState.getState().getMobileConnection().connectToPeer(
 															service.getHost());
 													//TODO : Go to Lobby
+													Intent intentlobby = new Intent(NetworkActivity.this, LobbyActivity.class);
+													startActivity(intentlobby);	
 												} else {
 													Log.d(TAG,
 															"No service to connect to!");
