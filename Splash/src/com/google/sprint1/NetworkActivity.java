@@ -154,10 +154,10 @@ public class NetworkActivity extends Activity {
 			
 			//TODO: Check if registration is successfull
 			toast.show();
-			if(NetworkState.getState().getNsdHelper().getRegistrationState()){
+			//if(NetworkState.getState().getNsdHelper().getRegistrationState()){
 				Intent intentlobby = new Intent(this, LobbyActivity.class);
 				startActivity(intentlobby);	
-			}
+			//}
 
 	}
 
