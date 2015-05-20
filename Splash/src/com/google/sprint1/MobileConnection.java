@@ -159,8 +159,10 @@ public class MobileConnection {
 				mPeers.add(peer);
 				mIPs.add(peer.getAdress());
 				playerList.add(peer.getAdress().toString());
+				
 //				if(pAisInit)
 //					playerAdapter.notifyDataSetChanged();
+
 				
 			}
 		} catch (IOException e) {

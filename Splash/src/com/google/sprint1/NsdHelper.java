@@ -89,7 +89,7 @@ public class NsdHelper {
 				mUpdateHandler.sendMessage(msg);
 
 			}
-
+			
 			@Override
 			public void onDiscoveryStopped(String serviceType) {
 				Log.i(TAG, "Discovery stopped: " + serviceType);

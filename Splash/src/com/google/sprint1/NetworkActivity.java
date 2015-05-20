@@ -89,6 +89,7 @@ public class NetworkActivity extends Activity {
 												}
 												service = NetworkState.getState().getNsdHelper()
 														.resolveService(service);
+												
 												if (service != null) {
 													Log.d(TAG,
 															"Connecting to: "
@@ -96,7 +97,8 @@ public class NetworkActivity extends Activity {
 																			.getServiceName());
 													NetworkState.getState().getMobileConnection().connectToPeer(
 															service.getHost());
-													//TODO : Go to Lobby
+													
+													//Going to lobby when connected to a game
 													Intent intentlobby = new Intent(NetworkActivity.this, LobbyActivity.class);
 													startActivity(intentlobby);	
 												} else {
