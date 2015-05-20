@@ -68,14 +68,6 @@ public class LobbyActivity extends Activity {
 
 	/** Called when the user clicks the start Game button */
 	public void startGame(View view) {
-		//Unregister if the registration state is true. 
-		//Set mNsdHelper to null;
-		//TODO: show dialog that says that you will unregister your game.
-		if(NetworkState.getState().getNsdHelper().getRegistrationState()
-				&& NetworkState.getState().getNsdHelper() != null){
-			NetworkState.getState().getNsdHelper().unregisterService();
-        }
-		NetworkState.getState().mNsdHelper = null;
 		
 		//Start progressDialog
 		progressDialog.show();
@@ -103,11 +95,6 @@ public class LobbyActivity extends Activity {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						if(NetworkState.getState().getNsdHelper().getRegistrationState()
-								&& NetworkState.getState().getNsdHelper() != null){
-							NetworkState.getState().getNsdHelper().unregisterService();
-				        }
-						NetworkState.getState().mNsdHelper = null;
 						
 						Intent intentmenu = new Intent(LobbyActivity.this, NetworkActivity.class);
 						startActivity(intentmenu);
@@ -130,6 +117,12 @@ public class LobbyActivity extends Activity {
 	@Override
 	protected void onPause(){	
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+		
+		if(NetworkState.getState().getNsdHelper().getRegistrationState()
+				&& NetworkState.getState().getNsdHelper() != null){
+			NetworkState.getState().getNsdHelper().unregisterService();
+        }
+		NetworkState.getState().setNsdHelperToNull();
 		
 		super.onPause();
 	}

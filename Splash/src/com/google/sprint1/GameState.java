@@ -14,6 +14,7 @@ public class GameState {
 	
 	public int myPlayerID = 0;
 	public int nrOfPlayers = 1;
+	public int playersReady = 0;
 	
 	public MobileConnection connection;
 	

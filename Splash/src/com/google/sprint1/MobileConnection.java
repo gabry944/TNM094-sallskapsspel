@@ -159,8 +159,10 @@ public class MobileConnection {
 				mPeers.add(peer);
 				mIPs.add(peer.getAdress());
 				playerList.add(peer.getAdress().toString());
-				if(pAisInit)
-					playerAdapter.notifyDataSetChanged();
+				
+//				if(pAisInit)
+//					playerAdapter.notifyDataSetChanged();
+
 				
 			}
 		} catch (IOException e) {
@@ -220,7 +222,9 @@ public class MobileConnection {
 		case DataPackage.IP_LIST:
 			resolveHandshake(data.getData());
 			break;
-		
+		case DataPackage.PLAYER_READY:
+			GameState.getState().playersReady++;
+			break;
 		default:
 			break;
 		}

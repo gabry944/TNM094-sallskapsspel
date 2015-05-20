@@ -40,16 +40,19 @@ public class GameActivity extends ARViewActivity // implements
 	
 	/* Variables for objects in the game */
 
-	private Player player;
-	private Player bluePlayer;
-	private Player greenPlayer;
-	private Player redPlayer;
-	private Player yellowPlayer;
+	public Player player;
+	public Player bluePlayer;
+	public Player greenPlayer;
+	public Player redPlayer;
+	public Player yellowPlayer;
 
+	private int currentBall = 0;
 	GameState gameState;
 
 	Aim aim;
 
+	boolean gametimeSet =false;
+	
 	private ILight mSpotLight;
 
 	private IGeometry ball;
@@ -285,6 +288,11 @@ public class GameActivity extends ARViewActivity // implements
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 3));
 			}
 			
+			//ALL RESOURCES LOADED - PLAYER IS READY TO START GAME
+			
+			NetworkState.getState().mConnection.sendData(NetDataHandler.playerReady(GameState.getState().myPlayerID));
+			GameState.getState().playersReady++;
+			
 		} 
 		catch (Exception e) 
 		{
@@ -306,12 +314,18 @@ public class GameActivity extends ARViewActivity // implements
 	public void onDrawFrame() {
 		super.onDrawFrame();
 
-		// If content not loaded yet, do nothing
-		if ( GameState.getState().paintBalls.isEmpty())
+		// If all players are not ready, do nothing
+		if ( GameState.getState().playersReady < GameState.getState().nrOfPlayers)
 			return;
 
+		if (gametimeSet)
+		{
+			GameState.getState().gameStartTime = System.currentTimeMillis();
+			gametimeSet = true;
+		}
+		
 		if(GameState.getState().powerUps.get(0).isHit()) 
-			aim.setPowerUp(true);
+		aim.setPowerUp(true);
 		
 		//if(GameState.getState().powerUps.get(0).getCollision())
 		//	SoundEffect.playSound(getBaseContext());
@@ -385,12 +399,13 @@ public class GameActivity extends ARViewActivity // implements
     private PaintBall getAvailableBall(int id)
     {
     	PaintBall ball;
-    	for(int i=id*5; i < (id+1)*5;i++)
-    	{
-    		ball = GameState.getState().paintBalls.get(i);
-    		if (!(ball.getGeometry().isVisible()))
-    			return ball;
-    	}
+    	
+		ball = GameState.getState().paintBalls.get(currentBall + id*5);
+		currentBall = (currentBall++)%5;
+		Log.d("Ball", "CurrentBall "+ currentBall);
+		if (!(ball.getGeometry().isVisible()))
+			return ball;
+	
     	
     	return null;
     }

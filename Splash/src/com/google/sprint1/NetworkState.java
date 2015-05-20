@@ -14,14 +14,14 @@ public class NetworkState {
 	
 	MobileConnection mConnection;
 	
-	public NsdHelper mNsdHelper;
+	private NsdHelper mNsdHelper;
 	
 	private ArrayAdapter<String> listAdapter;
 	private ArrayList<NsdServiceInfo> serviceList;
 	private ArrayList<String> serviceNameList;
 	
 	public Handler mNSDHandler;
-	
+		
 	private Context context;
 
 	protected  NetworkState() {
@@ -124,6 +124,10 @@ public class NetworkState {
 	public void closeNetwork()
 	{
 		mConnection.tearDown();
+	}
+	
+	public void setNsdHelperToNull(){
+		mNsdHelper = null;
 	}
 
 }

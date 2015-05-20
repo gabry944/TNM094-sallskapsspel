@@ -19,7 +19,7 @@ public class NsdHelper {
 	NsdManager.RegistrationListener mRegistrationListener;
 
 	public static final String SERVICE_TYPE = "_http._tcp.";
-	public static final String SERVICE_NAME = "ARGame";
+	public static final String SERVICE_NAME = "Splash";
 	
 	public static final String TAG = "NsdHelper";
 
@@ -119,7 +119,7 @@ public class NsdHelper {
 			public void onResolveFailed(NsdServiceInfo serviceInfo,
 					int errorCode) {
 				Log.e(TAG, "Resolve failed. Error code: " + errorCode);
-				serviceResolved = true;
+				serviceResolved = false;
 			}
 
 			@Override

@@ -65,7 +65,7 @@ public class NetworkActivity extends Activity {
 						// Instantiate an AlertDialog.Builder with its
 						// constructor
 						AlertDialog.Builder builder = new AlertDialog.Builder(
-								NetworkActivity.this);
+								NetworkActivity.this, AlertDialog.THEME_HOLO_DARK);
 
 						builder.setMessage(
 								"Connect to "
@@ -89,17 +89,38 @@ public class NetworkActivity extends Activity {
 												}
 												service = NetworkState.getState().getNsdHelper()
 														.resolveService(service);
+												
 												if (service != null) {
+													
+													//Variables for toast
+													Context context = getApplicationContext();
+													CharSequence text = "Connected to " + service.getServiceName() + " successfully!" ;
+													int duration = Toast.LENGTH_LONG;
+													Toast toast = Toast.makeText(context, text, duration);
+													
 													Log.d(TAG,
 															"Connecting to: "
 																	+ service
 																			.getServiceName());
 													NetworkState.getState().getMobileConnection().connectToPeer(
 															service.getHost());
-													//TODO : Go to Lobby
+													
+													toast.show();		
+													
+													//Going to lobby when connected to a game
+													Intent intentlobby = new Intent(NetworkActivity.this, LobbyActivity.class);
+													startActivity(intentlobby);	
+													
 												} else {
 													Log.d(TAG,
 															"No service to connect to!");
+													//Variables for toast
+													Context context = getApplicationContext();
+													CharSequence text = "Could not connect to the game!";
+													int duration = Toast.LENGTH_LONG;
+													Toast toast = Toast.makeText(context, text, duration);
+													
+													toast.show();
 												}
 
 											}
@@ -129,8 +150,8 @@ public class NetworkActivity extends Activity {
 				&& NetworkState.getState().getNsdHelper() != null){
 			NetworkState.getState().getNsdHelper().unregisterService();
         }
-		NetworkState.getState().mNsdHelper = null;
-
+		NetworkState.getState().setNsdHelperToNull();
+		
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}
@@ -147,16 +168,15 @@ public class NetworkActivity extends Activity {
 		
 		//If user is not already host and the registration state is false,
 		//register/host a game
-		if(!isHost && !NetworkState.getState().getNsdHelper().getRegistrationState())
+		if(!NetworkState.getState().getNsdHelper().getRegistrationState())
 			NetworkState.getState().getNsdHelper().registerService(MobileConnection.SERVER_PORT);
-		
-			isHost = true;
 			
 			//TODO: Check if registration is successfull
 			toast.show();
-			
-			Intent intentlobby = new Intent(this, LobbyActivity.class);
-			startActivity(intentlobby);	
+			//if(NetworkState.getState().getNsdHelper().getRegistrationState()){
+				Intent intentlobby = new Intent(this, LobbyActivity.class);
+				startActivity(intentlobby);	
+			//}
 
 	}
 
@@ -194,11 +214,6 @@ public class NetworkActivity extends Activity {
 			if (NetworkState.getState().getNsdHelper() != null) 
 				NetworkState.getState().getNsdHelper().discoverServices(); 
 			
-			//Checks if the user is a host and register a service accordingly.
-			if(isHost)
-				NetworkState.getState().getNsdHelper().registerService(MobileConnection.SERVER_PORT);
-
-
 	}
 
 	/**
@@ -215,7 +230,7 @@ public class NetworkActivity extends Activity {
 		
 		//Checks state of mNsdHelper, isHost and registration state to prevent 
 		//crash.
-		if(NetworkState.getState().getNsdHelper() != null && isHost 
+		if(NetworkState.getState().getNsdHelper() != null 
 				&& NetworkState.getState().getNsdHelper().getRegistrationState()){
 			NetworkState.getState().getNsdHelper().unregisterService();
 		}
