@@ -98,13 +98,14 @@ public class NetworkActivity extends Activity {
 													NetworkState.getState().getMobileConnection().connectToPeer(
 															service.getHost());
 													
-													//Going to lobby when connected to a game
-													Intent intentlobby = new Intent(NetworkActivity.this, LobbyActivity.class);
-													startActivity(intentlobby);	
+													
 												} else {
 													Log.d(TAG,
 															"No service to connect to!");
 												}
+												//Going to lobby when connected to a game
+												Intent intentlobby = new Intent(NetworkActivity.this, LobbyActivity.class);
+												startActivity(intentlobby);	
 
 											}
 										})

@@ -68,14 +68,6 @@ public class LobbyActivity extends Activity {
 
 	/** Called when the user clicks the start Game button */
 	public void startGame(View view) {
-		//Unregister if the registration state is true. 
-		//Set mNsdHelper to null;
-		//TODO: show dialog that says that you will unregister your game.
-		if(NetworkState.getState().getNsdHelper().getRegistrationState()
-				&& NetworkState.getState().getNsdHelper() != null){
-			NetworkState.getState().getNsdHelper().unregisterService();
-        }
-		NetworkState.getState().setNsdHelperToNull();
 		
 		//Start progressDialog
 		progressDialog.show();

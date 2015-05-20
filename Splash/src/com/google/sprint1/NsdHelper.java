@@ -26,6 +26,7 @@ public class NsdHelper {
 	
 	public String mServiceName = "";
 
+	public boolean serviceResolved = false;
 	private boolean serviceRegistered;
 	private NsdServiceInfo mService;
 	
@@ -89,7 +90,7 @@ public class NsdHelper {
 				mUpdateHandler.sendMessage(msg);
 
 			}
-			
+
 			@Override
 			public void onDiscoveryStopped(String serviceType) {
 				Log.i(TAG, "Discovery stopped: " + serviceType);
@@ -118,6 +119,7 @@ public class NsdHelper {
 			public void onResolveFailed(NsdServiceInfo serviceInfo,
 					int errorCode) {
 				Log.e(TAG, "Resolve failed. Error code: " + errorCode);
+				serviceResolved = false;
 			}
 
 			@Override
@@ -132,6 +134,7 @@ public class NsdHelper {
 				}
 
 				mService = serviceInfo;
+				serviceResolved = true;
 			}
 		};
 		
@@ -142,10 +145,9 @@ public class NsdHelper {
 
 			@Override
 			public void onServiceRegistered(NsdServiceInfo NsdServiceInfo) {
-				serviceRegistered = true;
 				Log.d(TAG, "Service registered: " + NsdServiceInfo);
 				mServiceName = NsdServiceInfo.getServiceName();
-				
+				serviceRegistered = true;
 			}
 
 			@Override
@@ -157,10 +159,10 @@ public class NsdHelper {
 
 			@Override
 			public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
-				serviceRegistered = false;
+
 				Log.d(TAG,
 						"Service unregistered: " + serviceInfo.getServiceName());
-				
+				serviceRegistered = false;
 			}
 
 			@Override
@@ -199,13 +201,27 @@ public class NsdHelper {
 	}
 
 	public NsdServiceInfo resolveService(NsdServiceInfo service) {
+		serviceResolved = false;
 		mNsdManager.resolveService(service, mResolveListener);
-
+		while (!serviceResolved) {
+			// Wait for service to be resolved
+		}
 		return mService;
 	}
 
 	public NsdServiceInfo getChosenServiceInfo() {
 		return mService;
+	}
+
+	/**
+	 * Used to unregister service from network and stop the service discovery 
+	 * at the same time.
+	 */
+	public void tearDown() {
+		Log.d(TAG, "tearing down");
+		mNsdManager.unregisterService(mRegistrationListener);
+		mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+
 	}
 	
 	public void unregisterService(){
