@@ -65,7 +65,7 @@ public class NetworkActivity extends Activity {
 						// Instantiate an AlertDialog.Builder with its
 						// constructor
 						AlertDialog.Builder builder = new AlertDialog.Builder(
-								NetworkActivity.this);
+								NetworkActivity.this, AlertDialog.THEME_HOLO_DARK);
 
 						builder.setMessage(
 								"Connect to "
@@ -91,6 +91,12 @@ public class NetworkActivity extends Activity {
 														.resolveService(service);
 												
 												if (service != null) {
+													Context context = getApplicationContext();
+													CharSequence text = "Connected to " + service.getServiceName() + " successfully!" ;
+													int duration = Toast.LENGTH_LONG;
+
+													Toast toast = Toast.makeText(context, text, duration);
+													
 													Log.d(TAG,
 															"Connecting to: "
 																	+ service
@@ -98,14 +104,16 @@ public class NetworkActivity extends Activity {
 													NetworkState.getState().getMobileConnection().connectToPeer(
 															service.getHost());
 													
+													toast.show();		
+													
+													//Going to lobby when connected to a game
+													Intent intentlobby = new Intent(NetworkActivity.this, LobbyActivity.class);
+													startActivity(intentlobby);	
 													
 												} else {
 													Log.d(TAG,
 															"No service to connect to!");
 												}
-												//Going to lobby when connected to a game
-												Intent intentlobby = new Intent(NetworkActivity.this, LobbyActivity.class);
-												startActivity(intentlobby);	
 
 											}
 										})
