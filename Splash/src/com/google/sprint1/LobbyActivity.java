@@ -75,7 +75,7 @@ public class LobbyActivity extends Activity {
 				&& NetworkState.getState().getNsdHelper() != null){
 			NetworkState.getState().getNsdHelper().unregisterService();
         }
-		NetworkState.getState().mNsdHelper = null;
+		NetworkState.getState().setNsdHelperToNull();
 		
 		//Start progressDialog
 		progressDialog.show();
@@ -107,7 +107,7 @@ public class LobbyActivity extends Activity {
 								&& NetworkState.getState().getNsdHelper() != null){
 							NetworkState.getState().getNsdHelper().unregisterService();
 				        }
-						NetworkState.getState().mNsdHelper = null;
+						NetworkState.getState().setNsdHelperToNull();
 						
 						Intent intentmenu = new Intent(LobbyActivity.this, NetworkActivity.class);
 						startActivity(intentmenu);

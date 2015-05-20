@@ -129,8 +129,8 @@ public class NetworkActivity extends Activity {
 				&& NetworkState.getState().getNsdHelper() != null){
 			NetworkState.getState().getNsdHelper().unregisterService();
         }
-		NetworkState.getState().mNsdHelper = null;
-
+		NetworkState.getState().setNsdHelperToNull();
+		
 		Intent intentmenu = new Intent(this, MainActivity.class);
 		startActivity(intentmenu);
 	}
@@ -154,9 +154,10 @@ public class NetworkActivity extends Activity {
 			
 			//TODO: Check if registration is successfull
 			toast.show();
-			
-			Intent intentlobby = new Intent(this, LobbyActivity.class);
-			startActivity(intentlobby);	
+			if(NetworkState.getState().getNsdHelper().getRegistrationState()){
+				Intent intentlobby = new Intent(this, LobbyActivity.class);
+				startActivity(intentlobby);	
+			}
 
 	}
 
