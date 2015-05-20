@@ -211,7 +211,7 @@ public class GameActivity extends ARViewActivity // implements
 			mGestureHandler.addObject(player.ballGeometry, 1);
 
 			// Load powerUps
-			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aimPowerUp.mfbx"));
+			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aniPowerUp.mfbx"));
 			GameState.getState().powerUps.add(power);
 			
 			// creates the aim path
