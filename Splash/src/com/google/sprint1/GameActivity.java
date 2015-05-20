@@ -286,6 +286,11 @@ public class GameActivity extends ARViewActivity // implements
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 3));
 			}
 			
+			//ALL RESOURCES LOADED - PLAYER IS READY TO START GAME
+			
+			NetworkState.getState().mConnection.sendData(NetDataHandler.playerReady(GameState.getState().myPlayerID));
+			GameState.getState().playersReady++;
+			
 		} 
 		catch (Exception e) 
 		{
@@ -307,8 +312,8 @@ public class GameActivity extends ARViewActivity // implements
 	public void onDrawFrame() {
 		super.onDrawFrame();
 
-		// If content not loaded yet, do nothing
-		if ( GameState.getState().paintBalls.isEmpty())
+		// If all players are not ready, do nothing
+		if ( GameState.getState().playersReady < GameState.getState().nrOfPlayers)
 			return;
 
 		if(GameState.getState().powerUps.get(0).isHit()) 

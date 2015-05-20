@@ -220,7 +220,9 @@ public class MobileConnection {
 		case DataPackage.IP_LIST:
 			resolveHandshake(data.getData());
 			break;
-		
+		case DataPackage.PLAYER_READY:
+			GameState.getState().playersReady++;
+			break;
 		default:
 			break;
 		}
