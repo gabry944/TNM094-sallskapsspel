@@ -91,10 +91,11 @@ public class NetworkActivity extends Activity {
 														.resolveService(service);
 												
 												if (service != null) {
+													
+													//Variables for toast
 													Context context = getApplicationContext();
 													CharSequence text = "Connected to " + service.getServiceName() + " successfully!" ;
 													int duration = Toast.LENGTH_LONG;
-
 													Toast toast = Toast.makeText(context, text, duration);
 													
 													Log.d(TAG,
@@ -113,6 +114,13 @@ public class NetworkActivity extends Activity {
 												} else {
 													Log.d(TAG,
 															"No service to connect to!");
+													//Variables for toast
+													Context context = getApplicationContext();
+													CharSequence text = "Could not connect to the game!";
+													int duration = Toast.LENGTH_LONG;
+													Toast toast = Toast.makeText(context, text, duration);
+													
+													toast.show();
 												}
 
 											}
