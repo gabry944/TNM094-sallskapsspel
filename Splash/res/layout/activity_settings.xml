@@ -30,6 +30,14 @@
         android:textColor="#8ECC8E"
         android:textSize="40sp" />
         
+        <ImageButton
+	    android:id="@+id/button1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:onClick="backArrow"
+	    android:src="@drawable/arrow_button_selector" 
+        android:background="@android:color/transparent" />
+        
     <SeekBar
         android:id="@+id/seekBar1"
         android:layout_width="match_parent"

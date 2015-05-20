@@ -7,6 +7,9 @@ import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,14 +18,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 /**
  * Activity to handle the screen between network and the gamescreen
  * 
  * where players should connect to each other before entering gamemode.
- * 
- * 
  */
 
 public class LobbyActivity extends Activity {
@@ -30,7 +32,13 @@ public class LobbyActivity extends Activity {
 	private AssetsExtracter startGame; // a variable used to start the
 										// AssetExtraxter class
 	private ListView playerListView;
-		
+	
+	private Button startGameBtn;
+	
+	public static final String TAG = "LobbyActivity";
+	
+	private ProgressDialog progressDialog;
+
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,29 +56,90 @@ public class LobbyActivity extends Activity {
 		playerListView = (ListView) findViewById(R.id.playerListView);
 		
 		playerListView.setAdapter(NetworkState.getState().getMobileConnection().getPlayerAdapter());
-
+		
+		startGameBtn = (Button) findViewById(R.id.startGame);
+		
+		//Set progressDialog properties
+		progressDialog = new ProgressDialog(this, AlertDialog.THEME_HOLO_DARK);
+		progressDialog.setTitle("Loading resources...");
+		progressDialog.setCancelable(false);
+		
 	}
 
-	/** Called when the user clicks the start Game button (starta spel) */
+	/** Called when the user clicks the start Game button */
 	public void startGame(View view) {
+		//Unregister if the registration state is true. 
+		//Set mNsdHelper to null;
+		//TODO: show dialog that says that you will unregister your game.
+		if(NetworkState.getState().getNsdHelper().getRegistrationState()
+				&& NetworkState.getState().getNsdHelper() != null){
+			NetworkState.getState().getNsdHelper().unregisterService();
+        }
+		NetworkState.getState().mNsdHelper = null;
+		
+		//Start progressDialog
+		progressDialog.show();
+		//Set button properties
+		startGameBtn.setClickable(false);
+		startGameBtn.setBackgroundColor(getResources().getColor(R.color.grey));
 		// In order to start the game we need to extract our assets to the
 		// metaio SDK
 		startGame.execute(0); // Starts the assetsExtracter class
 	}
-
-	/** Called when the user clicks the Lobby button (huvudmeny) */
-	public void Lobby(View view) {
-		Intent intentmenu = new Intent(this, NetworkActivity.class);
-		startActivity(intentmenu);
+	
+	/**
+	 *  Called when the user clicks the back arrow button 
+	 */
+	public void backArrow(View view) {
+		//Unregister if the registration state is true. 
+		//Set mNsdHelper to null;
+		//TODO: show dialog that says that you will unregister your game.
+		AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK);
+		
+		builder.setMessage("If you continue people will no longer be able to connect")
+				.setTitle("Go back")
+				.setPositiveButton(R.string.BTN_CONTINUE,
+						new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						if(NetworkState.getState().getNsdHelper().getRegistrationState()
+								&& NetworkState.getState().getNsdHelper() != null){
+							NetworkState.getState().getNsdHelper().unregisterService();
+				        }
+						NetworkState.getState().mNsdHelper = null;
+						
+						Intent intentmenu = new Intent(LobbyActivity.this, NetworkActivity.class);
+						startActivity(intentmenu);
+						
+					}
+				})
+				.setNegativeButton(R.string.BTN_CANCEL,
+						new DialogInterface.OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								// TODO Auto-generated method stub
+								
+							}
+						}).create().show();;
+		
 	}
 
 	/** Called when user minimize the window or clicks home button */
 	@Override
-	protected void onPause()
-	{	
+	protected void onPause(){	
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		
 		super.onPause();
+	}
+	
+	@Override
+	protected void onDestroy(){
+		if(progressDialog.isShowing())
+			progressDialog.cancel();
+
+		super.onDestroy();
 	}
 
 
@@ -88,10 +157,10 @@ public class LobbyActivity extends Activity {
 				// debug build only.
 				final String[] ignoreList = { "Menu", "webkit", "sounds",
 						"images", "webkitsec" };
+				
 				AssetsManager.extractAllAssets(getApplicationContext(), "",
 						ignoreList, BuildConfig.DEBUG);
-				// AssetsManager.extractAllAssets(getApplicationContext(),
-				// BuildConfig.DEBUG);
+				
 			} catch (IOException e) {
 				MetaioDebug.printStackTrace(Log.ERROR, e);
 				return false;

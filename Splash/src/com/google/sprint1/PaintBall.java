@@ -1,5 +1,7 @@
 package com.google.sprint1;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.util.Log;
 
 import com.metaio.sdk.jni.IGeometry;
@@ -100,6 +102,7 @@ public class PaintBall extends Drawable
 		for(int i = 0; i < GameActivity.getNrOfAnts() ; i++)
 		{
 			if (isActive() && checkCollision(GameState.getState().ants.get(i).getGeometry())) { 
+				
 				//GameState.getState().ants.get(i).ant.setRotation(new Rotation( (float) (3 * Math.PI / 4), 0f, 0f), true);
 				Log.d(TAG, "Collision with ant " + i +" by player " + getPlayerId());
 				connection.sendData(NetDataHandler.antHit(i, getPlayerId(), getId()));
@@ -117,6 +120,7 @@ public class PaintBall extends Drawable
 			}
 		}
 	}
+
 	/** Check if paintball is current active */
 	public boolean isActive()
 	{

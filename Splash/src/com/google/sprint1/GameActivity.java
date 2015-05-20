@@ -3,9 +3,12 @@ package com.google.sprint1;
 import java.io.File;
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,7 +19,6 @@ import android.widget.TextView;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
-import com.metaio.sdk.jni.ELIGHT_TYPE;
 import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.ILight;
@@ -32,7 +34,7 @@ import com.metaio.tools.io.AssetsManager;
 
 public class GameActivity extends ARViewActivity // implements
 													// OnGesturePerformedListener
-{
+{		
 	// Number of small ants - big ants - giant ants
 	public final static int NUM_OF_ANTS[] = {7, 4, 1};
 	
@@ -74,6 +76,7 @@ public class GameActivity extends ARViewActivity // implements
 	//private double lastTime;
 
 	public static final String TAG = "GameActivity";
+	public static Activity fa;
 
 	@Override
 	protected void onStart() {
@@ -84,7 +87,6 @@ public class GameActivity extends ARViewActivity // implements
 		InstructionsDialog dFragment = new InstructionsDialog();
 		// Show DialogFragment
 		dFragment.show(fm, "Dialog Fragment");
-
 	}
 
 	/** Attaching layout to the activity */
@@ -100,7 +102,9 @@ public class GameActivity extends ARViewActivity // implements
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);		
-				
+		
+		fa = this;
+		
 		GameState.getState().paintBalls = new ArrayList<PaintBall>(20);
 		GameState.getState().ants = new ArrayList<Ant>(NUM_OF_ANTS[0] + NUM_OF_ANTS[1] + NUM_OF_ANTS[2]);
 		
@@ -116,9 +120,10 @@ public class GameActivity extends ARViewActivity // implements
 		
 		//Gesture handler
 		mGestureMask = GestureHandler.GESTURE_DRAG;
-		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);	
+		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);
 		
 		// create light
+
 
 
 	/*	mSpotLight = metaioSDK.createLight();
@@ -127,16 +132,15 @@ public class GameActivity extends ARViewActivity // implements
 		mSpotLight.setRadiusDegrees(10);
 		mSpotLight.setDiffuseColor(new Vector3d(1, 1, 0)); // yellow
 		mSpotLight.setCoordinateSystemID(1);*/
-//		mSpotLightGeo = createLightGeometry();
-//		mSpotLightGeo.setCoordinateSystemID(mSpotLight.getCoordinateSystemID());
-//		mSpotLightGeo.setDynamicLightingEnabled(false);
-
 
 	}
 
-	/** Called when the user clicks the Exit button (krysset) */
-	public void onExitButtonClick(View v) {
-		finish();
+	/**
+	 *  Called when the user clicks the back arrow button 
+	 */
+	public void stopButton(View view) {
+		Intent intentmenu = new Intent(this, MainActivity.class);
+		startActivity(intentmenu);
 	}
 
 
@@ -232,19 +236,20 @@ public class GameActivity extends ARViewActivity // implements
 			for(int i = 0; i < NUM_OF_ANTS[0]; i++)
 			{
 				// create ant geometry
-				ant = new Ant(Load3Dmodel("ant/smallAnt/ant.mfbx"), Ant.SMALL_ANT, Load3Dmodel("ant/markers/boxBlue.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
+				ant = new Ant(Load3Dmodel("ant/smallAnt/testAnt.mfbx"), Ant.SMALL_ANT, Load3Dmodel("ant/markers/boxBlue.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 				GameState.getState().ants.add(ant);
+				
 			}
 			//Big ants
 			for(int i = 0; i< NUM_OF_ANTS[1]; i++)
 			{
-				ant = new Ant(Load3Dmodel("ant/bigAnt/ant.mfbx"), Ant.BIG_ANT, Load3Dmodel("ant/markers/boxBlue.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
+				ant = new Ant(Load3Dmodel("ant/bigAnt/testAnt.mfbx"), Ant.BIG_ANT, Load3Dmodel("ant/markers/boxBlue.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 				GameState.getState().ants.add(ant);	
 			}
 			//Giant ants
 			for(int i = 0; i < NUM_OF_ANTS[2]; i++)
 			{
-				ant = new Ant(Load3Dmodel("ant/giantAnt/ant.mfbx"), Ant.GIANT_ANT, Load3Dmodel("ant/markers/boxBlue.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
+				ant = new Ant(Load3Dmodel("ant/giantAnt/testAnt.mfbx"), Ant.GIANT_ANT, Load3Dmodel("ant/markers/boxBlue.mfbx"), Load3Dmodel("ant/markers/boxGreen.mfbx"), Load3Dmodel("ant/markers/boxRed.mfbx"), Load3Dmodel("ant/markers/boxYellow.mfbx"));
 				GameState.getState().ants.add(ant);	
 			}
 			
@@ -306,18 +311,31 @@ public class GameActivity extends ARViewActivity // implements
 		if ( GameState.getState().paintBalls.isEmpty())
 			return;
 
-		if(GameState.getState().powerUps.get(0).isHit())
+		if(GameState.getState().powerUps.get(0).isHit()) 
 			aim.setPowerUp(true);
+		
+		//if(GameState.getState().powerUps.get(0).getCollision())
+		//	SoundEffect.playSound(getBaseContext());
 		
 
 		//spawn ant at random and move ants
 		if(GameState.getState().myPlayerID == 0)
 		{
 			Ant ant;
+			PaintBall paintBall;
 			for ( int i = 0; i <  GameState.getState().ants.size(); i++)
 			{
 				ant = GameState.getState().ants.get(i); 
+				//paintBall = GameState.getState().paintBall; 
 				ant.update();
+				
+				if(ant.getCollision()){
+					SoundEffect.playSound(getBaseContext());
+				}
+				/*else if(ant.getTowerIsReached()){
+					SoundEffect.playSound(getBaseContext());
+				}*/
+				
 				//send position and rotation to other players
 				//TODO: Move to Ant class?
 				if(ant.isActive())
@@ -394,6 +412,7 @@ public class GameActivity extends ARViewActivity // implements
 		super.onTouch(v, event);
 
 		mGestureHandler.onTouch(v, event);
+		
 
     	//coordinates between tower and "slangbella"
 		//player.ballGeometry.setTranslation(player.touchSphere.getTranslation());
@@ -492,7 +511,15 @@ public class GameActivity extends ARViewActivity // implements
 	{
 		return GameState.getState().ants.size();
 	}
-		
+	
+	@Override
+	protected void onDestroy() 
+	{
+		super.onDestroy();
+		GameState.getState().eraseGameState();
+		//Log.d(TAG,"On destroy");
+	}
+	
 	/**Updates Fps each frame and display it to user once every second*/ 
 //	private void updateFps() {
 //		

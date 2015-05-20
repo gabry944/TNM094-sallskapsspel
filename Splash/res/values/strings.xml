@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Sprint1_metaio</string>
+    <string name="app_name">SPLASH</string>
     <string name="hello_world">Virtuellt sällskapsspel</string>
     <string name="action_settings">Settings</string>
 
@@ -11,9 +11,10 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="title_activity_network">NetworkActivity</string>
     <string name="title_activity_lobby">LobbyActivity</string>
-    <string name="network_text_connect">Connect to an available game</string>
+    <string name="network_text_connect">Connect a game</string>
+    <string name="network_text_host">....or create a game</string>
     <string name="lobby_text_connect">Lobby</string>
-    <string name="startaSpel">Start game</string>
+    <string name="startGame">Start game</string>
     <string name="toLobby">To Lobby</string>
     <string name="Huvudmeny">Huvudmeny</string>
     <string name="Spelmusik">Game music</string>
@@ -25,9 +26,11 @@
     <string name="green_player">Grön spelare</string>
     <string name="yellow_player">Gul spelare</string>
     <string name="magenta_player">Rosa spelare</string>
-    <string name="network_button_host">Host game</string>
-    <string name="network_text_host">....or host a game</string>
+    <string name="network_button_create_game">Create game</string>
     <string name="play_again">Play again</string>
     <string name="connect_to_game">connect to game</string>
-
+    <string name="testgame">Test game</string>
+    <string name="multiplayer">Multiplayer</string>
+    <string name="BTN_CONTINUE">Continue</string>   
+    
 </resources>

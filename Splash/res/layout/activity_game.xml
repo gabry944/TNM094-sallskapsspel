@@ -15,21 +15,11 @@
         android:textSize="40sp"
         android:visibility="visible" />
 
-
 	<LinearLayout
 	    android:layout_width="wrap_content"
-	    android:layout_height="match_parent"
+	    android:layout_height="409dp"
 	    android:layout_gravity="end"
 	    android:orientation="vertical" >
-	    
-	     <ImageButton
-	         android:id="@+id/button1"
-	         android:layout_width="wrap_content"
-	         android:layout_height="wrap_content"
-	         android:layout_gravity="end"
-	         android:background="@android:color/transparent"
-	         android:onClick="onExitButtonClick"
-	         android:src="@drawable/cancel" />
 	     
 	    <LinearLayout
 		    android:layout_width="wrap_content"
@@ -135,5 +125,13 @@
 
 	 	</LinearLayout>
 	</LinearLayout>
+
+	<ImageButton
+	    android:id="@+id/button1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:onClick="stopButton"
+	    android:src="@drawable/stop_button_selector" 
+        android:background="@android:color/transparent" />
 	    
 </FrameLayout>
