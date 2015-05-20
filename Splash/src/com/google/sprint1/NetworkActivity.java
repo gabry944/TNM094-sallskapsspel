@@ -151,10 +151,8 @@ public class NetworkActivity extends Activity {
 		
 		//If user is not already host and the registration state is false,
 		//register/host a game
-		if(!isHost && !NetworkState.getState().getNsdHelper().getRegistrationState())
+		if(!NetworkState.getState().getNsdHelper().getRegistrationState())
 			NetworkState.getState().getNsdHelper().registerService(MobileConnection.SERVER_PORT);
-		
-			isHost = true;
 			
 			//TODO: Check if registration is successfull
 			toast.show();
@@ -199,11 +197,6 @@ public class NetworkActivity extends Activity {
 			if (NetworkState.getState().getNsdHelper() != null) 
 				NetworkState.getState().getNsdHelper().discoverServices(); 
 			
-			//Checks if the user is a host and register a service accordingly.
-			if(isHost)
-				NetworkState.getState().getNsdHelper().registerService(MobileConnection.SERVER_PORT);
-
-
 	}
 
 	/**
@@ -220,7 +213,7 @@ public class NetworkActivity extends Activity {
 		
 		//Checks state of mNsdHelper, isHost and registration state to prevent 
 		//crash.
-		if(NetworkState.getState().getNsdHelper() != null && isHost 
+		if(NetworkState.getState().getNsdHelper() != null 
 				&& NetworkState.getState().getNsdHelper().getRegistrationState()){
 			NetworkState.getState().getNsdHelper().unregisterService();
 		}

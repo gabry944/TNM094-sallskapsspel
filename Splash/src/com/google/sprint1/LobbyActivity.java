@@ -103,11 +103,6 @@ public class LobbyActivity extends Activity {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						if(NetworkState.getState().getNsdHelper().getRegistrationState()
-								&& NetworkState.getState().getNsdHelper() != null){
-							NetworkState.getState().getNsdHelper().unregisterService();
-				        }
-						NetworkState.getState().setNsdHelperToNull();
 						
 						Intent intentmenu = new Intent(LobbyActivity.this, NetworkActivity.class);
 						startActivity(intentmenu);

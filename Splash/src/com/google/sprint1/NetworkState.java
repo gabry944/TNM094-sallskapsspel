@@ -21,7 +21,7 @@ public class NetworkState {
 	private ArrayList<String> serviceNameList;
 	
 	public Handler mNSDHandler;
-	
+		
 	private Context context;
 
 	protected  NetworkState() {
