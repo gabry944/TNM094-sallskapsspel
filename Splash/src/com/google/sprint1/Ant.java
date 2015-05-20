@@ -17,6 +17,8 @@ public class Ant extends Drawable
 	
 	private IGeometry ant;
 	private boolean isHit;
+	private boolean isReached;
+	private boolean collision;
 	private Vector3d diffVec;
 	private float memory;
 	private int id;
@@ -63,6 +65,8 @@ public class Ant extends Drawable
 		type = antType;		//1 = small ant, 2 = big ant, 3 = giant ant
 		ownedByPlayer = -1;	
 		isHit = false;
+		isReached = false;
+		collision = false;
 		setGeometryProperties(ant, 30f, new Vector3d(0f, 0f, 0f), new Rotation(0f, 0f, 0f)); 
 		
 		if (type == BIG_ANT)
@@ -116,6 +120,7 @@ public class Ant extends Drawable
 			setOwnedByPlayer(id);
 			ant.startAnimation("Take 001", false);
 			isHit = true;
+			collision = true;
 		}
 		else
 		{
@@ -201,6 +206,7 @@ public class Ant extends Drawable
 		setMarker(getOwnedByPlayer());
 		diffVec = ant.getTranslation().subtract(pos);
 		diffVec.setZ(0f);
+		isReached = false;
 		
 		// check since atan(y/x) == atan(-y/-x)
 		if(diffVec.getX() < 0f)
@@ -216,6 +222,7 @@ public class Ant extends Drawable
 		if(diffVec.getX() < 2f && diffVec.getX() > -2f  && diffVec.getY() < 2f && diffVec.getY() > -2f)
 		{
 			int points = getType();
+			isReached = true;
 			
 			//animate anthill
 			GameState.getState().players.get(ownedByPlayer).playAnthillAnimation();
@@ -228,6 +235,27 @@ public class Ant extends Drawable
 						
 			
 		}
+	}
+	
+	/** Return true if ant reached tower*/
+	public boolean getTowerIsReached()
+	{
+		if(isReached == true){
+			isReached = false;
+			return true;
+		}
+		else
+			return false;
+	}
+	/**Return true if collision happened*/
+	public boolean getCollision()
+	{
+		if(collision == true){
+			collision = false;
+			return true;
+		}
+		else
+			return false;
 	}
 	
 	/** displays a marker over the ant when being hit */

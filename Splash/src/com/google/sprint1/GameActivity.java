@@ -310,21 +310,30 @@ public class GameActivity extends ARViewActivity // implements
 		if ( GameState.getState().paintBalls.isEmpty())
 			return;
 
-		if(GameState.getState().powerUps.get(0).isHit())
+		if(GameState.getState().powerUps.get(0).isHit()) 
 			aim.setPowerUp(true);
+		
+		//if(GameState.getState().powerUps.get(0).getCollision())
+		//	SoundEffect.playSound(getBaseContext());
 		
 
 		//spawn ant at random and move ants
 		if(GameState.getState().myPlayerID == 0)
 		{
 			Ant ant;
+			PaintBall paintBall;
 			for ( int i = 0; i <  GameState.getState().ants.size(); i++)
 			{
 				ant = GameState.getState().ants.get(i); 
+				//paintBall = GameState.getState().paintBall; 
 				ant.update();
 				
-				//if(ant.getIsHit())
-					//ant.getGeometry().setTexture("ant/smallAnt/blueTexture.jpg");
+				if(ant.getCollision()){
+					SoundEffect.playSound(getBaseContext());
+				}
+				/*else if(ant.getTowerIsReached()){
+					SoundEffect.playSound(getBaseContext());
+				}*/
 				
 				//send position and rotation to other players
 				//TODO: Move to Ant class?

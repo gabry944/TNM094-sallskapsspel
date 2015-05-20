@@ -13,6 +13,7 @@ public class PowerUp extends Drawable {
 	private boolean visible;
 	private float timer;
 	private long prevTime;
+	private boolean collision = false;
 	
 	public PowerUp(IGeometry geo){
 		geometry = geo;
@@ -30,6 +31,7 @@ public class PowerUp extends Drawable {
 	public void setHit(boolean hit)
 	{
 		visible = !hit;
+		collision = true;
 		if(hit)
 			startTime();
 	}
@@ -40,6 +42,17 @@ public class PowerUp extends Drawable {
 			return false;
 		else 
 			return true;
+	}
+	
+	/**Return true if collision happened*/
+	public boolean getCollision()
+	{
+		if(collision == true){
+			collision = false;
+			return true;
+		}
+		else
+			return false;
 	}
 	
 	public void update()

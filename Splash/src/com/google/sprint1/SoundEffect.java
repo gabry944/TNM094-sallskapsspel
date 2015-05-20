@@ -18,9 +18,8 @@ public class SoundEffect {
 		soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
 		final int soundIds[] = new int[10];
 		
-		//Test test = new Test(this);
-			
-		soundIds[0] = soundPool.load(context, R.raw.ping, 1);
+		//Test test = new Test(this);	
+		soundIds[0] = soundPool.load(context, R.raw.splash, 1);
 		
 		soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
 
@@ -28,14 +27,11 @@ public class SoundEffect {
 			public void onLoadComplete(SoundPool soundPool, int sampleId,
 					int status) {
 				soundPool.play(soundIds[0], 1, 1, 1, 0, 1.0f);
-				loaded = true;
+				soundPool.unload(soundIds[0]);
 				
 			}
 			
 		});
-			
-		Log.e("Test", "soundID before = " + soundIds[0]);
-		Log.e("Test", "Loaded = " + loaded);
 		
 		}
 
