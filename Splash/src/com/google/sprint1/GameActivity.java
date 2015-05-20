@@ -51,6 +51,8 @@ public class GameActivity extends ARViewActivity // implements
 
 	Aim aim;
 
+	boolean gametimeSet =false;
+	
 	private ILight mSpotLight;
 
 	private IGeometry ball;
@@ -316,8 +318,14 @@ public class GameActivity extends ARViewActivity // implements
 		if ( GameState.getState().playersReady < GameState.getState().nrOfPlayers)
 			return;
 
+		if (gametimeSet)
+		{
+			GameState.getState().gameStartTime = System.currentTimeMillis();
+			gametimeSet = true;
+		}
+		
 		if(GameState.getState().powerUps.get(0).isHit()) 
-			aim.setPowerUp(true);
+		aim.setPowerUp(true);
 		
 		//if(GameState.getState().powerUps.get(0).getCollision())
 		//	SoundEffect.playSound(getBaseContext());
