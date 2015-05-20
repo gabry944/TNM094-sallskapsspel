@@ -131,6 +131,12 @@ public class LobbyActivity extends Activity {
 	protected void onPause(){	
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		
+		if(NetworkState.getState().getNsdHelper().getRegistrationState()
+				&& NetworkState.getState().getNsdHelper() != null){
+			NetworkState.getState().getNsdHelper().unregisterService();
+        }
+		NetworkState.getState().setNsdHelperToNull();
+		
 		super.onPause();
 	}
 	
