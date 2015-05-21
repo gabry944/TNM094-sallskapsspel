@@ -166,8 +166,7 @@ public class NetworkActivity extends Activity {
 
 		Toast toast = Toast.makeText(context, text, duration);
 		
-		//If user is not already host and the registration state is false,
-		//register/host a game
+		//Register game if not already registered.
 		if(!NetworkState.getState().getNsdHelper().getRegistrationState())
 			NetworkState.getState().getNsdHelper().registerService(MobileConnection.SERVER_PORT);
 			
@@ -204,13 +203,11 @@ public class NetworkActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		
-			//If mNsdHelper is null(which happens if activity return after call to 
-			//onPause() it will create a new NsdHelper and initialize it.
+			//If mNsdHelper is null, initialize it.
 			if(NetworkState.getState().getNsdHelper() == null)
 				NetworkState.getState().initNsdHelper();
 			
-			//Starts service discovery when when starting activity for the first
-			//or when returing from a paused state.
+			//Starts service discovery.
 			if (NetworkState.getState().getNsdHelper() != null) 
 				NetworkState.getState().getNsdHelper().discoverServices(); 
 			
