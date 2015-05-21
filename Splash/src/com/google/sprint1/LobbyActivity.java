@@ -37,7 +37,7 @@ public class LobbyActivity extends Activity {
 	
 	public static final String TAG = "LobbyActivity";
 	
-	private ProgressDialog progressDialog;
+	private ProgressDialog loadingResources;
 
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,18 +52,17 @@ public class LobbyActivity extends Activity {
 		/* Start game */
 		startGame = new AssetsExtracter();
 		
+		//Stuff for showing connected players in lobby. Not really working yet
 		NetworkState.getState().getMobileConnection().initPlayerAdapter(this);
-		
 		playerListView = (ListView) findViewById(R.id.playerListView);
-		
 		playerListView.setAdapter(NetworkState.getState().getMobileConnection().getPlayerAdapter());
 		
 		startGameBtn = (Button) findViewById(R.id.startGame);
 		
 		//Set progressDialog properties
-		progressDialog = new ProgressDialog(this, AlertDialog.THEME_HOLO_DARK);
-		progressDialog.setTitle("Loading resources...");
-		progressDialog.setCancelable(false);
+		loadingResources = new ProgressDialog(this, AlertDialog.THEME_HOLO_DARK);
+		loadingResources.setTitle("Loading resources...");
+		loadingResources.setCancelable(false);
 		
 	}
 
@@ -71,7 +70,7 @@ public class LobbyActivity extends Activity {
 	public void startGame(View view) {
 		
 		//Start progressDialog
-		progressDialog.show();
+		loadingResources.show();
 		//Set button properties
 		startGameBtn.setClickable(false);
 		startGameBtn.setBackgroundColor(getResources().getColor(R.color.grey));
@@ -130,8 +129,9 @@ public class LobbyActivity extends Activity {
 	
 	@Override
 	protected void onDestroy(){
-		if(progressDialog.isShowing())
-			progressDialog.cancel();
+		//Cancel progress dialog if it is showing 
+		if(loadingResources.isShowing())
+			loadingResources.cancel();
 
 		super.onDestroy();
 	}

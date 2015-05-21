@@ -232,6 +232,10 @@ public class NetworkActivity extends Activity {
 			NetworkState.getState().getNsdHelper().unregisterService();
 		}
 		
+		//Clear lists to make sure they don´t contain any old registrations when 
+		//returning from LobbyActivity.
+		NetworkState.getState().clearLists();
+		
 		super.onDestroy();
 	}
 
