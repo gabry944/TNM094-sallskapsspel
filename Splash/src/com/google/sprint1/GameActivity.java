@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
+import com.metaio.sdk.jni.ELIGHT_TYPE;
 import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.ILight;
@@ -124,17 +125,7 @@ public class GameActivity extends ARViewActivity // implements
 		mGestureMask = GestureHandler.GESTURE_DRAG;
 		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);
 		
-		// create light
-
-
-
-	/*	mSpotLight = metaioSDK.createLight();
-		mSpotLight.setAmbientColor(new Vector3d(0.17f, 0, 0)); // slightly red ambient
-		mSpotLight.setType(ELIGHT_TYPE.ELIGHT_TYPE_SPOT);
-		mSpotLight.setRadiusDegrees(10);
-		mSpotLight.setDiffuseColor(new Vector3d(1, 1, 0)); // yellow
-		mSpotLight.setCoordinateSystemID(1);*/
-
+		
 	}
 
 	/**
@@ -191,6 +182,18 @@ public class GameActivity extends ARViewActivity // implements
 
 			GameState.getState().nrOfPlayers = 1 + NetworkState.getState().getMobileConnection().getNumberOfConnections();
 			
+			// create light
+
+
+
+			mSpotLight = metaioSDK.createLight();
+			mSpotLight.setAmbientColor(new Vector3d(0.5f, 0.5f, 0.5f)); // slightly red ambient
+			mSpotLight.setType(ELIGHT_TYPE.ELIGHT_TYPE_DIRECTIONAL);
+			mSpotLight.setDirection(new Vector3d(0.2f, -0.7f, 0.2f));
+			mSpotLight.setDiffuseColor(new Vector3d(1, 1, 1f)); // yellow
+			mSpotLight.setCoordinateSystemID(1);
+			//mSpotLight.setTranslation(new Vector3d(0f,500f,0f));
+
 			/** Load Object */
 			
 			//create ground plane			
