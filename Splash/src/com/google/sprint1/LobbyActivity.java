@@ -45,6 +45,7 @@ public class LobbyActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 							 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_lobby);
 				
@@ -109,7 +110,7 @@ public class LobbyActivity extends Activity {
 								// TODO Auto-generated method stub
 								
 							}
-						}).create().show();;
+						}).create().show();
 		
 	}
 
