@@ -399,10 +399,11 @@ public class GameActivity extends ARViewActivity // implements
     private PaintBall getAvailableBall(int id)
     {
     	PaintBall ball;
-    	
-		ball = GameState.getState().paintBalls.get(currentBall + id*5);
-		currentBall = (currentBall++)%5;
+
+		currentBall = (currentBall + 1) % 5;
 		Log.d("Ball", "CurrentBall "+ currentBall);
+		
+		ball = GameState.getState().paintBalls.get(currentBall + id*5);
 		if (!(ball.getGeometry().isVisible()))
 			return ball;
 	
