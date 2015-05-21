@@ -190,7 +190,6 @@ public class GameActivity extends ARViewActivity // implements
 			MetaioDebug.log("Tracking data loaded: " + result);
 
 			GameState.getState().nrOfPlayers = 1 + NetworkState.getState().getMobileConnection().getNumberOfConnections();
-			GameState.getState().connection = NetworkState.getState().getMobileConnection();
 			/** Load Object */
 			
 			//create ground plane			
