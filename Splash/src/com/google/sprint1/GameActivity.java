@@ -189,8 +189,8 @@ public class GameActivity extends ARViewActivity // implements
 
 			MetaioDebug.log("Tracking data loaded: " + result);
 
-			GameState.getState().nrOfPlayers = 1 + NetworkState.getState().mConnection.getNumberOfConnections();
-			GameState.getState().connection = NetworkState.getState().mConnection;
+			GameState.getState().nrOfPlayers = 1 + NetworkState.getState().getMobileConnection().getNumberOfConnections();
+			GameState.getState().connection = NetworkState.getState().getMobileConnection();
 			/** Load Object */
 			
 			//create ground plane			
@@ -290,7 +290,7 @@ public class GameActivity extends ARViewActivity // implements
 			
 			//ALL RESOURCES LOADED - PLAYER IS READY TO START GAME
 			
-			NetworkState.getState().mConnection.sendData(NetDataHandler.playerReady(GameState.getState().myPlayerID));
+			NetworkState.getState().getMobileConnection().sendData(NetDataHandler.playerReady(GameState.getState().myPlayerID));
 			GameState.getState().playersReady++;
 			
 		} 
@@ -353,7 +353,7 @@ public class GameActivity extends ARViewActivity // implements
 				//TODO: Move to Ant class?
 				if(ant.isActive())
 				{
-					NetworkState.getState().mConnection.sendData(NetDataHandler.antPos(ant.getId(),
+					NetworkState.getState().getMobileConnection().sendData(NetDataHandler.antPos(ant.getId(),
 																		ant.getPosition(),
 																		ant.getRotation()));
 				}
@@ -474,7 +474,7 @@ public class GameActivity extends ARViewActivity // implements
         			if(!(Math.abs(touchVec.getX()) < 0.1f))
         			{
                 		//Send it off to the network
-        				NetworkState.getState().mConnection.sendData(NetDataHandler.ballFired(ball.getId(), vel, pos));
+        				NetworkState.getState().getMobileConnection().sendData(NetDataHandler.ballFired(ball.getId(), vel, pos));
             		
             			//Fire the ball locally
             			ball.fire(vel, pos); 

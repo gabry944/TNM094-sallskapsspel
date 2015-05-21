@@ -12,7 +12,7 @@ public class NetworkState {
 	
 	private static NetworkState instance = null;
 	
-	MobileConnection mConnection;
+	private MobileConnection mConnection;
 	
 	private NsdHelper mNsdHelper;
 	
@@ -129,5 +129,4 @@ public class NetworkState {
 	public void setNsdHelperToNull(){
 		mNsdHelper = null;
 	}
-
 }
