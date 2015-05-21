@@ -9,8 +9,11 @@ import com.metaio.tools.io.AssetsManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +23,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * Activity to handle the screen between network and the gamescreen
@@ -38,6 +42,8 @@ public class LobbyActivity extends Activity {
 	public static final String TAG = "LobbyActivity";
 	
 	private ProgressDialog loadingResources;
+	
+	private BroadcastReceiver mReceiver;
 
 	// Function to set up layout of activity
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +54,29 @@ public class LobbyActivity extends Activity {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		setContentView(R.layout.activity_lobby);
-				
+		NetworkState.getState().getMobileConnection().setContext(this);
+		
+		NetworkState.getState().getMobileConnection().initPlayerAdapter(this);
+		
+		IntentFilter mIntentFilter = new IntentFilter("Shiiiiit");
+		mReceiver = new BroadcastReceiver(){
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				// TODO Auto-generated method stub
+	            //Toast.makeText(getApplicationContext(), "received", Toast.LENGTH_LONG).show();
+
+			}
+			
+		};
+		registerReceiver(mReceiver, mIntentFilter);
 		/* Start game */
 		startGame = new AssetsExtracter();
 		
 		//Stuff for showing connected players in lobby. Not really working yet
-		NetworkState.getState().getMobileConnection().initPlayerAdapter(this);
+		
 		playerListView = (ListView) findViewById(R.id.playerListView);
-		playerListView.setAdapter(NetworkState.getState().getMobileConnection().getPlayerAdapter());
+		//playerListView.setAdapter(NetworkState.getState().getMobileConnection().getPlayerAdapter());
 		
 		startGameBtn = (Button) findViewById(R.id.startGame);
 		
@@ -162,6 +183,7 @@ public class LobbyActivity extends Activity {
 
 			return true;
 		}
+		
 
 		/** when extraction is done, we load the game activity */
 		@Override
