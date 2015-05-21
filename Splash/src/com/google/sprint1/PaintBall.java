@@ -25,7 +25,7 @@ public class PaintBall extends Drawable
 	public PaintBall(IGeometry geo, IGeometry splGeo, IGeometry pbShad, int playerID) {
 		super();
 	
-		connection = GameState.getState().connection;
+		connection = NetworkState.getState().getMobileConnection();
 		
 		this.id = numberOfBalls;
 		numberOfBalls++;
@@ -117,6 +117,8 @@ public class PaintBall extends Drawable
 			if (checkCollision(GameState.getState().powerUps.get(i).getGeometry()) && isActive == true) {
 				//player.superPower = true;
 				GameState.getState().powerUps.get(i).setHit(true);
+				GameState.getState().havePowerUp = true;
+				connection.sendData(NetDataHandler.powerUpTaken());
 			}
 		}
 	}

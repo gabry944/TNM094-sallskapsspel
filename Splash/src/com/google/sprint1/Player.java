@@ -65,6 +65,7 @@ public class Player extends Drawable {
 	public void playAnthillAnimation()
 	{
 		towerGeometry.startAnimation("Take 001", false);
+		towerGeometry.setAnimationSpeed(150);
 	}
 	
 }

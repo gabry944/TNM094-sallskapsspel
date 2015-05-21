@@ -234,6 +234,9 @@ public class MobileConnection {
 		case DataPackage.PLAYER_READY:
 			GameState.getState().playersReady++;
 			break;
+		case DataPackage.POWERUP_TAKEN:
+			GameState.getState().powerUps.get(0).setHit(true);
+			break;
 		default:
 			break;
 		}

@@ -190,7 +190,7 @@ public class GameActivity extends ARViewActivity // implements
 			MetaioDebug.log("Tracking data loaded: " + result);
 
 			GameState.getState().nrOfPlayers = 1 + NetworkState.getState().getMobileConnection().getNumberOfConnections();
-			GameState.getState().connection = NetworkState.getState().getMobileConnection();
+			
 			/** Load Object */
 			
 			//create ground plane			
@@ -399,10 +399,11 @@ public class GameActivity extends ARViewActivity // implements
     private PaintBall getAvailableBall(int id)
     {
     	PaintBall ball;
-    	
-		ball = GameState.getState().paintBalls.get(currentBall + id*5);
-		currentBall = (currentBall++)%5;
+
+		currentBall = (currentBall + 1) % 5;
 		Log.d("Ball", "CurrentBall "+ currentBall);
+		
+		ball = GameState.getState().paintBalls.get(currentBall + id*5);
 		if (!(ball.getGeometry().isVisible()))
 			return ball;
 	
