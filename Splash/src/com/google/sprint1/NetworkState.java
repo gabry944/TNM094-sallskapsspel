@@ -2,11 +2,13 @@ package com.google.sprint1;
 
 import java.util.ArrayList;
 
+import android.app.ListActivity;
 import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 
 public class NetworkState {
 	
@@ -100,27 +102,33 @@ public class NetworkState {
 
 	}
 	
+	//Initialize the NsdHelper.
 	public void initNsdHelper(){
 		mNsdHelper = new NsdHelper(context, mNSDHandler);
 		mNsdHelper.initializeNsd();
 	}
 	
+	//Return the MobileConnection
 	public MobileConnection getMobileConnection(){
 		return mConnection;
 	}
 	
+	//Return the NsdHelper.
 	public NsdHelper getNsdHelper(){
 		return mNsdHelper;
 	}
 	
+	//Return the listAdapter..
 	public ArrayAdapter<String> getAdapter(){
 		return listAdapter;
 	}
 	
+	//Return the serviceList.
 	public ArrayList<NsdServiceInfo> getServiceList(){
 		return serviceList;
 	}
 	
+	//Close network.
 	public void closeNetwork()
 	{
 		mConnection.tearDown();
@@ -128,5 +136,12 @@ public class NetworkState {
 	
 	public void setNsdHelperToNull(){
 		mNsdHelper = null;
+	}
+	
+	//Clear all lists.
+	public void clearLists(){
+		serviceList.clear();
+		serviceNameList.clear();
+		listAdapter.notifyDataSetChanged();
 	}
 }
