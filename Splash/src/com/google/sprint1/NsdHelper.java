@@ -19,14 +19,15 @@ public class NsdHelper {
 	NsdManager.RegistrationListener mRegistrationListener;
 
 	public static final String SERVICE_TYPE = "_http._tcp.";
-	public static final String SERVICE_NAME = "ARGame";
+	public static final String SERVICE_NAME = "Splash";
 	
 	public static final String TAG = "NsdHelper";
 
 	
 	public String mServiceName = "";
 
-	public boolean serviceResolved = false;
+	private boolean serviceResolved = false;
+	private boolean serviceResolveFailed = false;
 	private boolean serviceRegistered;
 	private NsdServiceInfo mService;
 	
@@ -119,7 +120,7 @@ public class NsdHelper {
 			public void onResolveFailed(NsdServiceInfo serviceInfo,
 					int errorCode) {
 				Log.e(TAG, "Resolve failed. Error code: " + errorCode);
-				serviceResolved = true;
+				serviceResolveFailed = true;
 			}
 
 			@Override
@@ -203,8 +204,12 @@ public class NsdHelper {
 	public NsdServiceInfo resolveService(NsdServiceInfo service) {
 		serviceResolved = false;
 		mNsdManager.resolveService(service, mResolveListener);
-		while (!serviceResolved) {
-			// Wait for service to be resolved
+		while (!serviceResolved || serviceResolveFailed) {
+			//TODO: Do this with some kind of handler that properly sends information
+			//to other functions.
+			// Is running as long as it takes for device to resolve a connection 
+			//or until it enters onResolveFailed. Otherwise it will return before
+			//a connection has been made. 
 		}
 		return mService;
 	}

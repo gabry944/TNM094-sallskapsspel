@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
+import com.metaio.sdk.jni.ELIGHT_TYPE;
 import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.ILight;
@@ -51,6 +52,8 @@ public class GameActivity extends ARViewActivity // implements
 
 	Aim aim;
 
+	boolean gametimeSet =false;
+	
 	private ILight mSpotLight;
 
 	private IGeometry ball;
@@ -122,17 +125,7 @@ public class GameActivity extends ARViewActivity // implements
 		mGestureMask = GestureHandler.GESTURE_DRAG;
 		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);
 		
-		// create light
-
-
-
-	/*	mSpotLight = metaioSDK.createLight();
-		mSpotLight.setAmbientColor(new Vector3d(0.17f, 0, 0)); // slightly red ambient
-		mSpotLight.setType(ELIGHT_TYPE.ELIGHT_TYPE_SPOT);
-		mSpotLight.setRadiusDegrees(10);
-		mSpotLight.setDiffuseColor(new Vector3d(1, 1, 0)); // yellow
-		mSpotLight.setCoordinateSystemID(1);*/
-
+		
 	}
 
 	/**
@@ -187,8 +180,20 @@ public class GameActivity extends ARViewActivity // implements
 
 			MetaioDebug.log("Tracking data loaded: " + result);
 
-			GameState.getState().nrOfPlayers = 1 + NetworkState.getState().mConnection.getNumberOfConnections();
-			GameState.getState().connection = NetworkState.getState().mConnection;
+			GameState.getState().nrOfPlayers = 1 + NetworkState.getState().getMobileConnection().getNumberOfConnections();
+			
+			// create light
+
+
+
+			mSpotLight = metaioSDK.createLight();
+			mSpotLight.setAmbientColor(new Vector3d(0.5f, 0.5f, 0.5f)); // slightly red ambient
+			mSpotLight.setType(ELIGHT_TYPE.ELIGHT_TYPE_DIRECTIONAL);
+			mSpotLight.setDirection(new Vector3d(0.2f, -0.7f, 0.2f));
+			mSpotLight.setDiffuseColor(new Vector3d(1, 1, 1f)); // yellow
+			mSpotLight.setCoordinateSystemID(1);
+			//mSpotLight.setTranslation(new Vector3d(0f,500f,0f));
+
 			/** Load Object */
 			
 			//create ground plane			
@@ -212,7 +217,7 @@ public class GameActivity extends ARViewActivity // implements
 			mGestureHandler.addObject(player.ballGeometry, 1);
 
 			// Load powerUps
-			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aimPowerUp.mfbx"));
+			PowerUp power = new PowerUp(Load3Dmodel("powerUps/aniPowerUp.mfbx"));
 			GameState.getState().powerUps.add(power);
 			
 			// creates the aim path
@@ -286,6 +291,13 @@ public class GameActivity extends ARViewActivity // implements
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 3));
 			}
 			
+<<<<<<< HEAD
+=======
+			//ALL RESOURCES LOADED - PLAYER IS READY TO START GAME
+			
+			NetworkState.getState().getMobileConnection().sendData(NetDataHandler.playerReady(GameState.getState().myPlayerID));
+			GameState.getState().playersReady++;
+>>>>>>> b23702a1b316360e36ef16c06f80410feed7e904
 			
 		} 
 		catch (Exception e) 
@@ -308,12 +320,18 @@ public class GameActivity extends ARViewActivity // implements
 	public void onDrawFrame() {
 		super.onDrawFrame();
 
-		// If content not loaded yet, do nothing
-		if ( GameState.getState().paintBalls.isEmpty())
+		// If all players are not ready, do nothing
+		if ( GameState.getState().playersReady < GameState.getState().nrOfPlayers)
 			return;
 
+		if (gametimeSet)
+		{
+			GameState.getState().gameStartTime = System.currentTimeMillis();
+			gametimeSet = true;
+		}
+		
 		if(GameState.getState().powerUps.get(0).isHit()) 
-			aim.setPowerUp(true);
+		aim.setPowerUp(true);
 		
 		//if(GameState.getState().powerUps.get(0).getCollision())
 		//	SoundEffect.playSound(getBaseContext());
@@ -341,7 +359,7 @@ public class GameActivity extends ARViewActivity // implements
 				//TODO: Move to Ant class?
 				if(ant.isActive())
 				{
-					NetworkState.getState().mConnection.sendData(NetDataHandler.antPos(ant.getId(),
+					NetworkState.getState().getMobileConnection().sendData(NetDataHandler.antPos(ant.getId(),
 																		ant.getPosition(),
 																		ant.getRotation()));
 				}
@@ -387,10 +405,11 @@ public class GameActivity extends ARViewActivity // implements
     private PaintBall getAvailableBall(int id)
     {
     	PaintBall ball;
-    	
-		ball = GameState.getState().paintBalls.get(currentBall + id*5);
-		currentBall = (currentBall++)%5;
+
+		currentBall = (currentBall + 1) % 5;
 		Log.d("Ball", "CurrentBall "+ currentBall);
+		
+		ball = GameState.getState().paintBalls.get(currentBall + id*5);
 		if (!(ball.getGeometry().isVisible()))
 			return ball;
 	
@@ -462,7 +481,7 @@ public class GameActivity extends ARViewActivity // implements
         			if(!(Math.abs(touchVec.getX()) < 0.1f))
         			{
                 		//Send it off to the network
-        				NetworkState.getState().mConnection.sendData(NetDataHandler.ballFired(ball.getId(), vel, pos));
+        				NetworkState.getState().getMobileConnection().sendData(NetDataHandler.ballFired(ball.getId(), vel, pos));
             		
             			//Fire the ball locally
             			ball.fire(vel, pos); 

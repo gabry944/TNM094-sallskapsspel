@@ -14,9 +14,9 @@ public class GameState {
 	
 	public int myPlayerID = 0;
 	public int nrOfPlayers = 1;
-	
-	public MobileConnection connection;
-	
+	public int playersReady = 0;
+
+	public boolean havePowerUp = false;
 	public ArrayList<PaintBall> paintBalls;
 	public ArrayList<Player> players;
 	public ArrayList<Ant> ants;

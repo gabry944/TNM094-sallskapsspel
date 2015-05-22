@@ -8,9 +8,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -88,6 +90,17 @@ public class MainActivity extends Activity {
 		Intent intentSettings = new Intent(this, SettingsActivity.class);
 		startActivity(intentSettings);
 
+	}
+	
+	public void showInfo(View view)
+	{			
+		//Variables for toast
+		Context context = getApplicationContext();
+		CharSequence text = "Download marker from metaio's website! \n \n Game created by Daniel Holst, Michael Sjöström, Gabriella Rydenfors, Pontus Orraryd and Jens Jacobsson";
+		int duration = 2 * Toast.LENGTH_LONG;
+		Toast toast = Toast.makeText(context, text, duration);
+		
+		toast.show();
 	}
 	
 	@Override

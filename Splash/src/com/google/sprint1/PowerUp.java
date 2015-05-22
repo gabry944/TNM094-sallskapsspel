@@ -14,12 +14,16 @@ public class PowerUp extends Drawable {
 	private float timer;
 	private long prevTime;
 	private boolean collision = false;
+	private float scaleDiff = 0.08f;
 	
 	public PowerUp(IGeometry geo){
 		geometry = geo;
 		visible = true;
-		setGeometryProperties(geometry, 2.1f, new Vector3d(0f, 0f, 50f), new Rotation(0f, 0f, 0f));
+		setGeometryProperties(geometry, 2.1f, new Vector3d(0f, 0f, 100f), new Rotation(0f, 0f, (float)(Math.PI/2)));
 		timer = 20f;
+		
+		geometry.startAnimation("Take 001", true);
+		
 		
 	}
 	
@@ -56,17 +60,17 @@ public class PowerUp extends Drawable {
 	}
 	
 	public void update()
-	{	
-		float scaleStart = 0f;
+	{			
+		
 		/** Function for animation on the powerup */
-			if (geometry.getScale().getX() > 4.0f) {
-				scaleStart = -0.04f;
+			if (geometry.getScale().getX() > 2.5f) {
+				scaleDiff = -0.08f;
 			}
 			if (geometry.getScale().getX() < 1.0f) {
-				scaleStart = 0.04f;
+				scaleDiff = 0.08f;
 			}
 			geometry.setScale(geometry.getScale().add(
-					new Vector3d(scaleStart, scaleStart, scaleStart)));
+					new Vector3d(scaleDiff, scaleDiff, scaleDiff)));
 			// Log.d(TAG, "scale = " + powerUp.getScale());
 			if(visible == false)
 			{

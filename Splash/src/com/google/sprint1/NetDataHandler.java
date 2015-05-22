@@ -67,7 +67,7 @@ public class NetDataHandler {
 	public static byte[] antReachedTower(int antId, int playerId)
 	{
 		int DATA_SIZE = 4*2;
-		//Allocate a buffer and add OC and a byte array.
+		//Allocate a buffer and add OC and a byte array. 
 		ByteBuffer buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + DATA_SIZE);
 		//amount of bytes
 		buffer.putInt(DATA_SIZE);
@@ -76,6 +76,34 @@ public class NetDataHandler {
 		//data antId - playerId - ballId
 		buffer.putInt(antId);
 		buffer.putInt(playerId);
+		
+		return buffer.array();
+	}
+	
+	public static byte[] playerReady(int playerId)
+	{
+		int DATA_SIZE = 4;
+		//Allocate a buffer and add OC and a byte array.
+		ByteBuffer buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + DATA_SIZE);
+		//amount of bytes
+		buffer.putInt(DATA_SIZE);
+		//operation code
+		buffer.putShort(DataPackage.PLAYER_READY);
+		//data playerId
+		buffer.putInt(playerId);
+		
+		return buffer.array();
+	}
+	
+	public static byte[] powerUpTaken()
+	{
+		int DATA_SIZE = 0;
+		//Allocate a buffer and add OC and a byte array.
+		ByteBuffer buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + DATA_SIZE);
+		//amount of bytes
+		buffer.putInt(DATA_SIZE);
+		//operation code
+		buffer.putShort(DataPackage.POWERUP_TAKEN);
 		
 		return buffer.array();
 	}

@@ -15,6 +15,7 @@ import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -35,6 +36,8 @@ public class MobileConnection {
     private boolean pAisInit = false;
     
     private Thread serverThread;
+    
+    private Context lobbyContext = null;
     
 	public MobileConnection() {
 		mIPs = new ArrayList<InetAddress>();
@@ -159,14 +162,22 @@ public class MobileConnection {
 				mPeers.add(peer);
 				mIPs.add(peer.getAdress());
 				playerList.add(peer.getAdress().toString());
-				if(pAisInit)
-					playerAdapter.notifyDataSetChanged();
-				
+
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+		Intent intent = new Intent("MyCustomIntent");
+		intent.setAction("Shiiiiit");
+//		if(lobbyContext == null)
+//			Log.d(TAG, "NUUUUUUULLL");
+
+		if(lobbyContext != null)
+			Log.d(TAG, "I handShake");
+
+			lobbyContext.sendBroadcast(intent);
+
 	}
 	/** 
 	 * Sends back a list of peers to connect to.
@@ -220,7 +231,12 @@ public class MobileConnection {
 		case DataPackage.IP_LIST:
 			resolveHandshake(data.getData());
 			break;
-		
+		case DataPackage.PLAYER_READY:
+			GameState.getState().playersReady++;
+			break;
+		case DataPackage.POWERUP_TAKEN:
+			GameState.getState().powerUps.get(0).setHit(true);
+			break;
 		default:
 			break;
 		}
@@ -422,6 +438,7 @@ public class MobileConnection {
 			try {
 				buffer.get(byteIP);
 				connectToPeer(InetAddress.getByAddress(byteIP));
+					
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -429,12 +446,24 @@ public class MobileConnection {
 		}
 		
 		Log.d(TAG, "Assigned ID: " + GameState.getState().myPlayerID);
+		Intent intent = new Intent("MyCustomIntent");
+		intent.setAction("Shiiiiit");
+//		if(lobbyContext == null)
+//			Log.d(TAG, "NUUUUUUULLL");
+		
+		if(lobbyContext != null){
+			Log.d(TAG,"I resolveHandshake");
+
+			lobbyContext.sendBroadcast(intent);
+			
+		}
 	}
 	
 	/**
 	 * Initializes the playerAdapter with the context from LobbyActviity 
 	 */
 	public void initPlayerAdapter(Context context) {
+		//lobbyContext = context;
 		playerAdapter = new ArrayAdapter<String>(context,
 				R.layout.custom_list_for_services,
 				playerList);
@@ -447,5 +476,9 @@ public class MobileConnection {
 	 */
 	public ArrayAdapter<String> getPlayerAdapter(){
 		return playerAdapter;
+	}
+	
+	public void setContext(Context context){
+		lobbyContext= context;
 	}
 }
