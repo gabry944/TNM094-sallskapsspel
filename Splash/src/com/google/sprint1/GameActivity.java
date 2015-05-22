@@ -290,14 +290,11 @@ public class GameActivity extends ARViewActivity // implements
 									  Load3Dmodel("paintball/splash/splashYellow.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 3));
 			}
-			
-<<<<<<< HEAD
-=======
+	
 			//ALL RESOURCES LOADED - PLAYER IS READY TO START GAME
 			
 			NetworkState.getState().getMobileConnection().sendData(NetDataHandler.playerReady(GameState.getState().myPlayerID));
 			GameState.getState().playersReady++;
->>>>>>> b23702a1b316360e36ef16c06f80410feed7e904
 			
 		} 
 		catch (Exception e) 
