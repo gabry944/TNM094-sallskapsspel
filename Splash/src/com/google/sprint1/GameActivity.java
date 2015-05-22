@@ -286,6 +286,7 @@ public class GameActivity extends ARViewActivity // implements
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 3));
 			}
 			
+			
 		} 
 		catch (Exception e) 
 		{
@@ -330,7 +331,7 @@ public class GameActivity extends ARViewActivity // implements
 				ant.update();
 				
 				if(ant.getCollision()){
-					SoundEffect.playSound(getBaseContext());
+					SoundEffect.playSound(getBaseContext(), 1);
 				}
 				/*else if(ant.getTowerIsReached()){
 					SoundEffect.playSound(getBaseContext());

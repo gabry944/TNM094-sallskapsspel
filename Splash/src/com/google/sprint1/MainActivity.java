@@ -85,8 +85,6 @@ public class MainActivity extends Activity {
 	/** Called when the user clicks the settings button (spelinställningar) */
 	public void startSettings(View view) {
 		
-		SoundEffect.playSound(getBaseContext());
-		
 		Intent intentSettings = new Intent(this, SettingsActivity.class);
 		startActivity(intentSettings);
 
