@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.GestureHandlerAndroid;
 import com.metaio.sdk.MetaioDebug;
+import com.metaio.sdk.jni.ELIGHT_TYPE;
 import com.metaio.sdk.jni.GestureHandler;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.ILight;
@@ -124,17 +125,7 @@ public class GameActivity extends ARViewActivity // implements
 		mGestureMask = GestureHandler.GESTURE_DRAG;
 		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);
 		
-		// create light
-
-
-
-	/*	mSpotLight = metaioSDK.createLight();
-		mSpotLight.setAmbientColor(new Vector3d(0.17f, 0, 0)); // slightly red ambient
-		mSpotLight.setType(ELIGHT_TYPE.ELIGHT_TYPE_SPOT);
-		mSpotLight.setRadiusDegrees(10);
-		mSpotLight.setDiffuseColor(new Vector3d(1, 1, 0)); // yellow
-		mSpotLight.setCoordinateSystemID(1);*/
-
+		
 	}
 
 	/**
@@ -190,7 +181,19 @@ public class GameActivity extends ARViewActivity // implements
 			MetaioDebug.log("Tracking data loaded: " + result);
 
 			GameState.getState().nrOfPlayers = 1 + NetworkState.getState().getMobileConnection().getNumberOfConnections();
-			GameState.getState().connection = NetworkState.getState().getMobileConnection();
+			
+			// create light
+
+
+
+			mSpotLight = metaioSDK.createLight();
+			mSpotLight.setAmbientColor(new Vector3d(0.5f, 0.5f, 0.5f)); // slightly red ambient
+			mSpotLight.setType(ELIGHT_TYPE.ELIGHT_TYPE_DIRECTIONAL);
+			mSpotLight.setDirection(new Vector3d(0.2f, -0.7f, 0.2f));
+			mSpotLight.setDiffuseColor(new Vector3d(1, 1, 1f)); // yellow
+			mSpotLight.setCoordinateSystemID(1);
+			//mSpotLight.setTranslation(new Vector3d(0f,500f,0f));
+
 			/** Load Object */
 			
 			//create ground plane			
@@ -287,7 +290,7 @@ public class GameActivity extends ARViewActivity // implements
 									  Load3Dmodel("paintball/splash/splashYellow.mfbx"),
 									  Load3Dmodel("paintball/paintballShadow.mfbx"), 3));
 			}
-			
+	
 			//ALL RESOURCES LOADED - PLAYER IS READY TO START GAME
 			
 			NetworkState.getState().getMobileConnection().sendData(NetDataHandler.playerReady(GameState.getState().myPlayerID));
@@ -343,7 +346,7 @@ public class GameActivity extends ARViewActivity // implements
 				ant.update();
 				
 				if(ant.getCollision()){
-					SoundEffect.playSound(getBaseContext());
+					SoundEffect.playSound(getBaseContext(), 1);
 				}
 				/*else if(ant.getTowerIsReached()){
 					SoundEffect.playSound(getBaseContext());
@@ -399,10 +402,11 @@ public class GameActivity extends ARViewActivity // implements
     private PaintBall getAvailableBall(int id)
     {
     	PaintBall ball;
-    	
-		ball = GameState.getState().paintBalls.get(currentBall + id*5);
-		currentBall = (currentBall++)%5;
+
+		currentBall = (currentBall + 1) % 5;
 		Log.d("Ball", "CurrentBall "+ currentBall);
+		
+		ball = GameState.getState().paintBalls.get(currentBall + id*5);
 		if (!(ball.getGeometry().isVisible()))
 			return ball;
 	

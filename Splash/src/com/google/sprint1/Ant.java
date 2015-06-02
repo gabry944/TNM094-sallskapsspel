@@ -44,7 +44,7 @@ public class Ant extends Drawable
 		id = numberOfAnts;
 		numberOfAnts++;
 		
-		connection = GameState.getState().connection;
+		connection = NetworkState.getState().getMobileConnection();
 		
 		markerBlue = markBlue;
 		markerGreen = markGreen;

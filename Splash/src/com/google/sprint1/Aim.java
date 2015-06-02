@@ -56,7 +56,7 @@ public class Aim extends Drawable
 	/** Function to draw the path of the ball (aim) */
 	public void drawBallPath(Vector3d startVelocity, Vector3d startPosition) 
 	{ 
-		if(GameState.getState().powerUps.get(0).isHit() == false)
+		if(!GameState.getState().havePowerUp)
 			powerUp = false;
 		
 		zVelocity = startVelocity.getZ();

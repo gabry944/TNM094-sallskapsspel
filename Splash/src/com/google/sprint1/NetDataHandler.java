@@ -94,4 +94,17 @@ public class NetDataHandler {
 		
 		return buffer.array();
 	}
+	
+	public static byte[] powerUpTaken()
+	{
+		int DATA_SIZE = 0;
+		//Allocate a buffer and add OC and a byte array.
+		ByteBuffer buffer = ByteBuffer.allocate(DataPackage.BUFFER_HEAD_SIZE + DATA_SIZE);
+		//amount of bytes
+		buffer.putInt(DATA_SIZE);
+		//operation code
+		buffer.putShort(DataPackage.POWERUP_TAKEN);
+		
+		return buffer.array();
+	}
 }
