@@ -30,9 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/testgame"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_alignLeft="@+id/button1"
         android:layout_marginBottom="62dp"
+        android:layout_marginTop="20dp"
         android:background="@null"
         android:fontFamily="sans-serif-medium"
         android:onClick="startNetwork"
@@ -42,30 +41,16 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/button1"
-        android:layout_width="fill_parent"
+        android:id="@+id/button3"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/testgame"
         android:layout_centerHorizontal="true"
         android:background="@null"
-        android:fontFamily="sans-serif-medium"
-        android:onClick="startSettings"
-        android:text="@string/action_settings"
-        android:textColor="#0000FF"
-        android:textSize="45sp"
-        android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/button3"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/button1"
-            android:layout_centerHorizontal="true"
-            android:background="@null"
-            android:onClick="showInfo"
-            android:text=" ? "
-            android:textColor="#E60000"
-            android:textSize="60sp" />
+        android:onClick="showInfo"
+        android:text=" ? "
+        android:textColor="#E60000"
+        android:textSize="60sp" />
 
 </RelativeLayout>
