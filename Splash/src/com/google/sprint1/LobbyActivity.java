@@ -1,7 +1,6 @@
 package com.google.sprint1;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import com.metaio.sdk.MetaioDebug;
 import com.metaio.tools.io.AssetsManager;
@@ -20,10 +19,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 /**
  * Activity to handle the screen between network and the gamescreen

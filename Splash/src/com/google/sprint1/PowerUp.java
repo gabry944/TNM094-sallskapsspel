@@ -1,7 +1,5 @@
 package com.google.sprint1;
 
-import android.util.Log;
-
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.Rotation;
 import com.metaio.sdk.jni.Vector3d;

@@ -1,7 +1,5 @@
 package com.google.sprint1;
 
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.util.Log;
 
 import com.metaio.sdk.jni.IGeometry;

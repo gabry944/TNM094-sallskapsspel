@@ -2,8 +2,6 @@ package com.google.sprint1;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
-
 public class GameState {
 	
 	private static GameState instance = null;

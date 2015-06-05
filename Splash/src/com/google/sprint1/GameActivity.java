@@ -5,10 +5,8 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -338,7 +336,6 @@ public class GameActivity extends ARViewActivity // implements
 		if(GameState.getState().myPlayerID == 0)
 		{
 			Ant ant;
-			PaintBall paintBall;
 			for ( int i = 0; i <  GameState.getState().ants.size(); i++)
 			{
 				ant = GameState.getState().ants.get(i); 

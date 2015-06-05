@@ -1,8 +1,5 @@
 package com.google.sprint1;
 
-import com.metaio.sdk.MetaioDebug;
-import com.metaio.tools.io.AssetsManager;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

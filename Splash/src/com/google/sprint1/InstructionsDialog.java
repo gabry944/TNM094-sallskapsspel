@@ -1,10 +1,7 @@
 package com.google.sprint1;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,12 +23,14 @@ public class InstructionsDialog extends DialogFragment
 	{
 		View rootView = inflater.inflate(R.layout.instructionsdialog, container, false);
 		
-		LinearLayout  displayInstructions = (LinearLayout) rootView.findViewById(R.id.instructions);
+		//this don't work as i want
+		//LinearLayout  displayInstructions = (LinearLayout) rootView.findViewById(R.id.instructions);
+		//android.graphics.drawable.Drawable d = displayInstructions.getBackground();
 		
-		android.graphics.drawable.Drawable d = displayInstructions.getBackground();
+		//so i keep a counter in order to know which image to change to.
 		counter = 1;
 		
-		//Close dialog on touch
+		//Change/Close dialog on touch
 		rootView.setOnClickListener(new OnClickListener() 
 		{
 			@Override
@@ -42,12 +41,12 @@ public class InstructionsDialog extends DialogFragment
 					if (counter == 1)
 					{
 						displayInstructions.setBackgroundResource(R.drawable.drag);
-						Log.d(TAG, "1");
+						//Log.d(TAG, "1");
 					}
 					else if (counter == 2)
 					{
 						displayInstructions.setBackgroundResource(R.drawable.hit);		
-						Log.d(TAG, "2")	;			
+						//Log.d(TAG, "2")	;			
 					}
 					else if (counter == 3)
 					{

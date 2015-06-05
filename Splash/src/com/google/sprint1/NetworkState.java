@@ -2,13 +2,11 @@ package com.google.sprint1;
 
 import java.util.ArrayList;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 
 public class NetworkState {
 	
