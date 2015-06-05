@@ -129,6 +129,7 @@
 					<AlphaTranslation>0.8</AlphaTranslation>
 					<!-- if we lose tracking, keep the old pose for several frames -->
 					<KeepPoseForNumberOfFrames>60</KeepPoseForNumberOfFrames> <!-- 3 ... 5 -->
+					<ContinueLostTrackingWithOrientationSensor>true</ContinueLostTrackingWithOrientationSensor>
 				</Parameters>
 			</Fuser>
 			<SensorSource trigger="1">
@@ -174,7 +175,8 @@
 					<AlphaRotation>0.5</AlphaRotation> 
 					<AlphaTranslation>0.8</AlphaTranslation>
 					<!-- if we lose tracking, keep the old pose for several frames -->
-					<KeepPoseForNumberOfFrames>3</KeepPoseForNumberOfFrames> <!-- 3 -->
+					<KeepPoseForNumberOfFrames>3</KeepPoseForNumberOfFrames> <!-- 3 -->					
+					<ContinueLostTrackingWithOrientationSensor>true</ContinueLostTrackingWithOrientationSensor>
 				</Parameters>
 			</Fuser>
 		</COS>
