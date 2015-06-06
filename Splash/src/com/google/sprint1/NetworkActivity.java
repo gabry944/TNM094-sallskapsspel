@@ -27,9 +27,6 @@ import android.widget.Toast;
 public class NetworkActivity extends Activity {
 
 	Handler mNSDHandler;
-		
-	//Variable that indicates if user is host
-	private boolean isHost = false;
 	
 	public static final String TAG = "NetworkActivity";
 	

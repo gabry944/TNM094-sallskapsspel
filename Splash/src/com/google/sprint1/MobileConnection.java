@@ -16,7 +16,6 @@ import com.metaio.sdk.jni.Vector3d;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
@@ -33,7 +32,6 @@ public class MobileConnection {
 	public static final int SERVER_PORT = 8196;
     
     private boolean handshakeActive = false;
-    private boolean pAisInit = false;
     
     private Thread serverThread;
     
@@ -467,7 +465,6 @@ public class MobileConnection {
 		playerAdapter = new ArrayAdapter<String>(context,
 				R.layout.custom_list_for_services,
 				playerList);
-		pAisInit = true;
 	}
 	
 	/**

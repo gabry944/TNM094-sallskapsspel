@@ -44,8 +44,8 @@
 
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="landscape"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >
 
             <!-- android:screenOrientation="landscape" > -->
 
@@ -75,26 +75,30 @@
         </activity>
         <activity
             android:name=".NetworkActivity"
-            android:screenOrientation="landscape"
             android:label="@string/title_activity_network"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.google.sprint1.MainActivity" />
         </activity>
         <activity
             android:name=".LobbyActivity"
-            android:screenOrientation="landscape"
             android:label="@string/title_activity_lobby"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.google.sprint1.MainActivity" />
         </activity>
         <activity
             android:name=".GameEndedActivity"
-            android:screenOrientation="landscape"
-            android:label="@string/title_activity_game_ended" >
+            android:label="@string/title_activity_game_ended"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name=".MarkerActivity"
+            android:label="@string/title_activity_marker" >
         </activity>
     </application>
 

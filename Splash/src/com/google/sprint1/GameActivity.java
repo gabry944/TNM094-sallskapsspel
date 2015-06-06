@@ -56,9 +56,6 @@ public class GameActivity extends ARViewActivity // implements
 
 	private IGeometry ball;
 	private IGeometry ballShadow;
-	//private IGeometry touchSphere;
-
-	//private IGeometry groundPlane;
 	
 	//Gesture handler
 	private GestureHandlerAndroid mGestureHandler;
@@ -109,21 +106,14 @@ public class GameActivity extends ARViewActivity // implements
 		GameState.getState().paintBalls = new ArrayList<PaintBall>(20);
 		GameState.getState().ants = new ArrayList<Ant>(NUM_OF_ANTS[0] + NUM_OF_ANTS[1] + NUM_OF_ANTS[2]);
 		
-
-		touchVec = new Vector3d(0f, 0f, 0f);
-		
+		touchVec = new Vector3d(0f, 0f, 0f);		
 		angleForCanon = Math.PI/6;
-		
-		//player = GameState.getState().players.get(0);
-		
 
 		GameState.getState().gameStartTime = System.currentTimeMillis();
 		
 		//Gesture handler
 		mGestureMask = GestureHandler.GESTURE_DRAG;
-		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);
-		
-		
+		mGestureHandler = new GestureHandlerAndroid(metaioSDK, mGestureMask);		
 	}
 
 	/**
@@ -181,9 +171,6 @@ public class GameActivity extends ARViewActivity // implements
 			GameState.getState().nrOfPlayers = 1 + NetworkState.getState().getMobileConnection().getNumberOfConnections();
 			
 			// create light
-
-
-
 			mSpotLight = metaioSDK.createLight();
 			mSpotLight.setAmbientColor(new Vector3d(0.5f, 0.5f, 0.5f)); // slightly red ambient
 			mSpotLight.setType(ELIGHT_TYPE.ELIGHT_TYPE_DIRECTIONAL);
@@ -192,12 +179,7 @@ public class GameActivity extends ARViewActivity // implements
 			mSpotLight.setCoordinateSystemID(1);
 			//mSpotLight.setTranslation(new Vector3d(0f,500f,0f));
 
-			/** Load Object */
-			
-			//create ground plane			
-//			groundPlane = Load3Dmodel("groundPlane/grassplane2.mfbx");
-//			geometryProperties(groundPlane, 25f, new Vector3d(0f, 0f, -15f), new Rotation(0f, 0f, 0f));
-			
+			/** Load Object */			
 			//creates the tower				
 			bluePlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotBlue.mfbx"), Load3Dmodel("paintball/paintball/ballBlue.mfbx"), new Vector3d(-650f, -520f, 220f));
 			greenPlayer = new Player(Load3Dmodel("anthill/anthill.mfbx"), Load3Dmodel("tower/slingshotGreen.mfbx"), Load3Dmodel("paintball/paintball/ballGreen.mfbx"), new Vector3d(650f, 520f, 220f));	
@@ -339,7 +321,6 @@ public class GameActivity extends ARViewActivity // implements
 			for ( int i = 0; i <  GameState.getState().ants.size(); i++)
 			{
 				ant = GameState.getState().ants.get(i); 
-				//paintBall = GameState.getState().paintBall; 
 				ant.update();
 				
 				if(ant.getCollision()){

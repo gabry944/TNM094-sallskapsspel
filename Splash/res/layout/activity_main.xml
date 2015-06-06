@@ -10,19 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.google.sprint1.MainActivity" >
 
-    <Button
-        android:id="@+id/testgame"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button2"
-        android:layout_alignParentTop="true"
-        android:background="@null"
-        android:fontFamily="sans-serif-medium"
-        android:onClick="testGame"
-        android:text="@string/testgame"
-        android:textColor="#0000FF"
-        android:textSize="45sp"
-        android:textStyle="bold" />
 
     <Button
         android:id="@+id/button2"
@@ -45,12 +32,27 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/testgame"
+        android:layout_below="@+id/showMarker"
         android:layout_centerHorizontal="true"
         android:background="@null"
         android:onClick="showInfo"
         android:text=" ? "
         android:textColor="#E60000"
         android:textSize="60sp" />
+
+    <Button
+        android:id="@+id/showMarker"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button2"
+        android:layout_alignTop="@+id/button2"
+        android:layout_marginTop="48dp"
+        android:background="@null"
+        android:fontFamily="sans-serif-medium"
+        android:onClick="showMarker"
+        android:text="@string/marker"
+        android:textColor="#0000FF"
+        android:textSize="45sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
