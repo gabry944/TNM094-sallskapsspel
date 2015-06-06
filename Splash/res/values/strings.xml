@@ -30,7 +30,7 @@
     <string name="play_again">Play again</string>
     <string name="connect_to_game">connect to game</string>
     <string name="marker">View the marker</string>
-    <string name="multiplayer">Multiplayer</string>
+    <string name="play">Play</string>
     <string name="BTN_CONTINUE">Continue</string>
     <string name="title_activity_marker">MarkerActivity</string>
 
