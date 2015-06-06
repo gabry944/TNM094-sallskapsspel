@@ -69,7 +69,7 @@ public class GameState {
 	
 	public void updateTime() {
 		// 3 min game round (5 min quit long)
-		gameTimeLeft = 1*60*1000 -(System.currentTimeMillis() - gameStartTime);
+		gameTimeLeft = 3*60*1000 -(System.currentTimeMillis() - gameStartTime);
 	}
 	public String timeToString() {
 		String result;

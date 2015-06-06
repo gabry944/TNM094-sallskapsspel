@@ -1,6 +1,5 @@
 package com.google.sprint1;
 
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
